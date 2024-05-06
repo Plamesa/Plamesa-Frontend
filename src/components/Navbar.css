@@ -1,0 +1,71 @@
+/* Estilos para el AppBar y la barra de navegación */
+.navbar {
+  background-color: #f4e285 !important; /* Color del fondo */
+  color: #545454; /* Color del texto */
+}
+
+.navbar-link {
+  text-decoration: none; /* Sin subrayado */
+  color: #545454; /* Color del texto */
+  transition: font-weight 0.2s; /* Transición suave */
+}
+
+.navbar-routes {
+  text-decoration: none; /* Sin subrayado */
+  color: #545454; /* Color del texto */
+  font-family: monospace;
+  font-size: 1rem;
+  margin-right: 0.3rem;
+  margin-left: 0.3rem;
+}
+.navbar-routes:hover {
+  font-weight: bold;
+}
+
+.navbar-routes-menu {
+  text-decoration: none; /* Sin subrayado */
+  color: #545454; /* Color del texto */
+  font-family: monospace;
+  font-size: 1rem;
+}
+.navbar-routes-menu:hover {
+  font-weight: bold;
+}
+
+.navbar-link:hover {
+  font-weight: bold; /* Negrita al pasar el ratón */
+}
+
+.navbar-userIcon {
+  height: 50px;
+  width: 50px;
+}
+
+.logo {
+  display: none; /* Oculto por defecto */
+}
+.logoCenter {
+  display: none; /* Oculto por defecto */
+}
+
+/* Media query para pantallas medianas y grandes */
+@media (min-width: 900px) { /* 960px es aproximadamente el punto de quiebre 'md' de Material-UI */
+  .logo {
+    height: 50px;
+    width: 50px;
+    padding-right: 0.5rem;
+    display: flex; /* Mostrar en pantallas medianas y más grandes */
+  }
+}
+@media (max-width: 900px) { /* 960px es aproximadamente el punto de quiebre 'md' de Material-UI */
+  .logoCenter {
+    height: 6%;
+    width: 6%;
+    padding-right: 0.5rem;
+    display: flex; /* Mostrar en pantallas medianas y más grandes */
+  }
+
+  .navbar-userIcon {
+    width: 70%;
+  }
+}

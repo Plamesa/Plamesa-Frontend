@@ -1,0 +1,35 @@
+/* Home.css */
+.animated-text {
+  animation: fadeIn 2s;
+  font-family: helvetica;
+  color: #545454
+}
+
+.animated-subtext {
+  animation: fadeIn 2.5s;
+}
+
+.plamesa-logo {
+  width: 30%;
+  height: 30%;
+  margin: 20px 0;
+  animation: fadeIn 2.5s;
+}
+
+@media (max-width: 900px) { /* 960px es aproximadamente el punto de quiebre 'md' de Material-UI */
+  .plamesa-logo {
+    width: 50%;
+    height: 50%;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
