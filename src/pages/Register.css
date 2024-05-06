@@ -20,23 +20,19 @@
   height: 100px;
 }
 
-.botonLogin {
+.textField {
+  background-color: #FDF8EB;
+  color: #545454;
+  border-radius: 4px;
+}
+
+.botonRegister {
   background-color: #545454 !important;
   color: #FFFFFF;
   margin-top: 1rem !important;
   margin-bottom: 0.5rem !important;
 }
 
-.registerURL {
-  color: #FFFFFF;
-  font-size: 20px;
-  text-decoration: none;
-  font-family: calibri;
-}
-
-.registerURL:hover {
-  font-weight: bold;
-}
 
 @media (max-width: 500px) { /* 960px es aproximadamente el punto de quiebre 'md' de Material-UI */
   .logoIcon {

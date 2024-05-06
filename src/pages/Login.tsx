@@ -28,6 +28,9 @@ function Login() {
             localStorage.setItem('token', response.data.token);
             alert('¡Se ha iniciado sesión correctamente!');
           }
+          else {
+            alert('Ha ocurrido algun problema en la creación de usuario')
+          }
 
           if (history.length > 1) { 
             navigate(-1);
