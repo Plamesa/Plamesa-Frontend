@@ -1,0 +1,51 @@
+.containerForm {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  height: 100vh; /* Hace que ocupe toda la altura del viewport */
+}
+
+.formContent {
+  background-color: #5B8E7D; /* Fondo para el contenido interno */
+  padding: 20px; /* Relleno interno */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Sombra para efecto visual */
+  width: 400px; /* Ancho fijo para el contenedor */
+  text-align: center; /* Centra el texto */
+  margin: 1rem
+}
+
+.logoIcon {
+  width: 100px;
+  height: 100px;
+}
+
+.pepe {
+  background-color: #FDF8EB;
+  border-radius: 4px;
+}
+
+.botonLogin {
+  background-color: #545454 !important;
+  color: #FFFFFF;
+  margin-top: 1rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.registerURL {
+  color: #FFFFFF;
+  font-size: 20px;
+  text-decoration: none;
+  font-family: calibri;
+}
+
+.registerURL:hover {
+  font-weight: bold;
+}
+
+@media (max-width: 500px) { /* 960px es aproximadamente el punto de quiebre 'md' de Material-UI */
+  .logoIcon {
+    width: 80px;
+    height: 80px;
+  }
+}
