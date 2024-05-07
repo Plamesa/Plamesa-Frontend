@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
-import Acount from './pages/Acount';
+import Account from './pages/Account';
 import Home from './pages/Home';
 import Layout from './components/Layout'; // Usar Layout
 
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
       },
       {
         path: "account",
-        element: <Acount />,
+        element: <Account />,
       },
     ],
   },

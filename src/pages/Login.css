@@ -20,6 +20,12 @@
   height: 100px;
 }
 
+.textField {
+  background-color: #FDF8EB;
+  color: #545454;
+  border-radius: 4px;
+}
+
 .botonLogin {
   background-color: #545454 !important;
   color: #FFFFFF;

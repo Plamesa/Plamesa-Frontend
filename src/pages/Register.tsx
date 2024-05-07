@@ -30,7 +30,7 @@ function Register() {
     // Validación de la contraseña
     const passwordPattern = /^(?=.*[0-9])(?=.*[A-ZÑ])[a-zA-Z0-9Ññ]{6,}$/;
     if (!passwordPattern.test(formData.password)) {
-      newErrors.password = 'La contraseña debe tener al menos una mayúscula, un número y ser de 6 caracteres.';
+      newErrors.password = 'La contraseña debe tener al menos una mayúscula, un número y tener mínimo 6 caracteres.';
       valid = false;
     }
 
@@ -57,29 +57,29 @@ function Register() {
     try {
       auth
         .register(formData.username, formData.name, formData.password, formData.email)
-        .then(async (response) => {
+        .then((response) => {
           console.log(response);
           if (response.status === 201) {
             console.log('Se ha creado correctamente');
             logUser();
           }
           else {
-            alert('Ha ocurrido algun problema en la creación de usuario')
+            alert('Ha ocurrido algún problema en la creación de usuario')
           }
         })
         .catch((error) => {
           console.log(error)
-          if (error.response.status === 404) {
-            alert('El usuario introducido no existe');
+          if (error.response && error.response.data && error.response.data.code) {
+            if (error.response.data.code === 11000) {
+              const fieldWithError = Object.keys(error.response.data.keyPattern)[0];
+              const valueWithError = error.response.data.keyValue[fieldWithError];
+          
+              alert(`El ${fieldWithError}: "${valueWithError}" ya existe.`);
+            }
+          } else {
+            alert('Ocurrió un error inesperado. Por favor, inténtelo de nuevo.');
           }
-          else if (error.response.status === 401) {
-            alert('Credenciales incorrectas');
-          }
-          else if (error.response.status === 500) {
-            alert('Error en el servidor')
-            console.log(error)
-          }
-          })
+        })
     } catch (error) {
       console.log(error);
     }
@@ -93,11 +93,25 @@ function Register() {
           .then((responseLogin) => {
             if (responseLogin.status === 200) {
               localStorage.setItem('token', responseLogin.data.token);
-              alert('Todo perfect')
+              alert('Se ha creado el usuario correctamente y se ha iniciado sesión')
               navigate('/');
             }
             else {
-              alert('Ha ocurrido algun problema en la autentificacion del usuario')
+              alert('Ha ocurrido algún problema en la autentificación del usuario')
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+            if (error && error.response) {
+              if (error.response.status === 404) {
+                alert('El usuario introducido no existe');
+              } else if (error.response.status === 401) {
+                alert('Credenciales incorrectas');
+              } else {
+                alert(`Error inesperado: ${error.response.status}`);
+              }
+            } else {
+              alert('Error inesperado. Por favor, inténtelo de nuevo más tarde.');
             }
           })
     } catch (error) {

@@ -6,6 +6,11 @@ import auth from '../services/LoginService';
 import logo from '../assets/LOGIN-16.svg';
 import './Login.css'
 
+interface LoginFormData {
+  username: string;
+  password: string;
+}
+
 function Login() {
   const [formData, setFormData] = useState<LoginFormData>({
     username: '',
@@ -16,9 +21,8 @@ function Login() {
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    // Logic to handle form submission using auth servic
-    console.log('Formulario enviado:', formData);
 
+    console.log('Formulario enviado:', formData);
     try {
       auth
         .login(formData.username, formData.password)
@@ -27,24 +31,30 @@ function Login() {
           if (response.status === 200) {
             localStorage.setItem('token', response.data.token);
             alert('¡Se ha iniciado sesión correctamente!');
+            navigate('/');
           }
           else {
-            alert('Ha ocurrido algun problema en la creación de usuario')
+            alert('Ha ocurrido algún problema en la autentificación del usuario')
           }
 
-          if (history.length > 1) { 
+          /*if (history.length > 1) { 
             navigate(-1);
           } else {
             navigate('/');
-          }
+          }*/
         })
         .catch((error) => {
           console.log(error)
-          if (error.response.status === 404) {
-            alert('El usuario introducido no existe');
-          }
-          else if (error.response.status === 401) {
-            alert('Credenciales incorrectas');
+          if (error && error.response) {
+            if (error.response.status === 404) {
+              alert('El usuario introducido no existe');
+            } else if (error.response.status === 401) {
+              alert('Credenciales incorrectas');
+            } else {
+              alert(`Error inesperado: ${error.response.status}`);
+            }
+          } else {
+            alert('Error inesperado. Por favor, inténtelo de nuevo más tarde.');
           }
         });
     } catch (error) {
@@ -53,7 +63,7 @@ function Login() {
   };
 
   return (
-    <div className='containerForm'>
+    <div className='containerFormLogin'>
       <div className='formContent'>
         <img src={logo} alt="Plamesa Logo" className='logoIcon'/>
       
@@ -70,12 +80,9 @@ function Login() {
             onChange={(e) =>
               setFormData({ ...formData, username: e.target.value })
             }
-            sx={{
-              backgroundColor: '#FDF8EB',
-              color: '#545454',
-              borderRadius: '4px',
-            }}
+            className='textField'
           />
+
           <TextField
             margin="normal"
             required
@@ -89,25 +96,18 @@ function Login() {
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
-            sx={{
-              backgroundColor: '#FDF8EB',
-              color: 'black',
-              borderRadius: '4px',
-            }}
+            className='textField'
           />
+
           <Button type="submit" variant="contained" className='botonLogin'>
             Iniciar sesión
           </Button>
         </form>
-        <Link to="/register" className='registerURL'>Registrarse</Link>  {/* Link to register page */}
+
+        <Link to="/register" className='registerURL'>Registrarse</Link>
       </div>
     </div>
   );
-}
-
-interface LoginFormData {
-  username: string;
-  password: string;
 }
 
 export default Login;
