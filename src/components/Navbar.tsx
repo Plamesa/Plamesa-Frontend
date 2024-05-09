@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import LogoIcon from '../assets/NAVBAR-07.svg';
 import IconUser from '../assets/LOGIN-13.svg';
 import IconUserLog from '../assets/LOGIN-14.svg';
@@ -36,6 +37,8 @@ function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
+  const navigate = useNavigate();
+
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -54,6 +57,7 @@ function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem('token'); // Elimina el token del localStorage
     setAnchorElUser(null); // Cierra el menú
+    navigate('/');
   };
 
   const isAuthenticated = Boolean(localStorage.getItem('token'));
@@ -160,11 +164,6 @@ function Navbar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {/*settings.map(({ name, route }) => (
-                <MenuItem key={name} onClick={handleCloseUserMenu}>
-                  <Link to={route} className="navbar-routes-menu">{name}</Link>
-                </MenuItem>
-              ))*/}
               {isAuthenticated
               ? settingsAuthenticated.map(({ name, route }) => (
                   <MenuItem

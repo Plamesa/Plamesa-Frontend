@@ -3,7 +3,8 @@ body {
   padding: 0;
   height: 100vh; 
   background-color: #FDF8EB; 
-  /*font-family: 'Arial', sans-serif;*/
+  color: #545454;
+  font-family: calibri;
   display: flex;
   justify-content: center;
   align-items: center;

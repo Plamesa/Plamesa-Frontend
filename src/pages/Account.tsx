@@ -5,28 +5,42 @@ import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import {
-  Checkbox,
   FormControlLabel,
   FormGroup,
-  Radio,
-  RadioGroup,
   TextField,
   Button,
   Autocomplete,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import './Account.css'
+import ingredientService from '../services/IngredientService.ts';
+import { ActivityLevel, Gender } from '../utils/enums.ts';
 
 interface UserInfoInterface {
   username: string;
   name: string;
   password: string;
   email: string;
-  gender: 'Masculino' | 'Femenino';
+  gender: Gender;
   weight: number;
   height: number;
   age: number;
-  activityLevel: 'Sedentario' | 'Ligero' | 'Moderado' | 'Activo' | 'Muy activo';
+  activityLevel: ActivityLevel;
+  allergies: string[];
+  diet: string;
+  excludedIngredients: { id: string; name: string }[];
+}
+
+interface IngredientInterface {
+  _id: string;
+  name : string;
+  amount: number;
+  unit: string;
+  estimatedCost: number;
+  foodGroup: string;
+  allergens: string[];
+  nutrients: string[];
+  ownerUser: string;
 }
 
 const genders = [
@@ -40,16 +54,25 @@ const activityLevel = [
   { value: 'Moderado', label: 'Ejercicio moderado o deportes 3-5 días por semana' },
   { value: 'Activo', label: 'Ejercicio intenso o deportes 6-7 días por semana' },
   { value: 'Muy activo', label: 'Muy activo' },
+  { value: undefined, label: 'Ninguna Opción' },
 ];
 
 // Listado de alérgenos
 const allergens = [
-  'Gluten',
-  'Lactosa',
-  'Soja',
-  'Frutos secos',
-  'Mariscos',
+  'Cereales',
+  'Crustaceos',
   'Huevos',
+  'Pescado',
+  'Cacahuetes y Frutos Secos',
+  'Soja',
+  'Leche',
+  'Frutos de Cascara',
+  'Apio',
+  'Mostaza',
+  'Sesamo',
+  'DioxidoAzufre',
+  'Altramuces',
+  'Moluscos',
 ];
 
 // Opciones de dietas
@@ -58,17 +81,11 @@ const diets = [
   'Vegetariana',
   'Omnívora',
   'Paleo',
+  ''
 ];
 
 // Lista de ingredientes para excluir
-const ingredients = [
-  'Tomate',
-  'Cebolla',
-  'Queso',
-  'Leche',
-  'Pescado',
-  'Carne',
-];
+let ingredients: { id: string; name: string }[] = []
 
 function Account() {
   const [userInfo, setUserInfo] = useState<UserInfoInterface>({
@@ -76,17 +93,16 @@ function Account() {
     name: '',
     password: '',
     email: '',
-    gender: '',
+    gender: Gender.Vacio,
     weight: 0,
     height: 0,
     age: 0,
-    activityLevel: ''
+    activityLevel: ActivityLevel.Vacio,
+    allergies: [],
+    diet: '',
+    excludedIngredients: []
   });
   const token = localStorage.getItem('token');
-
-  const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
-  const [selectedDiet, setSelectedDiet] = useState<string>('');
-  const [excludedIngredients, setExcludedIngredients] = useState<string[]>([]);
 
   useEffect(() => {
     if (token) {
@@ -97,6 +113,39 @@ function Account() {
       });
     }
   }, [token]); // Se ejecuta cuando el token cambia
+
+  useEffect(() => {
+    try {
+      ingredientService.getIngredients().then((response) => {
+        const ingredientsJson: IngredientInterface[] = response.data;
+        if (ingredients.length == 0) {
+          for (let i = 0; i < ingredientsJson.length; i++) {
+            ingredients.push({ id: ingredientsJson[i]._id, name: ingredientsJson[i].name})
+          }
+        }
+      }).catch((error) => {
+        console.error('Error al obtener la información de los ingredientes: ', error);
+      });
+    } catch{ (error: Error) => { console.log(error) }}
+    
+    return () => {
+      // Limpiar antes de que el componente se vuelva a renderizar
+      ingredients = [];
+    };
+    
+  });
+
+  const handleActivityLevelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newActivityLevel = e.target.value;
+    
+    const allowedValues = ['Sedentario', 'Ligero', 'Moderado', 'Activo', 'Muy activo'];
+    
+    if (allowedValues.includes(newActivityLevel)) {
+      setUserInfo({ ...userInfo, activityLevel: (newActivityLevel as ActivityLevel)});
+    } else {
+      console.error("Valor fuera de rango:", newActivityLevel);
+    }
+  };
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -138,39 +187,21 @@ function Account() {
     }
   };
 
-  // Manejo de cambio para alérgenos
-  const handleAllergensChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setSelectedAllergens((prev) =>
-      prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
-    );
-  };
-
-  // Manejo de cambio para la dieta
-  const handleDietChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDiet(event.target.value);
-  };
-
   return (
-    /*<div>
-      {userInfo ? (
-        <div>
-          <h2>Perfil del Usuario</h2>
-          <p>Nombre: {userInfo.name}</p>
-          <p>Email: {userInfo.email}</p>
-        </div>
-      ) : (
-        <p>Cargando información del usuario...</p>
-      )}
-    </div>*/
     <div>
-      <h4>Para realizar cualquier cambio pulsar el boton de guardar</h4>
+      <div className="topContainer">
+        <div className="container2FormAccount">
+          <h3>Para realizar cualquier cambio pulsar el boton de guardar</h3>
+        </div>
+      </div>
+
+
       <div className='containerFormAccount'>
         <div className='formContentAccount'>
           <form onSubmit={handleSubmit}>
             <TextField
-              margin="normal"
               required
+              margin='normal'
               fullWidth
               variant="filled"
               id="username"
@@ -184,9 +215,9 @@ function Account() {
             />
 
             <TextField
-              margin="normal"
               required
               fullWidth
+              margin='normal'
               variant="filled"
               id="name"
               label="Nombre"
@@ -199,7 +230,6 @@ function Account() {
             />
 
             <TextField
-              margin="normal"
               required
               fullWidth
               variant="filled"
@@ -217,7 +247,6 @@ function Account() {
             />
 
             <TextField
-              margin="normal"
               required
               fullWidth
               variant="filled"
@@ -232,17 +261,13 @@ function Account() {
               //error={Boolean(errors.email)} // Muestra el error
               //helperText={errors.email} // Mensaje de error
             />
-            
-            <Button type="submit" variant="contained" className='botonRegisterAccount'>
-              Registrarse
-            </Button>
           </form>
         </div>
+
 
         <div className='formContentAccount'>
           <form onSubmit={handleSubmit}>
             <TextField
-              margin="normal"
               fullWidth
               variant="filled"
               id="outlined-select-currency"
@@ -250,7 +275,7 @@ function Account() {
               label="Genero"
               value={userInfo.gender}
               onChange={(e) =>
-                setUserInfo({ ...userInfo, gender: e.target.value })
+                setUserInfo({ ...userInfo, gender: (e.target.value as Gender) })
               }
               className='textFieldAccount'
             >
@@ -271,9 +296,8 @@ function Account() {
               }}
               value={userInfo.age}
               onChange={(e) =>
-                setUserInfo({ ...userInfo, age: e.target.value })
+                setUserInfo({ ...userInfo, age: Number(e.target.value) })
               }
-              sx={{mt:1.5, mb:1.5}}
               className='textFieldAccount'
             />
 
@@ -284,7 +308,7 @@ function Account() {
                 aria-describedby="outlined-weight-helper-text"
                 inputProps={{ 'aria-label': 'peso' }}
                 value={userInfo.weight}
-                onChange={(e) => setUserInfo({ ...userInfo, weight: e.target.value })}
+                onChange={(e) => setUserInfo({ ...userInfo, weight: Number(e.target.value) })}
                 className='textFieldAccount'
               />
 
@@ -294,22 +318,20 @@ function Account() {
                 aria-describedby="outlined-height-helper-text"
                 inputProps={{ 'aria-label': 'altura' }}
                 value={userInfo.height}
-                onChange={(e) => setUserInfo({ ...userInfo, height: e.target.value })}
+                onChange={(e) => setUserInfo({ ...userInfo, height: Number(e.target.value) })}
                 className='textFieldAccount'
               />
             </div>
-            <div className="flex-row">
+            
+
             <TextField
-              margin="normal"
               fullWidth
               variant="filled"
               id="outlined-select-currency"
               select
               label="Nivel de actividad"
               value={userInfo.activityLevel}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, activityLevel: e.target.value })
-              }
+              onChange={handleActivityLevelChange}
               className="textFieldAccount"
             >
               {activityLevel.map((option) => (
@@ -318,74 +340,85 @@ function Account() {
                 </MenuItem>
               ))}
             </TextField>
-            </div>
-            <Button type="submit" variant="contained" className='botonRegisterAccount'>
-              Registrarse
-            </Button>
           </form>
         </div>
       </div>
 
-      <div className="container2FormAccount">
-        {/* Alérgenos (Checkbox) */}
-        <div className="form2ContentAccount">
-          <FormGroup className='checkBoxAccount'>
-            <label className='labelAccount'>Alergenos</label>
-            {allergens.map((allergen) => (
-              <FormControlLabel
-                key={allergen}
-                control={
-                  <Checkbox
-                    value={allergen}
-                    checked={selectedAllergens.includes(allergen)}
-                    onChange={handleAllergensChange}
-                  />
+    
+      <div className="topContainer">
+        <div className="container2FormAccount">
+
+          <div className="form2ContentAccount">
+            <Autocomplete
+              className='textFieldAccount'
+              multiple
+              options={allergens} // Lista de opciones
+              value={userInfo.allergies} // Ingredientes seleccionados
+              onChange={(_, newValue) => {
+                setUserInfo({ ...userInfo, allergies: newValue })
+              }}
+              renderInput={(params) => (
+                <TextField {...params} variant="filled" label="Alergenos" fullWidth />
+              )}
+            />
+          </div>
+
+          <div className="form2ContentAccount">
+            <Autocomplete
+              className='textFieldAccount'
+              options={diets} // Lista de opciones
+              value={userInfo.diet} // Ingredientes seleccionados
+              onChange={(_, newValue) => {
+                if(newValue != null) {
+                  setUserInfo({ ...userInfo, diet: newValue })
                 }
-                label={allergen}
-              />
-            ))}
-          </FormGroup>
-        </div>
+                else {
+                  setUserInfo({ ...userInfo, diet: '' })
+                }
+              }}
+              renderInput={(params) => (
+                <TextField {...params} variant="filled" label="Tipo de Dieta" fullWidth />
+              )}
+            />
+          </div>
 
-        {/* Dietas (Radio Buttons) */}
-        <div className="form2ContentAccount">
-          <RadioGroup className='checkBoxAccount' value={selectedDiet} onChange={handleDietChange}>
-          <label className='labelAccount'>Dieta</label>
-            {diets.map((diet) => (
-              <FormControlLabel
-                key={diet}
-                value={diet}
-                control={<Radio />}
-                label={diet}
-              />
-            ))}
-          </RadioGroup>
-        </div>
-
-        {/* Exclusión de Ingredientes (Autocomplete) */}
-        <div className="form2ContentAccount">
-          <Autocomplete
-            className='textFieldAccount'
-            multiple
-            options={ingredients} // Lista de opciones
-            value={excludedIngredients} // Ingredientes seleccionados
-            onChange={(event, newValue) => {
-              setExcludedIngredients(newValue);
-            }}
-            renderInput={(params) => (
-              <TextField {...params} variant="filled" label="Ingredientes a Excluir" fullWidth />
-            )}
-          />
+          <div className="form2ContentAccount">
+            <Autocomplete
+              className='textFieldAccount'
+              multiple
+              options={ingredients} // Lista de opciones
+              getOptionLabel={(option) => option.name}
+              value={userInfo.excludedIngredients} // Ingredientes seleccionados
+              onChange={(_, newValue) => {
+                setExcludedIngredients(newValue);
+                setUserInfo({ ...userInfo, excludedIngredients: newValue })
+              }}
+              renderInput={(params) => (
+                <TextField {...params} variant="filled" label="Ingredientes a Excluir" fullWidth />
+              )}
+            />
+          </div>
         </div>
       </div>
 
-      <Button
-        variant="contained"
-        className="botonRegisterAccount"
-        onClick={handleSubmit} // Envía ambos formularios
-      >
-        Guardar Todos los Cambios
-      </Button>
+
+      <div className='buttonContainer'>
+        <Button
+          variant="contained"
+          className="botonRegisterAccount"
+          onClick={handleSubmit} // Envía ambos formularios
+        >
+          Guardar Cambios
+        </Button>
+
+        <Button
+          variant="contained"
+          className="botonDeleteAccount"
+          onClick={handleSubmit} // Envía ambos formularios
+        >
+          Borrar Usuario
+        </Button>
+      </div>
     </div>
   )
 }

@@ -3,7 +3,7 @@
   justify-content: center; /* Centra horizontalmente */
   align-items: flex-start; /* Alinea al inicio para evitar que se centren verticalmente */
   flex-direction: row; /* Dos columnas inicialmente */
-  gap: 100px; /* Espacio entre columnas */
+  gap: 80px; /* Espacio entre columnas */
   padding: 1rem; /* Relleno para el contenedor */
   height: auto; /* Altura del viewport */
 }
@@ -13,8 +13,13 @@
   padding: 20px; /* Relleno interno */
   border-radius: 10px; /* Bordes redondeados */
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Sombra para efecto visual */
-  width: 400px; /* Ancho fijo para cada columna */
+  width: 500px; /* Ancho fijo para cada columna */
   text-align: center; /* Centra el texto */
+}
+
+h3{
+ color: #545454; 
+ padding-left: 10px;
 }
 
 .rowAccount {
@@ -30,31 +35,28 @@
   color: #545454;
   border-radius: 4px;
   text-align: left;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
 }
 
-.botonRegisterAccount {
-  background-color: #545454 !important;
-  color: #FFFFFF;
-  margin-top: 1rem !important;
-  margin-bottom: 0.5rem !important;
+.topContainer {
+  justify-content: center; /* Centra horizontalmente */
+  padding: 1rem; /* Relleno para el contenedor */
+  height: auto; /* Altura del viewport */
+  display: flex;
 }
 
 .container2FormAccount {
   display: flex;
   flex-direction: row; /* Tres columnas inicialmente */
   justify-content: space-between; /* Espacio entre columnas */
-  padding: 1rem; /* Relleno */
-  margin-left: 10%;
-  margin-right: 10%;
-  gap: 2rem; /* Espacio entre columnas */
   background-color: #5B8E7D;
-  padding: 20px; /* Relleno */
   border-radius: 10px; /* Bordes redondeados */
+  width: 1160px;
 }
 
 .form2ContentAccount {
   flex: 1; /* Permite que las columnas se ajusten */
-  /*background-color: #5B8E7D; /* Fondo */
   padding: 20px; /* Relleno */
   border-radius: 10px; /* Bordes redondeados */
   text-align: center; /* Centra el texto */
@@ -68,19 +70,32 @@
   padding-bottom: 0.25rem;
 }
 
-.checkBoxAccount {
-  background-color: #FDF8EB;
-  color: #545454;
-  border-radius: 4px;
-  text-align: left;
+.buttonContainer {
+  justify-content: center; /* Centra horizontalmente */
+  padding-top: 0.5rem !important;
   padding: 1rem;
+  height: auto; /* Altura del viewport */
+  display: flex;
 }
 
-@media (max-width: 500px) {
+.botonRegisterAccount {
+  background-color: #545454 !important;
+  color: #FFFFFF;
+  margin: 0.5rem !important;
+}
+.botonDeleteAccount {
+  background-color: #bc4b51 !important;
+  color: #FFFFFF;
+  margin: 0.5rem !important;
+}
+
+
+@media (max-width: 550px) {
   .containerFormAccount {
     display: flex;
     flex-direction: column; /* Cambia a una sola columna */
     align-items: center; /* Centra las columnas */
+    gap: 32px;
   }
 
   .formContentAccount {
@@ -89,5 +104,10 @@
 
   .container2FormAccount {
     flex-direction: column;
+    padding: 20px;
+  }
+
+  .form2ContentAccount {
+    padding: 0px; /* Relleno */
   }
 }
