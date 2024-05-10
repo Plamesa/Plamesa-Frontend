@@ -1,3 +1,18 @@
+.topContainerIntro {
+  justify-content: center; /* Centra horizontalmente */
+  padding: 1rem; /* Relleno para el contenedor */
+  padding-bottom: 0;
+  height: auto; /* Altura del viewport */
+  display: flex;
+}
+
+.containerIntro {
+  display: flex;
+  flex-direction: row; /* Tres columnas inicialmente */
+  justify-content: space-between; /* Espacio entre columnas */
+  width: 1160px;
+}
+
 .containerFormAccount {
   display: flex;
   justify-content: center; /* Centra horizontalmente */
@@ -17,10 +32,7 @@
   text-align: center; /* Centra el texto */
 }
 
-h3{
- color: #545454; 
- padding-left: 10px;
-}
+
 
 .rowAccount {
   display: flex; /* Activa Flexbox */

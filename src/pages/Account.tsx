@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import userService from '../services/UserService.ts';
-//import { TextField, Button } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import {
-  FormControlLabel,
-  FormGroup,
   TextField,
   Button,
   Autocomplete,
@@ -14,7 +11,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import './Account.css'
 import ingredientService from '../services/IngredientService.ts';
-import { ActivityLevel, Gender } from '../utils/enums.ts';
+import { ActivityLevel, Allergen, Diet, Gender } from '../utils/enums.ts';
 
 interface UserInfoInterface {
   username: string;
@@ -26,9 +23,9 @@ interface UserInfoInterface {
   height: number;
   age: number;
   activityLevel: ActivityLevel;
-  allergies: string[];
+  allergies: Allergen[];
   diet: string;
-  excludedIngredients: { id: string; name: string }[];
+  excludedIngredients: { _id: string; name: string }[];
 }
 
 interface IngredientInterface {
@@ -43,49 +40,9 @@ interface IngredientInterface {
   ownerUser: string;
 }
 
-const genders = [
-  { value: 'Masculino', label: 'Masculino' },
-  { value: 'Femenino', label: 'Femenino' },
-];
-
-const activityLevel = [
-  { value: 'Sedentario', label: 'Poco o ningún ejercicio' },
-  { value: 'Ligero', label: 'Ejercicio ligero o deportes 1-3 días por semana' },
-  { value: 'Moderado', label: 'Ejercicio moderado o deportes 3-5 días por semana' },
-  { value: 'Activo', label: 'Ejercicio intenso o deportes 6-7 días por semana' },
-  { value: 'Muy activo', label: 'Muy activo' },
-  { value: undefined, label: 'Ninguna Opción' },
-];
-
-// Listado de alérgenos
-const allergens = [
-  'Cereales',
-  'Crustaceos',
-  'Huevos',
-  'Pescado',
-  'Cacahuetes y Frutos Secos',
-  'Soja',
-  'Leche',
-  'Frutos de Cascara',
-  'Apio',
-  'Mostaza',
-  'Sesamo',
-  'DioxidoAzufre',
-  'Altramuces',
-  'Moluscos',
-];
-
-// Opciones de dietas
-const diets = [
-  'Vegana',
-  'Vegetariana',
-  'Omnívora',
-  'Paleo',
-  ''
-];
 
 // Lista de ingredientes para excluir
-let ingredients: { id: string; name: string }[] = []
+let ingredients: { _id: string; name: string }[] = []
 
 function Account() {
   const [userInfo, setUserInfo] = useState<UserInfoInterface>({
@@ -103,6 +60,8 @@ function Account() {
     excludedIngredients: []
   });
   const token = localStorage.getItem('token');
+  const [errors, setErrors] = useState<{ password?: string; email?: string }>({}); // Estado para mensajes de error
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
@@ -120,7 +79,7 @@ function Account() {
         const ingredientsJson: IngredientInterface[] = response.data;
         if (ingredients.length == 0) {
           for (let i = 0; i < ingredientsJson.length; i++) {
-            ingredients.push({ id: ingredientsJson[i]._id, name: ingredientsJson[i].name})
+            ingredients.push({ _id: ingredientsJson[i]._id, name: ingredientsJson[i].name})
           }
         }
       }).catch((error) => {
@@ -135,212 +94,275 @@ function Account() {
     
   });
 
-  const handleActivityLevelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newActivityLevel = e.target.value;
-    
-    const allowedValues = ['Sedentario', 'Ligero', 'Moderado', 'Activo', 'Muy activo'];
-    
-    if (allowedValues.includes(newActivityLevel)) {
-      setUserInfo({ ...userInfo, activityLevel: (newActivityLevel as ActivityLevel)});
-    } else {
-      console.error("Valor fuera de rango:", newActivityLevel);
+
+  const validateForm = (): boolean => {
+    let valid = true;
+    const newErrors: { password?: string; email?: string } = {};
+
+    // Validación de la contraseña
+    const passwordPattern = /^(?=.*[0-9])(?=.*[A-ZÑ])[a-zA-Z0-9Ññ]{6,}$/;
+    if (userInfo.password != '' && !passwordPattern.test(userInfo.password)) {
+      newErrors.password = 'La contraseña debe tener al menos una mayúscula, un número y tener mínimo 6 caracteres.';
+      valid = false;
     }
+
+    // Validación del correo electrónico
+    const emailPattern = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    if (!emailPattern.test(userInfo.email)) {
+      newErrors.email = 'Correo electrónico no válido.';
+      valid = false;
+    }
+
+    setErrors(newErrors); // Actualiza los errores
+    return valid;
   };
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    
-    /*if (!validateForm()) {
+
+  function changeUserDataFunction() {
+    if (!validateForm()) {
       // Si hay errores, no envíes el formulario
       return;
-    }*/
+    }
 
-    console.log('Formulario enviado:', userInfo);
+    // Variables basicas
+    let userInfoToSend = {};
+    userInfoToSend = {
+      username: userInfo.username,
+      name: userInfo.name,
+      email: userInfo.email,
+      gender: userInfo.gender,
+      age: userInfo.age,
+      weight: userInfo.weight,
+      height: userInfo.height,
+      activityLevel: userInfo.activityLevel,
+      allergies: userInfo.allergies,
+      diet: userInfo.diet
+    };
+
+    // Caso de que se incluya contraseña
+    if (userInfo.password != '') {
+      userInfoToSend = { ...userInfoToSend, password: userInfo.password }
+    }
+
+    // Caso de los ingredientes
+    let newExcludedIngredients = [];
+    for (let i = 0; i < userInfo.excludedIngredients.length; i++) {
+      newExcludedIngredients.push(userInfo.excludedIngredients[i]._id);
+    }
+    userInfoToSend = { ...userInfoToSend, excludedIngredients: newExcludedIngredients }
+
+    // Realizar peticion patch
     try {
-      /*auth
-        .register(formData.username, formData.name, formData.password, formData.email)
-        .then((response) => {
-          console.log(response);
-          if (response.status === 201) {
-            console.log('Se ha creado correctamente');
-            logUser();
-          }
-          else {
-            alert('Ha ocurrido algún problema en la creación de usuario')
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          if (error.response && error.response.data && error.response.data.code) {
-            if (error.response.data.code === 11000) {
-              const fieldWithError = Object.keys(error.response.data.keyPattern)[0];
-              const valueWithError = error.response.data.keyValue[fieldWithError];
-          
-              alert(`El ${fieldWithError}: "${valueWithError}" ya existe.`);
+      if (token) {
+        console.log(userInfoToSend)
+        userService
+          .changeUserInfo(token, userInfoToSend)
+          .then((response) => {
+            console.log(response);
+            if(response.status == 201) {
+              alert('Datos actualizados correctamente');
             }
-          } else {
-            alert('Ocurrió un error inesperado. Por favor, inténtelo de nuevo.');
-          }
-        })*/
+          })
+          .catch((error) => {
+            console.log(error)
+            if (error.response && error.response.data && error.response.data.code) {
+              if (error.response.data.code === 11000) {
+                const fieldWithError = Object.keys(error.response.data.keyPattern)[0];
+                const valueWithError = error.response.data.keyValue[fieldWithError];
+            
+                alert(`El ${fieldWithError}: "${valueWithError}" ya existe.`);
+              }
+            } else {
+              alert('Ocurrió un error inesperado. Por favor, inténtelo de nuevo.');
+            }
+          })
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
+
+  function deleteUserFunction() {
+    var resultado = window.confirm('¿Estas seguro de elimiar el usuario?')
+    if (resultado === true) {
+      try {
+        if (token) {
+          userService
+            .deleteUser(token)
+            .then((response) => {
+              localStorage.removeItem('token'); // Elimina el token del localStorage
+              alert('Usuario eliminado')
+              navigate('/');
+              console.log(response)
+            })
+            .catch((error: Error) => {
+              console.log(error)
+            })
+          }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
   return (
     <div>
-      <div className="topContainer">
-        <div className="container2FormAccount">
-          <h3>Para realizar cualquier cambio pulsar el boton de guardar</h3>
+      <div className="topContainerIntro">
+        <div className="containerIntro">
+          <h3>Recuerda pulsar el boton de guardar cambios</h3>
+          <Button
+            variant="contained"
+            className="botonRegisterAccount"
+            onClick={changeUserDataFunction}
+          >
+            Guardar Cambios
+          </Button>
         </div>
       </div>
 
 
       <div className='containerFormAccount'>
         <div className='formContentAccount'>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              required
-              margin='normal'
-              fullWidth
-              variant="filled"
-              id="username"
-              label="Nombre de Usuario"
-              name="username"
-              value={userInfo.username}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, username: e.target.value })
-              }
-              className='textFieldAccount'
-            />
+          <TextField
+            required
+            margin='normal'
+            fullWidth
+            variant="filled"
+            id="username"
+            label="Nombre de Usuario"
+            name="username"
+            value={userInfo.username}
+            onChange={(e) =>
+              setUserInfo({ ...userInfo, username: e.target.value })
+            }
+            className='textFieldAccount'
+          />
 
-            <TextField
-              required
-              fullWidth
-              margin='normal'
-              variant="filled"
-              id="name"
-              label="Nombre"
-              name="name"
-              value={userInfo.name}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, name: e.target.value })
-              }
-              className='textFieldAccount'
-            />
+          <TextField
+            required
+            fullWidth
+            margin='normal'
+            variant="filled"
+            id="name"
+            label="Nombre"
+            name="name"
+            value={userInfo.name}
+            onChange={(e) =>
+              setUserInfo({ ...userInfo, name: e.target.value })
+            }
+            className='textFieldAccount'
+          />
 
-            <TextField
-              required
-              fullWidth
-              variant="filled"
-              id="password"
-              label="Contraseña"
-              name="password"
-              type="password"
-              value={userInfo.password}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, password: e.target.value })
-              }
-              className='textFieldAccount'
-              //error={Boolean(errors.password)} // Muestra el error
-              //helperText={errors.password} // Mensaje de error
-            />
+          <TextField
+            fullWidth
+            variant="filled"
+            id="password"
+            label="Contraseña"
+            name="password"
+            type="password"
+            value={userInfo.password}
+            onChange={(e) =>
+              setUserInfo({ ...userInfo, password: e.target.value })
+            }
+            className='textFieldAccount'
+            error={Boolean(errors.password)} // Muestra el error
+            helperText={errors.password} // Mensaje de error
+          />
 
-            <TextField
-              required
-              fullWidth
-              variant="filled"
-              id="email"
-              label="Correo"
-              name="email"
-              value={userInfo.email}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, email: e.target.value })
-              }
-              className='textFieldAccount'
-              //error={Boolean(errors.email)} // Muestra el error
-              //helperText={errors.email} // Mensaje de error
-            />
-          </form>
+          <TextField
+            required
+            fullWidth
+            variant="filled"
+            id="email"
+            label="Correo"
+            name="email"
+            value={userInfo.email}
+            onChange={(e) =>
+              setUserInfo({ ...userInfo, email: e.target.value })
+            }
+            className='textFieldAccount'
+            error={Boolean(errors.email)} // Muestra el error
+            helperText={errors.email} // Mensaje de error
+          />
         </div>
 
 
         <div className='formContentAccount'>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              variant="filled"
-              id="outlined-select-currency"
-              select
-              label="Genero"
-              value={userInfo.gender}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, gender: (e.target.value as Gender) })
-              }
-              className='textFieldAccount'
-            >
-              {genders.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+          <TextField
+            fullWidth
+            variant="filled"
+            id="outlined-select-currency"
+            select
+            label="Genero"
+            value={userInfo.gender}
+            onChange={(e) =>
+              setUserInfo({ ...userInfo, gender: (e.target.value as Gender) })
+            }
+            className='textFieldAccount'
+          >
+            {Object.values(Gender).map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </TextField>
 
+          <OutlinedInput
+            fullWidth
+            id="outlined-adornment-age"
+            endAdornment={<InputAdornment position="end">años</InputAdornment>}
+            aria-describedby="outlined-weight-helper-text"
+            inputProps={{
+              'aria-label': 'años',
+            }}
+            value={userInfo.age} /*|| ''*/
+            onChange={(e) =>
+              setUserInfo({ ...userInfo, age: Number(e.target.value)}) /*|| ''*/
+            }
+            className='textFieldAccount'
+          />
+
+          <div className="rowAccount">
             <OutlinedInput
               fullWidth
-              id="outlined-adornment-age"
-              endAdornment={<InputAdornment position="end">años</InputAdornment>}
+              endAdornment={<InputAdornment position="end">kg</InputAdornment>}
               aria-describedby="outlined-weight-helper-text"
-              inputProps={{
-                'aria-label': 'años',
-              }}
-              value={userInfo.age}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, age: Number(e.target.value) })
-              }
+              inputProps={{ 'aria-label': 'peso' }}
+              value={userInfo.weight}
+              onChange={(e) => setUserInfo({ ...userInfo, weight: Number(e.target.value)})}
               className='textFieldAccount'
             />
 
-            <div className="rowAccount"> {/* Contenedor Flex para colocar en la misma fila */}
-              <OutlinedInput
-                fullWidth
-                endAdornment={<InputAdornment position="end">kg</InputAdornment>}
-                aria-describedby="outlined-weight-helper-text"
-                inputProps={{ 'aria-label': 'peso' }}
-                value={userInfo.weight}
-                onChange={(e) => setUserInfo({ ...userInfo, weight: Number(e.target.value) })}
-                className='textFieldAccount'
-              />
-
-              <OutlinedInput
-                fullWidth
-                endAdornment={<InputAdornment position="end">cm</InputAdornment>}
-                aria-describedby="outlined-height-helper-text"
-                inputProps={{ 'aria-label': 'altura' }}
-                value={userInfo.height}
-                onChange={(e) => setUserInfo({ ...userInfo, height: Number(e.target.value) })}
-                className='textFieldAccount'
-              />
-            </div>
-            
-
-            <TextField
+            <OutlinedInput
               fullWidth
-              variant="filled"
-              id="outlined-select-currency"
-              select
-              label="Nivel de actividad"
-              value={userInfo.activityLevel}
-              onChange={handleActivityLevelChange}
-              className="textFieldAccount"
-            >
-              {activityLevel.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          </form>
+              endAdornment={<InputAdornment position="end">cm</InputAdornment>}
+              aria-describedby="outlined-height-helper-text"
+              inputProps={{ 'aria-label': 'altura' }}
+              value={userInfo.height}
+              onChange={(e) => setUserInfo({ ...userInfo, height: Number(e.target.value)})}
+              className='textFieldAccount'
+            />
+          </div>        
+
+          <TextField
+            fullWidth
+            variant="filled"
+            id="outlined-select-currency"
+            select
+            label="Nivel de actividad"
+            value={userInfo.activityLevel}
+            onChange={(e) =>
+              setUserInfo({ ...userInfo, activityLevel: (e.target.value as ActivityLevel) })
+            }
+            className="textFieldAccount"
+          >
+            {Object.values(ActivityLevel).map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </TextField>
         </div>
       </div>
 
@@ -352,7 +374,7 @@ function Account() {
             <Autocomplete
               className='textFieldAccount'
               multiple
-              options={allergens} // Lista de opciones
+              options={Object.values(Allergen)} // Lista de opciones
               value={userInfo.allergies} // Ingredientes seleccionados
               onChange={(_, newValue) => {
                 setUserInfo({ ...userInfo, allergies: newValue })
@@ -366,7 +388,7 @@ function Account() {
           <div className="form2ContentAccount">
             <Autocomplete
               className='textFieldAccount'
-              options={diets} // Lista de opciones
+              options={Object.values(Diet)} // Lista de opciones
               value={userInfo.diet} // Ingredientes seleccionados
               onChange={(_, newValue) => {
                 if(newValue != null) {
@@ -389,8 +411,8 @@ function Account() {
               options={ingredients} // Lista de opciones
               getOptionLabel={(option) => option.name}
               value={userInfo.excludedIngredients} // Ingredientes seleccionados
+              isOptionEqualToValue={(option, value) => option._id === value._id}
               onChange={(_, newValue) => {
-                setExcludedIngredients(newValue);
                 setUserInfo({ ...userInfo, excludedIngredients: newValue })
               }}
               renderInput={(params) => (
@@ -400,13 +422,14 @@ function Account() {
           </div>
         </div>
       </div>
+      
 
 
       <div className='buttonContainer'>
         <Button
           variant="contained"
           className="botonRegisterAccount"
-          onClick={handleSubmit} // Envía ambos formularios
+          onClick={changeUserDataFunction}
         >
           Guardar Cambios
         </Button>
@@ -414,7 +437,7 @@ function Account() {
         <Button
           variant="contained"
           className="botonDeleteAccount"
-          onClick={handleSubmit} // Envía ambos formularios
+          onClick={deleteUserFunction} 
         >
           Borrar Usuario
         </Button>
