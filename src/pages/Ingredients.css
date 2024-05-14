@@ -5,3 +5,40 @@
   gap: 25px;
   margin-Top: 50px;
 }
+
+.home {
+  height: 100vh;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.content {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+}
+
+.cardsContainer {
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Estilos para el buscador */
+.searchBar {
+  margin-right: 20px;
+}
+
+/* Estilos para los filtros */
+.filtersContainer {
+  margin-left: 20px;
+}
