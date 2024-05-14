@@ -12,34 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import './Account.css'
 import ingredientService from '../services/IngredientService.ts';
 import { ActivityLevel, Allergen, Diet, Gender } from '../utils/enums.ts';
-
-interface UserInfoInterface {
-  username: string;
-  name: string;
-  password: string;
-  email: string;
-  gender: Gender;
-  weight: number;
-  height: number;
-  age: number;
-  activityLevel: ActivityLevel;
-  allergies: Allergen[];
-  diet: string;
-  excludedIngredients: { _id: string; name: string }[];
-}
-
-interface IngredientInterface {
-  _id: string;
-  name : string;
-  amount: number;
-  unit: string;
-  estimatedCost: number;
-  foodGroup: string;
-  allergens: string[];
-  nutrients: string[];
-  ownerUser: string;
-}
-
+import { IngredientInterface, UserInfoInterface } from '../utils/interfaces.ts';
 
 // Lista de ingredientes para excluir
 let ingredients: { _id: string; name: string }[] = []

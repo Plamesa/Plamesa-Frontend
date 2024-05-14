@@ -4,6 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom'; // Import Link for navigation
 import auth from '../services/LoginService';
 import logo from '../assets/LOGIN-16.svg';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import FilledInput from '@mui/material/FilledInput';
+import InputLabel from '@mui/material/InputLabel';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import './Login.css'
 
 interface LoginFormData {
@@ -16,6 +23,14 @@ function Login() {
     username: '',
     password: '',
   });
+
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
 
   const navigate = useNavigate();
 
@@ -83,6 +98,31 @@ function Login() {
             className='textField'
           />
 
+
+          <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
+          <FilledInput
+            id="filled-adornment-password"
+            type={showPassword ? 'text' : 'password'}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            required
+            fullWidth
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+            name="password"
+            className='textField'
+          />
           <TextField
             margin="normal"
             required
@@ -91,7 +131,7 @@ function Login() {
             id="password"
             label="Contraseña"
             name="password"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             value={formData.password}
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })

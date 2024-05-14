@@ -8,6 +8,7 @@ import Account from './pages/Account';
 import Home from './pages/Home';
 import Ingredients from './pages/Ingredients';
 import Layout from './components/Layout'; // Usar Layout
+import IngredientDetails from './pages/IngredientDetails';
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "ingredients",
         element: <Ingredients />,
+      },
+      {
+        path: "ingredients/:_id", 
+        element: <IngredientDetails />
       },
     ],
   },

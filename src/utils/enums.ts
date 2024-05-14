@@ -38,3 +38,59 @@ export enum ActivityLevel {
   MuyActivo = "Muy activo", // (ejercicio muy intenso, entrenamiento físico diario o dos veces al día): 1.9
   Vacio = ''
 }
+
+// Definición del enum FoodGroup
+export enum FoodGroup {
+  Lacteos = "Lácteos y derivados",
+  Huevos = "Huevos y derivados",
+  Carnicos = "Cárnicos y derivados",
+  Pescados = "Pescados, moluscos, reptiles, crustáceos y derivados",
+  Grasas = "Grasas y aceites",
+  Cereales = "Cereales y derivados",
+  Legumbres = "Legumbres, semillas, frutos secos y derivados",
+  Verduras = "Verduras, hortalizas y derivados",
+  Frutas = "Frutas y derivados",
+  Azucar = "Azúcar, chocolate y derivados",
+  Bebidas = "Bebidas (no lácteas)",
+  Miscelanea = "Miscelánea",
+  Otro = "Otro",
+}
+
+export enum NutrientsTypes {
+  Energia = "Energía",
+  // Macronutrientes
+  Proteinas = "Proteinas",
+  Carbohidratos = "Carbohidratos",
+  GrasaTotal = "Grasa Total",
+  // Minerales
+  Calcio = "Calcio",
+  Hierro = "Hierro",
+  Potasio = "Potasio",
+  Magnesio = "Magnesio",
+  Sodio = "Sodio",
+  Fosforo = "Fósforo",
+  Yodo = "Yodo",
+  Selenio = "Selenio",
+  Zinc = "Zinc",
+  // Vitaminas
+  VitaminaA = "Vitamina A",
+  //VitaminaB1 = "Vitamina B1",
+  //VitaminaB2 = "Vitamina B2",
+  VitaminaB6 = "Vitamina B6",
+  VitaminaB12 = "Vitamina B12",
+  VitaminaC = "Vitamina C",
+  VitaminaD = "Vitamina D",
+  VitaminaE = "Vitamina E",
+  // Varios
+  Sal = "Sal",
+  Azucar = "Azúcares",
+  GrasaSaturada = "Grasas Saturadas",
+  Fibra = "Fibra",
+  Colesterol = "Colesterol",
+}
+
+export interface Nutrient {
+  name: NutrientsTypes;
+  amount: number;
+  unit: string;
+}

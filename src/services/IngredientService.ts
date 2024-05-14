@@ -7,6 +7,10 @@ const ingredientService = {
   getIngredients() {
     return axios.get(ENDPOINT_PATH)
   },
+
+  getIngredientById(_id: string) {
+    return axios.get(ENDPOINT_PATH + '/' + _id)
+  },
 }
 
 export default ingredientService
