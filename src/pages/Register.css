@@ -21,8 +21,17 @@
 }
 
 .textField {
-  background-color: #FDF8EB;
+  background-color: #FDF8EB !important;
   color: #545454;
+  border-radius: 4px;
+}
+
+.errorContainer {
+  background-color: #FDF8EB;
+  text-align: justify;
+  padding-top: 3px;
+  padding-left: 14px;
+  padding-right: 14px;
   border-radius: 4px;
 }
 

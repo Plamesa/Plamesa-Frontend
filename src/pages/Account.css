@@ -90,6 +90,15 @@
   display: flex;
 }
 
+.errorContainer {
+  background-color: #FDF8EB;
+  text-align: justify;
+  padding-top: 3px;
+  padding-left: 14px;
+  padding-right: 14px;
+  border-radius: 4px;
+}
+
 .botonRegisterAccount {
   background-color: #545454 !important;
   color: #FFFFFF;

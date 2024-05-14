@@ -7,12 +7,18 @@ import {
   TextField,
   Button,
   Autocomplete,
+  FormControl,
+  InputLabel,
+  IconButton,
+  FilledInput,
+  Typography,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import './Account.css'
 import ingredientService from '../services/IngredientService.ts';
 import { ActivityLevel, Allergen, Diet, Gender } from '../utils/enums.ts';
 import { IngredientInterface, UserInfoInterface } from '../utils/interfaces.ts';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 // Lista de ingredientes para excluir
 let ingredients: { _id: string; name: string }[] = []
@@ -34,6 +40,14 @@ function Account() {
   });
   const token = localStorage.getItem('token');
   const [errors, setErrors] = useState<{ password?: string; email?: string }>({}); // Estado para mensajes de error
+
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -227,21 +241,30 @@ function Account() {
             className='textFieldAccount'
           />
 
-          <TextField
-            fullWidth
-            variant="filled"
-            id="password"
-            label="Contraseña"
-            name="password"
-            type="password"
-            value={userInfo.password}
-            onChange={(e) =>
-              setUserInfo({ ...userInfo, password: e.target.value })
-            }
-            className='textFieldAccount'
-            error={Boolean(errors.password)} // Muestra el error
-            helperText={errors.password} // Mensaje de error
-          />
+          <FormControl variant="filled" fullWidth error={Boolean(errors.password)} className='textFieldAccount'>
+            <InputLabel htmlFor="filled-adornment-password">Contraseña</InputLabel>
+            <FilledInput
+              id="filled-adornment-password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              onChange={(e) =>
+                setUserInfo({ ...userInfo, password: e.target.value })
+              }
+            />
+            {errors.password && <Typography variant="caption" color="error" className='errorContainer'>{errors.password}</Typography>}
+          </FormControl>
 
           <TextField
             required

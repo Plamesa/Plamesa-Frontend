@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, FormControl, InputLabel, FilledInput, InputAdornment, IconButton, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import auth from '../services/LoginService';
 import logo from '../assets/LOGIN-16.svg';
 import './Register.css'
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 interface RegisterFormData {
   username: string;
@@ -19,6 +20,14 @@ function Register() {
     password: '',
     email: '',
   });
+
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
 
   const [errors, setErrors] = useState<{ password?: string; email?: string }>({}); // Estado para mensajes de error
   const navigate = useNavigate();
@@ -156,23 +165,31 @@ function Register() {
             className='textField'
           />
 
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            variant="filled"
-            id="password"
-            label="Contraseña"
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-            className='textField'
-            error={Boolean(errors.password)} // Muestra el error
-            helperText={errors.password} // Mensaje de error
-          />
+          <FormControl variant="filled" margin="normal" fullWidth required error={Boolean(errors.password)}>
+            <InputLabel htmlFor="filled-adornment-password">Contraseña</InputLabel>
+            <FilledInput
+              id="filled-adornment-password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              className='textField'
+            />
+            {errors.password && <Typography variant="caption" color="error" className='errorContainer'>{errors.password}</Typography>}
+          </FormControl>
 
           <TextField
             margin="normal"
