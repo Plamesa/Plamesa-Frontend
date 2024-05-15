@@ -1,0 +1,59 @@
+.ingredient-detail-container {
+  padding: 20px;
+
+}
+
+.left-section {
+  padding: 10px;
+}
+
+.right-section {
+  padding: 10px;
+  width: fit-content; /* Ajustar al contenido */
+  margin-left: auto; /* Centrar */
+  margin-right: auto; /* Centrar */
+}
+
+.imageLeftContainerDetails {
+  text-align: center;
+  padding: 10px;
+}
+
+.textLeftContainerDetails {
+  padding: 10px;
+}
+
+.textLeftContainerDetails .MuiTypography-root {
+  margin-bottom: 10px; /* Ajusta este valor según sea necesario */
+}
+
+.textLeftContainerDetails .MuiTypography-root:last-child {
+  margin-bottom: 0; /* Quitar el margen del último elemento */
+}
+
+.foodGroupImageDetails {
+  border-radius: 10%;
+}
+
+.allergenContainer {
+  margin-top: 20px;
+}
+
+.allergenIcon {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.nutrient-section {
+  margin-top: 20px;
+}
+
+.nutrient-category {
+  margin-top: 10px;
+}
+
+.nutrient-item {
+  flex: 1 1 100px;
+  margin: 5px;
+}

@@ -84,8 +84,8 @@ function Ingredients() {
   };
 
   return (
-    <div className="home">
-      <div className="content">
+    <div className="homeIngredient">
+      <div className="contentIngredient">
         <TextField
           type="text"
           placeholder="Buscar por nombre de ingrediente"
@@ -166,7 +166,7 @@ function Ingredients() {
           </FormControl>
         </div>
       </div>
-      
+
       <div className="cardsContainer">
         {filteredIngredients.map((ingredient) => (
           <IngredientCard key={ingredient._id} ingredient={ingredient} />

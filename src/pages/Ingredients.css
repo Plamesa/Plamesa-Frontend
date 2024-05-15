@@ -6,7 +6,7 @@
   margin-Top: 50px;
 }
 
-.home {
+.homeIngredient {
   height: 100vh;
   text-align: center;
   display: flex;
@@ -14,7 +14,7 @@
   align-items: center;
 }
 
-.content {
+.contentIngredient {
   padding: 20px;
   display: flex;
   justify-content: center;

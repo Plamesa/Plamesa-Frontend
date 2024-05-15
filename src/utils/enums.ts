@@ -94,3 +94,47 @@ export interface Nutrient {
   amount: number;
   unit: string;
 }
+
+/**
+ * Función para obtener la unidad según el nombre del nutriente
+ * @param nombre nombre del nutriente
+ * @returns una string con la unidad correspondiente a ese nutriente
+ */
+export function getUnitFromName(name: NutrientsTypes): string {
+  switch (name) {
+    case NutrientsTypes.Energia:
+      return "kcal";
+
+    case NutrientsTypes.Proteinas:
+    case NutrientsTypes.Carbohidratos:
+    case NutrientsTypes.GrasaTotal:
+    case NutrientsTypes.Sal:
+    case NutrientsTypes.Azucar:
+    case NutrientsTypes.GrasaSaturada:
+    case NutrientsTypes.Fibra:
+      return "g";
+
+    case NutrientsTypes.VitaminaA:
+    case NutrientsTypes.VitaminaD:
+    case NutrientsTypes.VitaminaB12:
+    case NutrientsTypes.Yodo:
+    case NutrientsTypes.Selenio:
+      return "ug";
+
+    case NutrientsTypes.VitaminaB6:
+    case NutrientsTypes.VitaminaC:
+    case NutrientsTypes.VitaminaE:
+    case NutrientsTypes.Calcio:
+    case NutrientsTypes.Hierro:
+    case NutrientsTypes.Potasio:
+    case NutrientsTypes.Magnesio:
+    case NutrientsTypes.Sodio:
+    case NutrientsTypes.Fosforo:
+    case NutrientsTypes.Zinc:
+    case NutrientsTypes.Colesterol:
+      return "mg";
+
+    default:
+      return "";
+  }
+}
