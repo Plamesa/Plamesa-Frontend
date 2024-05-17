@@ -11,6 +11,14 @@ const ingredientService = {
   getIngredientById(_id: string) {
     return axios.get(ENDPOINT_PATH + '/' + _id)
   },
+
+  deleteIngredient(_id: string, token: string) {
+    return axios.delete(ENDPOINT_PATH + '/' + _id, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+  },
 }
 
 export default ingredientService

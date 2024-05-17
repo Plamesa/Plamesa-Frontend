@@ -9,6 +9,7 @@
 
 .right-section {
   padding: 10px;
+  padding-left: 30px;
   width: fit-content; /* Ajustar al contenido */
   margin-left: auto; /* Centrar */
   margin-right: auto; /* Centrar */
@@ -21,6 +22,7 @@
 
 .textLeftContainerDetails {
   padding: 10px;
+  padding-left: 20px;
 }
 
 .textLeftContainerDetails .MuiTypography-root {
@@ -56,4 +58,23 @@
 .nutrient-item {
   flex: 1 1 100px;
   margin: 5px;
+}
+
+.buttonContainerIngredient {
+  justify-content: center; /* Centra horizontalmente */
+  padding-top: 1rem !important;
+  padding: 1rem;
+  height: auto; /* Altura del viewport */
+  display: flex;
+}
+
+.botonChangeIngredient {
+  background-color: #545454 !important;
+  color: #FFFFFF;
+  margin: 0.5rem !important;
+}
+.botonDeleteIngredient {
+  background-color: #bc4b51 !important;
+  color: #FFFFFF;
+  margin: 0.5rem !important;
 }

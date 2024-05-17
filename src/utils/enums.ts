@@ -56,6 +56,12 @@ export enum FoodGroup {
   Otro = "Otro",
 }
 
+// Definición del enum Units
+export enum Units {
+  gr = "Gramos",
+  l = "Litros",
+}
+
 export enum NutrientsTypes {
   Energia = "Energía",
   // Macronutrientes

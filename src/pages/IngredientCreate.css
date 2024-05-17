@@ -1,0 +1,10 @@
+.formContentIngredient {
+  background-color: #5B8E7D; /* Fondo para el contenido interno */
+  padding: 20px; /* Relleno interno */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Sombra para efecto visual */
+  width: 500px; /* Ancho fijo para cada columna */
+  height: 300px;
+  text-align: center; /* Centra el texto */
+  //overflow-y: auto;
+}
