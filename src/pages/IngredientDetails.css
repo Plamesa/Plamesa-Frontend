@@ -1,13 +1,12 @@
-.ingredient-detail-container {
+.ingredientDetailContainer {
   padding: 20px;
-
 }
 
-.left-section {
+.leftSection {
   padding: 10px;
 }
 
-.right-section {
+.rightSection {
   padding: 10px;
   padding-left: 30px;
   width: fit-content; /* Ajustar al contenido */
@@ -20,21 +19,17 @@
   padding: 10px;
 }
 
+.foodGroupImageDetails {
+  border-radius: 10%;
+}
+
 .textLeftContainerDetails {
   padding: 10px;
   padding-left: 20px;
 }
 
 .textLeftContainerDetails .MuiTypography-root {
-  margin-bottom: 10px; /* Ajusta este valor según sea necesario */
-}
-
-.textLeftContainerDetails .MuiTypography-root:last-child {
-  margin-bottom: 0; /* Quitar el margen del último elemento */
-}
-
-.foodGroupImageDetails {
-  border-radius: 10%;
+  margin-bottom: 10px;
 }
 
 .allergenContainer {
@@ -47,17 +42,8 @@
   margin-right: 10px;
 }
 
-.nutrient-section {
-  margin-top: 20px;
-}
-
-.nutrient-category {
-  margin-top: 10px;
-}
-
-.nutrient-item {
-  flex: 1 1 100px;
-  margin: 5px;
+.nutrientTitle {
+  font-size: large;
 }
 
 .buttonContainerIngredient {
@@ -73,6 +59,7 @@
   color: #FFFFFF;
   margin: 0.5rem !important;
 }
+
 .botonDeleteIngredient {
   background-color: #bc4b51 !important;
   color: #FFFFFF;

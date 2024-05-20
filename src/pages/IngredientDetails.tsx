@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ingredientService from '../services/IngredientService';
-import { ActivityLevel, Allergen, FoodGroup, Gender, Nutrient, NutrientsTypes, getUnitFromName } from '../utils/enums';
-import { IngredientInterface, UserInfoInterface } from '../utils/interfaces';
-import { Box, Button, Card, CardContent, CardMedia, Chip, Grid, TextField, Tooltip, Typography } from '@mui/material';
+import { ActivityLevel, Allergen, FoodGroup, Gender, NutrientsTypes, getUnitFromName } from '../utils/enums';
+import { GETIngredientInterface, UserInfoInterface } from '../utils/interfaces';
+import { Box, Button, Grid, TextField, Tooltip, Typography } from '@mui/material';
 import LacteoImg from '../assets/foodGroups/lacteos.svg';
 import HuevosImg from '../assets/foodGroups/huevos.svg';
 import CarnicosImg from '../assets/foodGroups/carnicos.svg';
@@ -69,17 +69,22 @@ const allergensImages: { [key in Allergen]: string } = {
   [Allergen.Moluscos]: MoluscosAllergenImg,
 };
 
+
 function capitalizeFirstLetter(string: string) {
   return string.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 function IngredientDetails() {
+  const { _id } = useParams<{ _id: string }>(); // OObtener id de parametros de la URL
+  const token = localStorage.getItem('token');
+  const navigate = useNavigate();
+
   const [foodGroupImage, setFoodGroupImage] = useState<string>();
-  const { _id } = useParams<{ _id: string }>(); // Obtener el ID del ingrediente de los parámetros de la URL
   const [amount, setAmount] = useState<number>(0);
-  const [isOwner, setIsOwner] = useState<boolean>(true);
+  const [isOwner, setIsOwner] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [ingredient, setIngredient] = useState<IngredientInterface>({
+
+  const [ingredient, setIngredient] = useState<GETIngredientInterface>({
     _id: '',
     name: '',
     amount: 0,
@@ -88,7 +93,7 @@ function IngredientDetails() {
     foodGroup: FoodGroup.Otro,
     allergens: [],
     nutrients: [],
-    ownerUser: ''
+    ownerUser: { _id: '', username: '' }
   });
   const [userInfo, setUserInfo] = useState<UserInfoInterface>({
     username: '',
@@ -104,40 +109,42 @@ function IngredientDetails() {
     diet: '',
     excludedIngredients: []
   });
-  const token = localStorage.getItem('token');
-  const navigate = useNavigate();
 
   const getNutrientAmount = (nutrientName: NutrientsTypes): number => {
     const nutrient = ingredient.nutrients.find(n => n.name === nutrientName);
     return nutrient ? nutrient.amount : 0;
   };
 
-  /*useEffect(() => {
-    if (token) {
-      userService.getUserInfo(token).then((response) => {
-        setUserInfo(response.data); // Almacena la información del usuario
-      }).catch((error) => {
-        console.error('Error al obtener la información del usuario:', error);
-      });
-    }
-  }, [token]);*/
-
   useEffect(() => {
-    const fetchIngredientDetails = async () => {
+    const fetchData = async () => {
       try {
-        if (_id && userInfo) {
-          const response = await ingredientService.getIngredientById(_id);
-          setIngredient(response.data);
-          setAmount(response.data.amount);
-          setFoodGroupImage(foodGroupImages[response.data.foodGroup as FoodGroup]);
+        // Obtener el ingrediente
+        if (_id) {
+          const ingredientResponse = await ingredientService.getIngredientById(_id);
+          setIngredient(ingredientResponse.data);
+          setAmount(ingredientResponse.data.amount);
+          setFoodGroupImage(foodGroupImages[ingredientResponse.data.foodGroup as FoodGroup]);
+
+          // Obtener la información del usuario si hay un token
+          if (token) {
+            const userResponse = await userService.getUserInfo(token);
+            setUserInfo(userResponse.data);
+
+            if (userResponse.data.role === 'Administrador') {
+              setIsAdmin(true);
+            }
+            if (userResponse.data.username === ingredientResponse.data.ownerUser.username) {
+              setIsOwner(true);
+            }
+          }
         }
       } catch (error) {
-        console.error('Error al obtener los detalles del ingrediente: ', error);
+        console.error('Error al obtener los datos:', error);
       }
     };
 
-    fetchIngredientDetails();
-  }, []);
+    fetchData();
+  }, [token, _id]);
 
 
   function deleteIngredientFunction() {
@@ -162,47 +169,56 @@ function IngredientDetails() {
     }
   }
 
+
+
+
   return (
-    <Grid container className="ingredient-detail-container">
-      <Grid item xs={4} md={3} className="left-section">
+    <Grid container className="ingredientDetailContainer">
+      <Grid item xs={4} md={3} className="leftSection">
         <div className='imageLeftContainerDetails'>
           <img src={foodGroupImage} alt={ingredient.name} className='foodGroupImageDetails'></img>
         </div>
           
         <div className='textLeftContainerDetails'>
           <Typography variant="body1" color="textSecondary" component="p">
-            <strong>Coste:</strong> <br></br> {ingredient.estimatedCost}€
+            <strong>Coste:</strong> <br></br> {ingredient.estimatedCost * amount / ingredient.amount}€
           </Typography>
           <Typography variant="body1" color="textSecondary" component="p">
             <strong>Grupo de alimentos:</strong> <br></br> {ingredient.foodGroup}
           </Typography>
           <Typography variant="body1" color="textSecondary" component="p">
-            <strong>Usuario propietario:</strong> <br></br> {ingredient.ownerUser.username}
+            <strong>Usuario propietario:</strong> <br></br> {capitalizeFirstLetter(ingredient.ownerUser.username)}
           </Typography> 
         </div>
       </Grid>
 
-      <Grid item xs={12} md={9} className="right-section">
+
+
+      <Grid item xs={12} md={9} className="rightSection">
         <Typography variant="h2" component="h1">
           {capitalizeFirstLetter(ingredient.name)}
         </Typography>
 
-        <Typography variant="body1" component="p" sx={{mb:5}}>
-          * Valores correspondientes para 
+        <Box display="flex" alignItems="center" sx={{ mb: 5 }}>
+          <Typography variant="body1" component="p">
+            * Valores correspondientes para
+          </Typography>
           <TextField
-            //type="number"
             size="small"
             variant="standard"
             value={amount}
             onChange={(e) => setAmount(Number(e.target.value))}
             inputProps={{
-              style: { width: `${amount.toString().length + 1}ch` }
+              style: { width: `${amount.toString().length + 1}ch`, textAlign: 'center' }
             }}
-            style={{ marginLeft: '10px'}}
           />
-          {ingredient.unit}
-        </Typography>
-        {/* Puedes agregar más elementos aquí según sea necesario */}
+          <Typography variant="body1" component="p">
+            {ingredient.unit}
+          </Typography>
+        </Box>
+        
+
+
         {/* Sección de alérgenos */}
         <Box sx={{ mt: 4 }}>
           <Typography variant="h5" component="h2">
@@ -211,8 +227,7 @@ function IngredientDetails() {
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
             {ingredient.allergens.length > 0 ? (
               ingredient.allergens.map((allergen) => (
-                //<Chip className='allergenIcon' key={allergen} label={allergen} color="primary" />
-                <Tooltip title={allergen} arrow>
+                <Tooltip key={allergen} title={allergen} arrow>
                   <img src={(allergensImages[allergen as Allergen])} alt={allergen} className='allergenIcon'></img>
                 </Tooltip>
                 
@@ -241,7 +256,7 @@ function IngredientDetails() {
             {/* Macronutrientes */}
             <Box>
               <Typography variant="subtitle1" component="h3">
-                <strong>Macronutrientes</strong>
+                <strong className='nutrientTitle'>Macronutrientes</strong>
               </Typography>
               {[
                 NutrientsTypes.Energia,
@@ -254,7 +269,7 @@ function IngredientDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient)} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient)  * amount / ingredient.amount} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -262,7 +277,7 @@ function IngredientDetails() {
             {/* Minerales */}
             <Box>
               <Typography variant="subtitle1" component="h3">
-                Minerales
+                <strong className='nutrientTitle'>Minerales</strong>
               </Typography>
               {[
                 NutrientsTypes.Calcio,
@@ -277,7 +292,7 @@ function IngredientDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient)} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * amount / ingredient.amount} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -285,7 +300,7 @@ function IngredientDetails() {
             {/* Vitaminas */}
             <Box>
               <Typography variant="subtitle1" component="h3">
-                Vitaminas
+                <strong className='nutrientTitle'>Vitaminas</strong>
               </Typography>
               {[
                 NutrientsTypes.VitaminaA,
@@ -297,7 +312,7 @@ function IngredientDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient)} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * amount / ingredient.amount} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -305,7 +320,7 @@ function IngredientDetails() {
             {/* Varios */}
             <Box>
               <Typography variant="subtitle1" component="h3">
-                Otros
+                <strong className='nutrientTitle'>Otros</strong>
               </Typography>
               {[
                 NutrientsTypes.Fibra,
@@ -313,13 +328,14 @@ function IngredientDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient)} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * amount / ingredient.amount} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
             </Box>
           </Box>
         </Box>
+
 
       {(isOwner || isAdmin) && (
         <div className='buttonContainerIngredient'>
