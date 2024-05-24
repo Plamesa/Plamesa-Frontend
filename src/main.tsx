@@ -11,6 +11,8 @@ import Layout from './components/Layout'; // Usar Layout
 import IngredientDetails from './pages/IngredientDetails';
 import IngredientCreate from './pages/IngredientCreate';
 import IngredientModify from './pages/IngredientModify';
+import Recipes from './pages/Recipes';
+import RecipeDetails from './pages/RecipeDetails';
 
 const router = createBrowserRouter([
   {
@@ -48,6 +50,14 @@ const router = createBrowserRouter([
       {
         path: "ingredients/modify/:_id", 
         element: <IngredientModify />
+      },
+      {
+        path: "recipes",
+        element: <Recipes />,
+      },
+      {
+        path: "recipes/:_id", 
+        element: <RecipeDetails />
       },
     ],
   },

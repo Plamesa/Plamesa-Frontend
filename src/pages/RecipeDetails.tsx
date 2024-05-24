@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ingredientService from '../services/IngredientService';
-import { ActivityLevel, Allergen, FoodGroup, Gender, NutrientsTypes, getUnitFromName } from '../utils/enums';
-import { GETIngredientInterface, UserInfoInterface } from '../utils/interfaces';
+import { ActivityLevel, Allergen, FoodGroup, FoodType, Gender, NutrientsTypes, getUnitFromName } from '../utils/enums';
+import { GETIngredientInterface, GETRecipeInterface, UserInfoInterface } from '../utils/interfaces';
 import { Box, Button, Grid, TextField, Tooltip, Typography } from '@mui/material';
-import LacteoImg from '../assets/foodGroups/lacteos.svg';
-import HuevosImg from '../assets/foodGroups/huevos.svg';
-import CarnicosImg from '../assets/foodGroups/carnicos.svg';
-import PescadosImg from '../assets/foodGroups/pescados.svg';
-import GrasasImg from '../assets/foodGroups/grasas.svg';
-import CerealesImg from '../assets/foodGroups/cereales.svg';
-import LegumbresImg from '../assets/foodGroups/legumbres.svg';
-import VerdurasImg from '../assets/foodGroups/verduras.svg';
-import FrutasImg from '../assets/foodGroups/frutas.svg';
-import AzucarImg from '../assets/foodGroups/azucares.svg';
-import BebidasImg from '../assets/foodGroups/bebidas.svg';
-import MiscelaneaImg from '../assets/foodGroups/otros.svg';
-import OtroImg from '../assets/foodGroups/otros.svg';
+import EntranteImg from '../assets/foodType/entrante.svg';
+import PrincipalImg from '../assets/foodType/principal.svg';
+import PostreImg from '../assets/foodType/postre.svg';
 
 import CerealesAllergenImg from '../assets/allergens/cereales.svg';
 import CrustaceosAllergenImg from '../assets/allergens/crustaceos.svg';
@@ -32,24 +22,15 @@ import SesamoAllergenImg from '../assets/allergens/sesamo.svg';
 import DioxidoAzufreAllergenImg from '../assets/allergens/dioxidoAzufre.svg';
 import AltramucesAllergenImg from '../assets/allergens/altramuces.svg';
 import MoluscosAllergenImg from '../assets/allergens/moluscos.svg';
-
-import './IngredientDetails.css'
 import userService from '../services/UserService';
+import './RecipeDetails.css'
+import recipeService from '../services/RecipeService';
+import { Favorite, FavoriteBorder } from '@mui/icons-material';
 
-const foodGroupImages: { [key in FoodGroup]: string } = {
-  [FoodGroup.Lacteos]: LacteoImg,
-  [FoodGroup.Huevos]: HuevosImg,
-  [FoodGroup.Carnicos]: CarnicosImg,
-  [FoodGroup.Pescados]: PescadosImg,
-  [FoodGroup.Grasas]: GrasasImg,
-  [FoodGroup.Cereales]: CerealesImg,
-  [FoodGroup.Legumbres]: LegumbresImg,
-  [FoodGroup.Verduras]: VerdurasImg,
-  [FoodGroup.Frutas]: FrutasImg,
-  [FoodGroup.Azucar]: AzucarImg,
-  [FoodGroup.Bebidas]: BebidasImg,
-  [FoodGroup.Miscelanea]: MiscelaneaImg,
-  [FoodGroup.Otro]: OtroImg,
+const foodTypeImages: { [key in FoodType]: string } = {
+  [FoodType.Entrante]: EntranteImg,
+  [FoodType.PlatoPrincipal]: PrincipalImg,
+  [FoodType.Postre]: PostreImg
 };
 
 const allergensImages: { [key in Allergen]: string } = {
@@ -74,68 +55,61 @@ function capitalizeFirstLetter(string: string) {
   return string.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-function IngredientDetails() {
-  const { _id } = useParams<{ _id: string }>(); // OObtener id de parametros de la URL
+function RecipeDetails() {
+  const { _id } = useParams<{ _id: string }>(); // Obtener id de parametros de la URL
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
-  const [foodGroupImage, setFoodGroupImage] = useState<string>();
-  const [amount, setAmount] = useState<number>(0);
+  const [foodTypeImage, setFoodTypeImage] = useState<string>();
+  const [services, setServices] = useState<number>(0);
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
-  const [ingredient, setIngredient] = useState<GETIngredientInterface>({
+  const [recipe, setRecipe] = useState<GETRecipeInterface>({
     _id: '',
     name: '',
-    amount: 0,
-    unit: '',
+    numberService: 0,
+    preparationTime: 0,
+    foodType: FoodType.Entrante,
+    instructions: [],
+    comments: '',
+    cookware: [],
+    ingredients: [],
     estimatedCost: 0,
-    foodGroup: FoodGroup.Otro,
     allergens: [],
     nutrients: [],
     ownerUser: { _id: '', username: '' }
-  });
-  const [userInfo, setUserInfo] = useState<UserInfoInterface>({
-    username: '',
-    name: '',
-    password: '',
-    email: '',
-    gender: Gender.Vacio,
-    weight: 0,
-    height: 0,
-    age: 0,
-    activityLevel: ActivityLevel.Vacio,
-    allergies: [],
-    diet: '',
-    excludedIngredients: []
-  });
+  })
 
   const getNutrientAmount = (nutrientName: NutrientsTypes): number => {
-    const nutrient = ingredient.nutrients.find(n => n.name === nutrientName);
+    const nutrient = recipe.nutrients.find(n => n.name === nutrientName);
     return nutrient ? nutrient.amount : 0;
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Obtener el ingrediente
+        // Obtener la receta
         if (_id) {
-          const ingredientResponse = await ingredientService.getIngredientById(_id);
-          setIngredient(ingredientResponse.data);
-          setAmount(ingredientResponse.data.amount);
-          setFoodGroupImage(foodGroupImages[ingredientResponse.data.foodGroup as FoodGroup]);
+          const recipeResponse = await recipeService.getRecipeById(_id);
+          setRecipe(recipeResponse.data);
+          setServices(recipeResponse.data.numberService);
+          setFoodTypeImage(foodTypeImages[recipeResponse.data.foodType as FoodType]);
 
           // Obtener la información del usuario si hay un token
           if (token) {
             const userResponse = await userService.getUserInfo(token);
-            setUserInfo(userResponse.data);
 
             if (userResponse.data.role === 'Administrador') {
               setIsAdmin(true);
             }
-            if (userResponse.data.username === ingredientResponse.data.ownerUser.username) {
+            if (userResponse.data.username === recipeResponse.data.ownerUser.username) {
               setIsOwner(true);
             }
+
+            const userInfoResponse = await userService.getUserInfo(token);
+            setIsFavorite(userInfoResponse.data.favoriteRecipes.some((recipe: {_id: string, name: string}) => recipe._id === _id));
           }
         }
       } catch (error) {
@@ -146,21 +120,42 @@ function IngredientDetails() {
     fetchData();
   }, [token, _id]);
 
+  const handleFavoriteClick = async () => {
+    try {
+      if (token && _id) {
+        if (isFavorite) {
+          await userService.removeFavoriteRecipe(token, _id);
+        } else {
+          await userService.addFavoriteRecipe(token, _id);
+        }
+        setIsFavorite(!isFavorite);
+      }
+    } catch (error) {
+      console.error('Error al actualizar favorito:', error);
+    }
+  };
 
-  function deleteIngredientFunction() {
-    var resultado = window.confirm('¿Estas seguro de elimiar el ingrediente?')
+  function deleteRecipeFunction() {
+    var resultado = window.confirm('¿Estas seguro de elimiar la receta?')
     if (resultado === true) {
       try {
         if (token && _id) {
-          ingredientService
-            .deleteIngredient(_id, token)
+          recipeService
+            .deleteRecipe(_id, token)
             .then((response) => {
-              alert('Ingrediente eliminado')
-              navigate('/ingredients');
+              alert('Receta eliminada')
+              navigate('/recipes');
               console.log(response)
             })
-            .catch((error: Error) => {
+            .catch((error) => {
               console.log(error)
+              if (error.response && error.response.data && error.response.status) {
+                if (error.response.status === 400) {
+                  alert(`${error.response.data.error}`);
+                }
+              } else {
+                alert('Ocurrió un error inesperado. Por favor, inténtelo de nuevo.');
+              }
             })
           }
       } catch (error) {
@@ -176,18 +171,21 @@ function IngredientDetails() {
     <Grid container className="ingredientDetailContainer">
       <Grid item xs={4} md={3} className="leftSection">
         <div className='imageLeftContainerDetails'>
-          <img src={foodGroupImage} alt={ingredient.name} className='foodGroupImageDetails'></img>
+          <img src={foodTypeImage} alt={recipe.name} className='foodGroupImageDetails'></img>
         </div>
           
         <div className='textLeftContainerDetails'>
           <Typography variant="body1" color="textSecondary" component="p">
-            <strong>Grupo de alimentos:</strong> <br></br> {ingredient.foodGroup}
+            <strong>Tipo de comida:</strong> <br></br> {recipe.foodType}
           </Typography>
           <Typography variant="body1" color="textSecondary" component="p">
-            <strong>Coste:</strong> <br></br> {ingredient.estimatedCost * amount / ingredient.amount}€
+            <strong>Tiempo de preparación:</strong> <br></br> {recipe.preparationTime} min
           </Typography>
           <Typography variant="body1" color="textSecondary" component="p">
-            <strong>Usuario propietario:</strong> <br></br> {capitalizeFirstLetter(ingredient.ownerUser.username)}
+            <strong>Coste:</strong> <br></br> {recipe.estimatedCost * services / recipe.numberService}€
+          </Typography>
+          <Typography variant="body1" color="textSecondary" component="p">
+            <strong>Usuario propietario:</strong> <br></br> {capitalizeFirstLetter(recipe.ownerUser.username)}
           </Typography> 
         </div>
       </Grid>
@@ -195,9 +193,16 @@ function IngredientDetails() {
 
 
       <Grid item xs={12} md={9} className="rightSection">
-        <Typography variant="h2" component="h1">
-          {capitalizeFirstLetter(ingredient.name)}
-        </Typography>
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Typography variant="h2" component="h1">
+            {capitalizeFirstLetter(recipe.name)}
+          </Typography>
+          {token && (
+            <Box onClick={handleFavoriteClick} sx={{ cursor: 'pointer', pl: 1}}>
+              {isFavorite ? <Favorite sx={{ color: '#BC4B51', fontSize: 50 }} /> : <FavoriteBorder sx={{ fontSize: 50 }}/>}
+            </Box>
+          )}
+        </Box>
 
         <Box display="flex" alignItems="center" sx={{ mb: 5 }}>
           <Typography variant="body1" component="p">
@@ -206,14 +211,14 @@ function IngredientDetails() {
           <TextField
             size="small"
             variant="standard"
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
+            value={services}
+            onChange={(e) => setServices(Number(e.target.value))}
             inputProps={{
-              style: { width: `${amount.toString().length + 1}ch`, textAlign: 'center' }
+              style: { width: `${services.toString().length + 1}ch`, textAlign: 'center' }
             }}
           />
           <Typography variant="body1" component="p">
-            {ingredient.unit}
+            personas
           </Typography>
         </Box>
         
@@ -225,8 +230,8 @@ function IngredientDetails() {
             Alérgenos
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
-            {ingredient.allergens.length > 0 ? (
-              ingredient.allergens.map((allergen) => (
+            {recipe.allergens.length > 0 ? (
+              recipe.allergens.map((allergen) => (
                 <Tooltip key={allergen} title={allergen} arrow>
                   <img src={(allergensImages[allergen as Allergen])} alt={allergen} className='allergenIcon'></img>
                 </Tooltip>
@@ -239,6 +244,90 @@ function IngredientDetails() {
             )}
           </Box>
         </Box>
+
+
+
+        {/* Sección de ingredientes y utensilios */}
+        <Box sx={{ mt: 4 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Typography variant="h5" component="h2">
+                Ingredientes
+              </Typography>
+              <ul>
+                {recipe.ingredients.map((ingredient, index) => (
+                  <li key={index}>
+                    <Typography variant="body1" component="p">
+                      <strong>{capitalizeFirstLetter(ingredient.ingredientID.name)}:</strong> {ingredient.amount * services / recipe.numberService}
+                    </Typography>
+                  </li>
+                ))}
+              </ul>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Typography variant="h5" component="h2">
+                Utensilios de Cocina
+              </Typography>
+              <ul>
+                {recipe.cookware.length > 0 ? (
+                  recipe.cookware.map((utensil, index) => (
+                    <li key={index}>
+                      <Typography variant="body1" component="p">
+                        {utensil}
+                      </Typography>
+                    </li>
+                  ))
+                ) : (
+                  <Typography variant="body1" component="p">
+                    No se han especificado utensilios.
+                  </Typography>
+                )}
+              </ul>
+            </Grid>
+          </Grid>
+        </Box>
+
+        {/* Sección de instrucciones */}
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h5" component="h2">
+            Instrucciones
+          </Typography>
+          <ol>
+            {recipe.instructions.length > 0 ? (
+              recipe.instructions.map((instruction, index) => (
+                <li key={index}>
+                  <Typography variant="body1" component="p">
+                    {instruction}
+                  </Typography>
+                </li>
+              ))
+            ) : (
+              <Typography variant="body1" component="p">
+                No se han especificado instrucciones.
+              </Typography>
+            )}
+          </ol>
+        </Box>
+
+        {/* Sección de comentarios */}
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h5" component="h2">
+            Comentarios
+          </Typography>
+          {recipe.comments ? (
+            <Typography variant="body1" component="p" sx={{ ml: 2 }}>
+              {recipe.comments}
+            </Typography>
+          ) : (
+            <Typography variant="body1" component="p" sx={{ ml: 2 }}>
+              No se han especificado comentarios.
+            </Typography>
+          )}
+        </Box>
+
+
+
 
 
         {/* Sección de nutrientes */}
@@ -269,7 +358,7 @@ function IngredientDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient)  * amount / ingredient.amount} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient)  * services / recipe.numberService} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -292,7 +381,7 @@ function IngredientDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * amount / ingredient.amount} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * services / recipe.numberService} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -312,7 +401,7 @@ function IngredientDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * amount / ingredient.amount} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * services / recipe.numberService} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -328,7 +417,7 @@ function IngredientDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * amount / ingredient.amount} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * services / recipe.numberService} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -342,17 +431,17 @@ function IngredientDetails() {
           <Button
             variant="contained"
             className="botonChangeIngredient"
-            onClick={() => navigate(`/ingredients/modify/${ingredient._id}`)}
+            onClick={() => navigate(`/ingredients/modify/${recipe._id}`)}
           >
-            Modificar Ingrediente
+            Modificar Receta
           </Button>
 
           <Button
             variant="contained"
             className="botonDeleteIngredient"
-            onClick={deleteIngredientFunction} 
+            onClick={deleteRecipeFunction} 
           >
-            Borrar Ingrediente
+            Borrar Receta
           </Button>
         </div>
       )}
@@ -361,4 +450,4 @@ function IngredientDetails() {
   );
 }
 
-export default IngredientDetails;
+export default RecipeDetails;

@@ -1,4 +1,4 @@
-import { ActivityLevel, Allergen, FoodGroup, Gender, Nutrient } from "./enums";
+import { ActivityLevel, Allergen, FoodGroup, FoodType, Gender, IngredientRecipe, Nutrient } from "./enums";
 
 export interface UserInfoInterface {
   username: string;
@@ -49,4 +49,36 @@ export interface CreateIngredientInterface {
   allergens: string[];
   nutrients: Nutrient[];
   ownerUser: string;
+}
+
+export interface RecipeInterface {
+  _id: string;
+  name: string;
+  numberService: number;
+  preparationTime: number;
+  foodType: FoodType;
+  instructions: string[];
+  comments: string;
+  cookware: string[];
+  ingredients: IngredientRecipe[];
+  estimatedCost: number;
+  allergens: string[];
+  nutrients: Nutrient[];
+  ownerUser: string;
+}
+
+export interface GETRecipeInterface {
+  _id: string;
+  name: string;
+  numberService: number;
+  preparationTime: number;
+  foodType: FoodType;
+  instructions: string[];
+  comments: string;
+  cookware: string[];
+  ingredients: {amount: number, ingredientID: {name: string, _id: string}}[];
+  estimatedCost: number;
+  allergens: string[];
+  nutrients: Nutrient[];
+  ownerUser: { _id: string, username: string };
 }

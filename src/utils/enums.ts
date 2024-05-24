@@ -144,3 +144,15 @@ export function getUnitFromName(name: NutrientsTypes): string {
       return "";
   }
 }
+
+// Definición del enum TipoComida
+export enum FoodType {
+  Entrante = "Entrante",
+  PlatoPrincipal = "Plato Principal",
+  Postre = "Postre",
+}
+
+export interface IngredientRecipe {
+  ingredientID: string;
+  amount: number;
+}
