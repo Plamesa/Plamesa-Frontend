@@ -1,11 +1,3 @@
-.cardsContainer {
-  display: flex; 
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 25px;
-  margin-Top: 50px;
-}
-
 .homeIngredient {
   height: 100vh;
   text-align: center;
@@ -17,28 +9,82 @@
 .contentIngredient {
   padding: 20px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  flex-direction: row;
+  width: 85%;
+}
+
+.searchBar {
+  margin-right: 10px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.filtersContainer {
+  display: flex;
+  align-items: center;
+  background-color: #F4E285;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.filtersMenu .MuiMenu-list {
+  min-width: 300px;
   align-items: center;
 }
 
-.filters {
-  display: flex;
-  align-items: center;
+.filtersIcon {
+  color: #545454;
+}
+
+.filtersSelect {
+  margin-left: 10px;
+}
+
+.filtersSlider {
+  margin-left: 10px;
+  width: 100px;
+}
+
+.botonCreateIngredients {
+  background-color: #BC4B51 !important;
+  color: white;
+  border-radius: 50% !important;
+  width: 56px !important;
+  height: 56px !important;
+  font-size: 2rem !important;
+  min-width: none !important;
+}
+
+.cleanFiltersButton {
+  background-color: #5B8E7D !important;
+}
+
+.MuiButton-root {
+  min-width: 56px !important; /* Cambia este valor según tus necesidades */
+}
+
+.h3Ingredients {
+  display: inline;
+  padding-right: 1rem;
 }
 
 .cardsContainer {
-  padding: 20px;
-  display: flex;
-  flex-wrap: wrap;
+  display: flex; 
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+  padding-top: 10px !important;
+  padding: 20px;
 }
 
-/* Estilos para el buscador */
-.searchBar {
-  margin-right: 20px;
-}
-
-/* Estilos para los filtros */
-.filtersContainer {
-  margin-left: 20px;
+@media (max-width: 550px) {
+  .contentIngredient {
+    display: flex;
+    flex-direction: column; /* Cambia a una sola columna */
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+  }
 }

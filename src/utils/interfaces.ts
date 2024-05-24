@@ -26,3 +26,27 @@ export interface IngredientInterface {
   nutrients: Nutrient[];
   ownerUser: string;
 }
+
+export interface GETIngredientInterface {
+  _id: string;
+  name: string;
+  amount: number;
+  unit: string;
+  estimatedCost: number;
+  foodGroup: FoodGroup;
+  allergens: string[];
+  nutrients: Nutrient[];
+  ownerUser: { _id: string, username: string };
+}
+
+export interface CreateIngredientInterface {
+  _id: string;
+  name: string;
+  amount: number;
+  unit: string;
+  estimatedCost: string;
+  foodGroup: FoodGroup;
+  allergens: string[];
+  nutrients: Nutrient[];
+  ownerUser: string;
+}

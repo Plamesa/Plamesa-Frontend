@@ -58,8 +58,8 @@ export enum FoodGroup {
 
 // Definición del enum Units
 export enum Units {
-  gr = "Gramos",
-  l = "Litros",
+  gr = "gr",
+  l = "l",
 }
 
 export enum NutrientsTypes {

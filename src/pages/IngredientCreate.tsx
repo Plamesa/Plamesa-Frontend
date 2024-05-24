@@ -1,129 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import userService from '../services/UserService.ts';
 import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import {
   TextField,
   Button,
-  Autocomplete,
-  FormControl,
-  InputLabel,
-  IconButton,
-  FilledInput,
   Typography,
   Box,
   FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import './IngredientCreate.css'
 import ingredientService from '../services/IngredientService.ts';
-import { ActivityLevel, Allergen, Diet, FoodGroup, Gender, NutrientsTypes, Units, getUnitFromName } from '../utils/enums.ts';
-import { IngredientInterface, UserInfoInterface } from '../utils/interfaces.ts';
-import { CheckBox, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Allergen, FoodGroup, NutrientsTypes, Units, getUnitFromName } from '../utils/enums.ts';
+import { CreateIngredientInterface } from '../utils/interfaces.ts';
 
-// Lista de ingredientes para excluir
-let ingredients: { _id: string; name: string }[] = []
 
 function IngredientCreate() {
-  const [ingredient, setIngredient] = useState<IngredientInterface>({
+  const token = localStorage.getItem('token');
+  const navigate = useNavigate();
+
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [ingredient, setIngredient] = useState<CreateIngredientInterface>({
     _id: '',
     name: '',
     amount: 0,
     unit: '',
-    estimatedCost: 0,
+    estimatedCost: '',
     foodGroup: FoodGroup.Otro,
     allergens: [],
     nutrients: [],
     ownerUser: ''
   });
-  const [userInfo, setUserInfo] = useState<UserInfoInterface>({
-    username: '',
-    name: '',
-    password: '',
-    email: '',
-    gender: Gender.Vacio,
-    weight: 0,
-    height: 0,
-    age: 0,
-    activityLevel: ActivityLevel.Vacio,
-    allergies: [],
-    diet: '',
-    excludedIngredients: []
-  });
-  const token = localStorage.getItem('token');
 
-  const [selectedAllergens, setSelectedAllergens] = useState<{ [key: string]: boolean }>({});
+
+  useEffect(() => {
+    if (!token) {
+      alert('Debe iniciar sesión para acceder a esta página.');
+      navigate('/login');
+    }
+  }, [token, navigate]);
+
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedAllergens({
-      ...selectedAllergens,
-      [event.target.name]: event.target.checked,
+    const allergen = event.target.name;
+    const isChecked = event.target.checked;
+  
+    setIngredient((prevIngredient) => {
+      const updatedAllergens = isChecked
+        ? [...prevIngredient.allergens, allergen]
+        : prevIngredient.allergens.filter((a) => a !== allergen);
+  
+      return { ...prevIngredient, allergens: updatedAllergens };
     });
-  };
-  const [errors, setErrors] = useState<{ password?: string; email?: string }>({}); // Estado para mensajes de error
-
-  const [showPassword, setShowPassword] = React.useState(false);
-
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (token) {
-      userService.getUserInfo(token).then((response) => {
-        setUserInfo(response.data); // Almacena la información del usuario
-      }).catch((error) => {
-        console.error('Error al obtener la información del usuario:', error);
-      });
-    }
-  }, [token]); // Se ejecuta cuando el token cambia
-
-  useEffect(() => {
-    try {
-      ingredientService.getIngredients().then((response) => {
-        const ingredientsJson: IngredientInterface[] = response.data;
-        if (ingredients.length == 0) {
-          for (let i = 0; i < ingredientsJson.length; i++) {
-            ingredients.push({ _id: ingredientsJson[i]._id, name: ingredientsJson[i].name})
-          }
-        }
-      }).catch((error) => {
-        console.error('Error al obtener la información de los ingredientes: ', error);
-      });
-    } catch{ (error: Error) => { console.log(error) }}
-    
-    return () => {
-      // Limpiar antes de que el componente se vuelva a renderizar
-      ingredients = [];
-    };
-    
-  });
-
-
-  const validateForm = (): boolean => {
-    let valid = true;
-    const newErrors: { password?: string; email?: string } = {};
-
-    // Validación de la contraseña
-    const passwordPattern = /^(?=.*[0-9])(?=.*[A-ZÑ])[a-zA-Z0-9Ññ]{6,}$/;
-    if (userInfo.password != '' && !passwordPattern.test(userInfo.password)) {
-      newErrors.password = 'La contraseña debe tener al menos una mayúscula, un número y tener mínimo 6 caracteres.';
-      valid = false;
-    }
-
-    // Validación del correo electrónico
-    const emailPattern = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-    if (!emailPattern.test(userInfo.email)) {
-      newErrors.email = 'Correo electrónico no válido.';
-      valid = false;
-    }
-
-    setErrors(newErrors); // Actualiza los errores
-    return valid;
   };
 
   const getNutrientAmount = (nutrientName: NutrientsTypes): number => {
@@ -131,50 +61,98 @@ function IngredientCreate() {
     return nutrient ? nutrient.amount : 0;
   };
 
+  const handleNutrientChange = (nutrientName: NutrientsTypes, newAmount: number, unit: string) => {
+    setIngredient(prevIngredient => {
+      const updatedNutrients = prevIngredient.nutrients.map(nutrient => {
+        if (nutrient.name === nutrientName) {
+          return { ...nutrient, amount: newAmount };
+        }
+        return nutrient;
+      });
+  
+      // Si el nutriente no está en la lista, agregarlo
+      if (!updatedNutrients.find(nutrient => nutrient.name === nutrientName)) {
+        updatedNutrients.push({ name: nutrientName, amount: newAmount, unit: unit });
+      }
+  
+      return { ...prevIngredient, nutrients: updatedNutrients };
+    });
+  };
 
-  function changeUserDataFunction() {
-    if (!validateForm()) {
-      // Si hay errores, no envíes el formulario
+
+  const validateForm = (): boolean => {
+    let valid = true;
+    const newErrors: { [key: string]: string } = {};
+
+    if (!ingredient.name) {
+      newErrors.name = 'El nombre es requerido.';
+      valid = false;
+    }
+    if (!ingredient.foodGroup) {
+      newErrors.foodGroup = 'El grupo de alimento es requerido.';
+      valid = false;
+    }
+    if (!ingredient.amount) {
+      newErrors.amount = 'La cantidad es requerida.';
+      valid = false;
+    }
+    if (!ingredient.unit) {
+      newErrors.unit = 'La unidad es requerida.';
+      valid = false;
+    }
+    if (!ingredient.estimatedCost) {
+      newErrors.estimatedCost = 'El costo estimado es requerido.';
+      valid = false;
+    }
+
+    // Validar todos los macronutrientes
+    [
+      NutrientsTypes.Energia,
+      NutrientsTypes.Proteinas,
+      NutrientsTypes.Carbohidratos,
+      NutrientsTypes.GrasaTotal,
+      NutrientsTypes.Sal,
+      NutrientsTypes.Azucar,
+      NutrientsTypes.GrasaSaturada,
+    ].forEach(nutrient => {
+      if (!ingredient.nutrients.some(n => n.name === nutrient && n.amount > 0)) {
+        newErrors[nutrient] = `*`;
+        valid = false;
+      }
+    });
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  function createIngredientFunction() {
+   if (!validateForm()) {
+      // Si hay errores, no enviar el formulario
       return;
     }
 
     // Variables basicas
-    let userInfoToSend = {};
-    userInfoToSend = {
-      username: userInfo.username,
-      name: userInfo.name,
-      email: userInfo.email,
-      gender: userInfo.gender,
-      age: userInfo.age,
-      weight: userInfo.weight,
-      height: userInfo.height,
-      activityLevel: userInfo.activityLevel,
-      allergies: userInfo.allergies,
-      diet: userInfo.diet
+    const ingredientToSend = {
+      name: ingredient.name,
+      amount: ingredient.amount,
+      unit: ingredient.unit,
+      estimatedCost: parseFloat(ingredient.estimatedCost),
+      foodGroup: ingredient.foodGroup,
+      allergens: ingredient.allergens,
+      nutrients: ingredient.nutrients
     };
 
-    // Caso de que se incluya contraseña
-    if (userInfo.password != '') {
-      userInfoToSend = { ...userInfoToSend, password: userInfo.password }
-    }
-
-    // Caso de los ingredientes
-    let newExcludedIngredients = [];
-    for (let i = 0; i < userInfo.excludedIngredients.length; i++) {
-      newExcludedIngredients.push(userInfo.excludedIngredients[i]._id);
-    }
-    userInfoToSend = { ...userInfoToSend, excludedIngredients: newExcludedIngredients }
-
-    // Realizar peticion patch
+    // Realizar peticion post
     try {
       if (token) {
-        console.log(userInfoToSend)
-        userService
-          .changeUserInfo(token, userInfoToSend)
+        console.log(ingredientToSend)
+        ingredientService
+          .createIngredient(token, ingredientToSend)
           .then((response) => {
             console.log(response);
             if(response.status == 201) {
-              alert('Datos actualizados correctamente');
+              alert('Ingrediente creado');
+              navigate('/ingredients/' + response.data._id)
             }
           })
           .catch((error) => {
@@ -197,17 +175,24 @@ function IngredientCreate() {
   };
 
 
+  if (!token) {
+    return null;
+  }
+
+
+
+  
   return (
     <div>
       <div className="topContainerIntro">
         <div className="containerIntro">
-          <h3>Recuerda pulsar el boton de guardar cambios</h3>
+          <h3>Recuerda pulsar el boton de crear ingrediente</h3>
           <Button
             variant="contained"
             className="botonRegisterAccount"
-            onClick={changeUserDataFunction}
+            onClick={createIngredientFunction}
           >
-            Guardar Cambios
+            Crear ingrediente
           </Button>
         </div>
       </div>
@@ -228,6 +213,8 @@ function IngredientCreate() {
               setIngredient({ ...ingredient, name: e.target.value })
             }
             className='textFieldAccount'
+            error={!!errors.name}
+            helperText={errors.name}
           />
 
           <TextField
@@ -242,6 +229,8 @@ function IngredientCreate() {
               setIngredient({ ...ingredient, foodGroup: (e.target.value as FoodGroup) })
             }
             className='textFieldAccount'
+            error={!!errors.foodGroup}
+            helperText={errors.foodGroup}
           >
             {Object.values(FoodGroup).map((option) => (
               <MenuItem key={option} value={option}>
@@ -264,6 +253,8 @@ function IngredientCreate() {
                 setIngredient({ ...ingredient, amount: Number(e.target.value) })
               }
               className='textFieldAccount'
+              error={!!errors.amount}
+              helperText={errors.amount}
             />
 
             <TextField
@@ -272,12 +263,14 @@ function IngredientCreate() {
               variant="filled"
               id="outlined-select-currency"
               select
-              label="Grupo de Alimento"
+              label="Unidad"
               value={ingredient.unit}
               onChange={(e) =>
                 setIngredient({ ...ingredient, unit: (e.target.value) })
               }
               className='textFieldAccount'
+              error={!!errors.unit}
+              helperText={errors.unit}
             >
               {Object.values(Units).map((option) => (
                 <MenuItem key={option} value={option}>
@@ -287,43 +280,45 @@ function IngredientCreate() {
             </TextField>
           </div>
           
-          <OutlinedInput
+          <TextField
+            required
             fullWidth
-            id="outlined-adornment-age"
-            endAdornment={<InputAdornment position="end">euros</InputAdornment>}
-            aria-describedby="outlined-weight-helper-text"
-            inputProps={{
-              'aria-label': 'euros',
+            variant="filled"
+            id="estimatedCost"
+            label="Costo Estimado"
+            InputProps={{
+              endAdornment: <InputAdornment position="end">euros</InputAdornment>,
             }}
-            value={ingredient.estimatedCost} /*|| ''*/
+            value={ingredient.estimatedCost}
             onChange={(e) =>
-              setIngredient({ ...ingredient, estimatedCost: Number(e.target.value)}) /*|| ''*/
+              setIngredient({ ...ingredient, estimatedCost: (e.target.value) })
             }
             className='textFieldAccount'
+            error={!!errors.estimatedCost}
+            helperText={errors.estimatedCost}
           />
         </div>
 
 
         <div className='formContentIngredient'>
-        <Typography variant="h6" gutterBottom>
-          Alérgenos
-        </Typography>
-        <Box>
-        {Object.values(Allergen).map((allergen) => (
-          <FormControlLabel
-            key={allergen}
-            control={
-              <CheckBox
-                checked={!!selectedAllergens[allergen]}
-                onChange={handleCheckboxChange}
-                name={allergen}
+          <Typography variant="h6" gutterBottom  className='tipographyAllergens'>
+            Alérgenos
+          </Typography>
+          <Box>
+            {Object.values(Allergen).map((allergen) => (
+              <FormControlLabel
+                key={allergen}
+                control={
+                  <Checkbox
+                    checked={ingredient.allergens.includes(allergen)}
+                    onChange={handleCheckboxChange}
+                    name={allergen}
+                  />
+                }
+                label={allergen}
               />
-            }
-            label={allergen}
-          />
-        ))}
-      </Box>
-          
+            ))}
+          </Box>
         </div>
       </div>
 
@@ -331,7 +326,7 @@ function IngredientCreate() {
       <div className="topContainer">
         <div className="container2FormAccount">
           <div className="form2ContentAccount">
-            <Box sx={{ mt: 4 }}>
+            <Box>
               <Typography variant="h5" component="h2">
                 Información Nutricional
               </Typography>
@@ -342,10 +337,11 @@ function IngredientCreate() {
                 gap: 2,
                 justifyItems: 'center',
               }}>
+
                 {/* Macronutrientes */}
                 <Box>
                   <Typography variant="subtitle1" component="h3">
-                    <strong>Macronutrientes</strong>
+                    <strong className='nutrientTitle'>Macronutrientes</strong>
                   </Typography>
                   {[
                     NutrientsTypes.Energia,
@@ -356,7 +352,7 @@ function IngredientCreate() {
                     NutrientsTypes.Azucar,
                     NutrientsTypes.GrasaSaturada,
                   ].map((nutrient) => (
-                    <Box key={nutrient} sx={{ mb: 1 }}>
+                    <Box key={nutrient} sx={{ mb: 1}}>
                       <Typography variant="body2" display="inline">
                         <strong>{nutrient}:</strong>
                       </Typography>
@@ -366,19 +362,22 @@ function IngredientCreate() {
                         size="small"
                         variant="standard"
                         value={getNutrientAmount(nutrient)}
-                        //onChange={(e) => setAmount(Number(e.target.value))}
+                        onChange={(e) => handleNutrientChange(nutrient, Number(e.target.value), getUnitFromName(nutrient))}
                         inputProps={{
                           style: { width: `${getNutrientAmount(nutrient).toString().length + 1}ch` }
                         }}
                         style={{ marginLeft: '10px'}}
+                        error={!!errors[nutrient]}
+                        helperText={errors[nutrient]}
                       />{getUnitFromName(nutrient)}
                     </Box>
                   ))}
                 </Box>
+
                 {/* Minerales */}
                 <Box>
                   <Typography variant="subtitle1" component="h3">
-                    Minerales
+                    <strong className='nutrientTitle'>Minerales</strong>
                   </Typography>
                   {[
                     NutrientsTypes.Calcio,
@@ -392,16 +391,30 @@ function IngredientCreate() {
                     NutrientsTypes.Zinc,
                   ].map((nutrient) => (
                     <Box key={nutrient} sx={{ mb: 1 }}>
-                      <Typography variant="body2">
-                        <strong>{nutrient}:</strong> {getNutrientAmount(nutrient)} {getUnitFromName(nutrient)}
+                      <Typography variant="body2" display="inline">
+                        <strong>{nutrient}:</strong>
                       </Typography>
+                      <TextField
+                        //type="number"
+                        required
+                        size="small"
+                        variant="standard"
+                        value={getNutrientAmount(nutrient)}
+                        onChange={(e) => handleNutrientChange(nutrient, Number(e.target.value), getUnitFromName(nutrient))}
+                        inputProps={{
+                          style: { width: `${getNutrientAmount(nutrient).toString().length + 1}ch` }
+                        }}
+                        style={{ marginLeft: '10px'}}
+                        error={!!errors[nutrient]}
+                        helperText={errors[nutrient]}
+                      />{getUnitFromName(nutrient)}
                     </Box>
                   ))}
                 </Box>
                 {/* Vitaminas */}
                 <Box>
                   <Typography variant="subtitle1" component="h3">
-                    Vitaminas
+                    <strong className='nutrientTitle'>Vitaminas</strong>
                   </Typography>
                   {[
                     NutrientsTypes.VitaminaA,
@@ -412,25 +425,52 @@ function IngredientCreate() {
                     NutrientsTypes.VitaminaE,
                   ].map((nutrient) => (
                     <Box key={nutrient} sx={{ mb: 1 }}>
-                      <Typography variant="body2">
-                        <strong>{nutrient}:</strong> {getNutrientAmount(nutrient)} {getUnitFromName(nutrient)}
+                      <Typography variant="body2" display="inline">
+                        <strong>{nutrient}:</strong>
                       </Typography>
+                      <TextField
+                        //type="number"
+                        required
+                        size="small"
+                        variant="standard"
+                        value={getNutrientAmount(nutrient)}
+                        onChange={(e) => handleNutrientChange(nutrient, Number(e.target.value), getUnitFromName(nutrient))}
+                        inputProps={{
+                          style: { width: `${getNutrientAmount(nutrient).toString().length + 1}ch` }
+                        }}
+                        style={{ marginLeft: '10px'}}
+                        error={!!errors[nutrient]}
+                        helperText={errors[nutrient]}
+                      />{getUnitFromName(nutrient)}
                     </Box>
                   ))}
                 </Box>
                 {/* Varios */}
                 <Box>
                   <Typography variant="subtitle1" component="h3">
-                    Otros
+                    <strong className='nutrientTitle'>Otros</strong>
                   </Typography>
                   {[
                     NutrientsTypes.Fibra,
                     NutrientsTypes.Colesterol,
                   ].map((nutrient) => (
                     <Box key={nutrient} sx={{ mb: 1 }}>
-                      <Typography variant="body2">
-                        <strong>{nutrient}:</strong> {getNutrientAmount(nutrient)} {getUnitFromName(nutrient)}
+                      <Typography variant="body2" display="inline">
+                        <strong>{nutrient}:</strong>
                       </Typography>
+                      <TextField
+                        required
+                        size="small"
+                        variant="standard"
+                        value={getNutrientAmount(nutrient)}
+                        onChange={(e) => handleNutrientChange(nutrient, Number(e.target.value), getUnitFromName(nutrient))}
+                        inputProps={{
+                          style: { width: `${getNutrientAmount(nutrient).toString().length + 1}ch` }
+                        }}
+                        style={{ marginLeft: '10px'}}
+                        error={!!errors[nutrient]}
+                        helperText={errors[nutrient]}
+                      />{getUnitFromName(nutrient)}
                     </Box>
                   ))}
                 </Box>
@@ -446,9 +486,9 @@ function IngredientCreate() {
         <Button
           variant="contained"
           className="botonRegisterAccount"
-          onClick={changeUserDataFunction}
+          onClick={createIngredientFunction}
         >
-          Guardar Cambios
+          Crear ingrediente
         </Button>
       </div>
     </div>

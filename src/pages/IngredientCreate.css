@@ -1,10 +1,82 @@
+.containerFormAccount {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: flex-start; /* Alinea al inicio para evitar que se centren verticalmente */
+  flex-direction: row; /* Dos columnas inicialmente */
+  gap: 80px; /* Espacio entre columnas */
+  padding: 1rem; /* Relleno para el contenedor */
+  height: auto;
+  align-items: center;
+}
+
 .formContentIngredient {
   background-color: #5B8E7D; /* Fondo para el contenido interno */
   padding: 20px; /* Relleno interno */
   border-radius: 10px; /* Bordes redondeados */
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Sombra para efecto visual */
   width: 500px; /* Ancho fijo para cada columna */
-  height: 300px;
-  text-align: center; /* Centra el texto */
-  //overflow-y: auto;
+  height: auto;
+  text-align: justify; /* Centra el texto */
+  /*overflow-y: auto;*/
+}
+
+.tipographyAllergens {
+  color: #FDF8EB;
+  text-align: center;
+  line-height: 1; /* Ajusta esto para controlar el espacio entre líneas */
+}
+
+.formContentIngredient .MuiFormControlLabel-root {
+  color: #FDF8EB;
+  line-height: 100;
+}
+
+.formContentIngredient .MuiCheckbox-root {
+  color: #FDF8EB;
+  padding: 1.5px;
+}
+
+.formContentIngredient .MuiCheckbox-root.Mui-checked {
+  color: #545454; /* Cambia a cualquier color que prefieras */
+}
+
+.form2ContentAccount {
+  color: #FDF8EB;
+}
+
+.form2ContentAccount .MuiTypography-root {
+  color: #FDF8EB;
+}
+
+.form2ContentAccount .MuiTextField-root {
+  color: #FDF8EB;
+}
+
+.form2ContentAccount .MuiInputBase-input {
+  color: #FDF8EB;
+}
+
+.form2ContentAccount .MuiInput-underline:before {
+  border-bottom-color: #FDF8EB;
+}
+
+.form2ContentAccount .MuiInput-underline:after {
+  border-bottom-color: #FDF8EB;
+}
+
+.nutrientTitle {
+  font-size: large;
+}
+
+@media (max-width: 550px) {
+  .formContentIngredient {
+    width: auto; /* Ancho fijo para cada columna */
+  }
+
+  .containerFormAccount {
+    display: flex;
+    flex-direction: column; /* Cambia a una sola columna */
+    align-items: center; /* Centra las columnas */
+    gap: 32px;
+  }
 }
