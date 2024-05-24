@@ -9,14 +9,16 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './IngredientCreate.css'
 import ingredientService from '../services/IngredientService.ts';
 import { Allergen, FoodGroup, NutrientsTypes, Units, getUnitFromName } from '../utils/enums.ts';
 import { CreateIngredientInterface } from '../utils/interfaces.ts';
+import userService from '../services/UserService.ts';
 
 
-function IngredientCreate() {
+function IngredientModify() {
+  const { _id } = useParams<{ _id: string }>(); // Obtener id de parametros de la URL
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
@@ -40,6 +42,32 @@ function IngredientCreate() {
       navigate('/login');
     }
   }, [token, navigate]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Obtener el ingrediente
+        if (_id) {
+          const ingredientResponse = await ingredientService.getIngredientById(_id);
+          setIngredient(ingredientResponse.data);
+
+          // Obtener la información del usuario si hay un token
+          if (token) {
+            const userResponse = await userService.getUserInfo(token);
+
+            if (userResponse.data._id != ingredientResponse.data.ownerUser._id && userResponse.data.role != 'Administrador') {
+              alert('NO tiene permiso para modificar este ingrediente');
+              navigate(`/ingredients/${ingredientResponse.data._id}`);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error al obtener los datos:', error);
+      }
+    };
+
+    fetchData();
+  }, [token, _id]);
 
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,27 +169,22 @@ function IngredientCreate() {
       nutrients: ingredient.nutrients
     };
 
-    // Realizar peticion post
+    // Realizar peticion patch
     try {
       if (token) {
-        console.log(ingredientToSend)
         ingredientService
-          .createIngredient(token, ingredientToSend)
+          .modifyIngredient(ingredient._id, token, ingredientToSend)
           .then((response) => {
-            console.log(response);
             if(response.status == 201) {
-              alert('Ingrediente creado');
+              alert('Ingrediente modificado');
               navigate('/ingredients/' + response.data._id)
             }
           })
           .catch((error) => {
             console.log(error)
-            if (error.response && error.response.data && error.response.data.code) {
-              if (error.response.data.code === 11000) {
-                const fieldWithError = Object.keys(error.response.data.keyPattern)[0];
-                const valueWithError = error.response.data.keyValue[fieldWithError];
-            
-                alert(`El ${fieldWithError}: "${valueWithError}" ya existe.`);
+            if (error.response && error.response.data && error.response.data.error) {
+              if (error.response.data.error === 'Nombre de ingrediente ya existente') {
+                alert(`Nombre de ingrediente ya existente`);
               }
             } else {
               alert('Ocurrió un error inesperado. Por favor, inténtelo de nuevo.');
@@ -185,13 +208,13 @@ function IngredientCreate() {
     <div>
       <div className="topContainerIntro">
         <div className="containerIntro">
-          <h3>Recuerda pulsar el boton de crear ingrediente</h3>
+          <h3>Recuerda guardar los cambios</h3>
           <Button
             variant="contained"
             className="botonRegisterAccount"
             onClick={createIngredientFunction}
           >
-            Crear ingrediente
+            Guardar Cambios
           </Button>
         </div>
       </div>
@@ -487,11 +510,11 @@ function IngredientCreate() {
           className="botonRegisterAccount"
           onClick={createIngredientFunction}
         >
-          Crear ingrediente
+          Guardar Cambios
         </Button>
       </div>
     </div>
   )
 }
 
-export default IngredientCreate
+export default IngredientModify

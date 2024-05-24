@@ -10,6 +10,7 @@ import Ingredients from './pages/Ingredients';
 import Layout from './components/Layout'; // Usar Layout
 import IngredientDetails from './pages/IngredientDetails';
 import IngredientCreate from './pages/IngredientCreate';
+import IngredientModify from './pages/IngredientModify';
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: "ingredients/create", 
         element: <IngredientCreate />
+      },
+      {
+        path: "ingredients/modify/:_id", 
+        element: <IngredientModify />
       },
     ],
   },

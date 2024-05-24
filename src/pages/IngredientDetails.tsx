@@ -342,7 +342,7 @@ function IngredientDetails() {
           <Button
             variant="contained"
             className="botonChangeIngredient"
-            //onClick={changeUserDataFunction}
+            onClick={() => navigate(`/ingredients/modify/${ingredient._id}`)}
           >
             Modificar Ingrediente
           </Button>

@@ -25,6 +25,19 @@ const ingredientService = {
     );
   },
 
+  modifyIngredient(_id: string, token: string, ingredient: {}) {
+    return axios.patch(
+      ENDPOINT_PATH + '/' + _id,
+      ingredient,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`, // Agregar la cabecera de autorización
+          'Content-Type': 'application/json', // Si estás enviando datos en formato JSON
+        },
+      }
+    );
+  },
+
   deleteIngredient(_id: string, token: string) {
     return axios.delete(ENDPOINT_PATH + '/' + _id, {
       headers: {
