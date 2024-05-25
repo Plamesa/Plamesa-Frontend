@@ -258,7 +258,7 @@ function RecipeDetails() {
                 {recipe.ingredients.map((ingredient, index) => (
                   <li key={index}>
                     <Typography variant="body1" component="p">
-                      <strong>{capitalizeFirstLetter(ingredient.ingredientID.name)}:</strong> {ingredient.amount * services / recipe.numberService}
+                      <strong>{capitalizeFirstLetter(ingredient.ingredientID.name)}:</strong> {ingredient.amount * services / recipe.numberService} {ingredient.ingredientID.unit}
                     </Typography>
                   </li>
                 ))}
@@ -431,7 +431,7 @@ function RecipeDetails() {
           <Button
             variant="contained"
             className="botonChangeIngredient"
-            onClick={() => navigate(`/ingredients/modify/${recipe._id}`)}
+            onClick={() => navigate(`/recipes/modify/${recipe._id}`)}
           >
             Modificar Receta
           </Button>

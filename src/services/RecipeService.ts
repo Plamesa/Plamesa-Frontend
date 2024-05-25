@@ -12,10 +12,10 @@ const recipeService = {
     return axios.get(ENDPOINT_PATH + '/' + _id)
   },
 
-  /*createIngredient(token: string, ingredient: {}) {
+  createRecipe(token: string, recipe: {}) {
     return axios.post(
       ENDPOINT_PATH, // URL de la solicitud
-      ingredient,   // El cuerpo de la solicitud
+      recipe,   // El cuerpo de la solicitud
       {
         headers: {
           'Authorization': `Bearer ${token}`, // Agregar la cabecera de autorización
@@ -25,7 +25,7 @@ const recipeService = {
     );
   },
 
-  modifyIngredient(_id: string, token: string, ingredient: {}) {
+  /*modifyIngredient(_id: string, token: string, ingredient: {}) {
     return axios.patch(
       ENDPOINT_PATH + '/' + _id,
       ingredient,

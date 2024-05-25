@@ -40,27 +40,50 @@
   color: #545454; /* Cambia a cualquier color que prefieras */
 }
 
-.form2ContentAccount {
+.topContainerCreateIngredient {
+  justify-content: center; /* Centra horizontalmente */
+  padding: 1rem; /* Relleno para el contenedor */
+  height: auto; /* Altura del viewport */
+  display: flex;
+}
+
+.container2FormCreateIngredient {
+  display: flex;
+  flex-direction: row; /* Tres columnas inicialmente */
+  justify-content: space-between; /* Espacio entre columnas */
+  background-color: #5B8E7D;
+  border-radius: 10px; /* Bordes redondeados */
+  width: 1160px;
+}
+
+.form2ContentCreateIngredient {
+  flex: 1; /* Permite que las columnas se ajusten */
+  padding: 20px; /* Relleno */
+  border-radius: 10px; /* Bordes redondeados */
+  text-align: center; /* Centra el texto */
+}
+
+.form2ContentCreateIngredient {
   color: #FDF8EB;
 }
 
-.form2ContentAccount .MuiTypography-root {
+.form2ContentCreateIngredient .MuiTypography-root {
   color: #FDF8EB;
 }
 
-.form2ContentAccount .MuiTextField-root {
+.form2ContentCreateIngredient .MuiTextField-root {
   color: #FDF8EB;
 }
 
-.form2ContentAccount .MuiInputBase-input {
+.form2ContentCreateIngredient .MuiInputBase-input {
   color: #FDF8EB;
 }
 
-.form2ContentAccount .MuiInput-underline:before {
+.form2ContentCreateIngredient .MuiInput-underline:before {
   border-bottom-color: #FDF8EB;
 }
 
-.form2ContentAccount .MuiInput-underline:after {
+.form2ContentCreateIngredient .MuiInput-underline:after {
   border-bottom-color: #FDF8EB;
 }
 
@@ -78,5 +101,14 @@
     flex-direction: column; /* Cambia a una sola columna */
     align-items: center; /* Centra las columnas */
     gap: 32px;
+  }
+
+  .container2FormCreateIngredient {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .form2ContentCreateIngredient {
+    padding: 0px; /* Relleno */
   }
 }

@@ -1,0 +1,124 @@
+.topContainerIntroCreateRecipe {
+  justify-content: center; /* Centra horizontalmente */
+  padding: 1rem; /* Relleno para el contenedor */
+  padding-bottom: 0;
+  height: auto; /* Altura del viewport */
+  display: flex;
+}
+
+.containerIntroCreateRecipe{
+  display: flex;
+  flex-direction: row; /* Tres columnas inicialmente */
+  justify-content: space-between; /* Espacio entre columnas */
+  width: 1160px;
+}
+
+.containerFormCreateRecipe {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: flex-start; /* Alinea al inicio para evitar que se centren verticalmente */
+  flex-direction: row; /* Dos columnas inicialmente */
+  gap: 80px; /* Espacio entre columnas */
+  padding: 1rem; /* Relleno para el contenedor */
+  height: auto;
+  align-items: center;
+}
+
+.formContentCreateRecipe {
+  background-color: #5B8E7D; /* Fondo para el contenido interno */
+  padding: 20px; /* Relleno interno */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Sombra para efecto visual */
+  width: 500px; /* Ancho fijo para cada columna */
+  height: auto;
+  text-align: center; /* Centra el texto */
+  color: #FDF8EB;
+}
+
+.formContentRecipeSelectIngredients {
+  background-color: #5B8E7D; /* Fondo para el contenido interno */
+  padding: 20px; /* Relleno interno */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Sombra para efecto visual */
+  width: 500px; /* Ancho fijo para cada columna */
+  height: 400px;
+  color: #FDF8EB;
+  text-align: justify; /* Centra el texto */
+  overflow-y: auto;
+}
+
+.textFieldCreateRecipe {
+  background-color: #FDF8EB;
+  color: #545454;
+  border-radius: 4px;
+  text-align: left;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+.textFieldIngredientsCreateRecipe {
+  background-color: #FDF8EB;
+  color: #545454;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.typographySelectIngredientsRecipe {
+  width: 120px;
+  text-align: left;
+}
+
+.topContainerLargeCreateRecipe {
+  justify-content: center; /* Centra horizontalmente */
+  padding: 1rem; /* Relleno para el contenedor */
+  height: auto; /* Altura del viewport */
+  display: flex;
+}
+
+.containerLargeFormCreateRecipe {
+  display: flex;
+  flex-direction: row; /* Tres columnas inicialmente */
+  justify-content: space-between; /* Espacio entre columnas */
+  background-color: #5B8E7D;
+  border-radius: 10px; /* Bordes redondeados */
+  width: 1160px;
+  color: #FDF8EB;
+}
+
+.formLargeContentCreateRecipe {
+  flex: 1; /* Permite que las columnas se ajusten */
+  padding: 20px; /* Relleno */
+  border-radius: 10px; /* Bordes redondeados */
+  text-align: center; /* Centra el texto */
+}
+
+.buttonContainerCreateRecipe {
+  justify-content: center; /* Centra horizontalmente */
+  padding-top: 0.5rem !important;
+  padding: 1rem;
+  height: auto; /* Altura del viewport */
+  display: flex;
+}
+
+.botonRegisterCreateRecipe {
+  background-color: #545454 !important;
+  color: #FFFFFF;
+  margin: 0.5rem !important;
+}
+
+@media (max-width: 550px) {
+  .containerFormCreateRecipe {
+    display: flex;
+    flex-direction: column; /* Cambia a una sola columna */
+    align-items: center;
+    gap: 32px;
+  }
+
+  .formContentCreateRecipe {
+    width: auto;
+  }
+
+  .formContentRecipeSelectIngredients {
+    width: auto;
+  }
+}

@@ -23,6 +23,10 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 // Lista de ingredientes para excluir
 let ingredients: { _id: string; name: string }[] = []
 
+function capitalizeFirstLetter(string: string) {
+  return string.replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 function Account() {
   const [userInfo, setUserInfo] = useState<UserInfoInterface>({
     username: '',
@@ -405,7 +409,7 @@ function Account() {
               className='textFieldAccount'
               multiple
               options={ingredients} // Lista de opciones
-              getOptionLabel={(option) => option.name}
+              getOptionLabel={(option) => capitalizeFirstLetter(option.name)}
               value={userInfo.excludedIngredients} // Ingredientes seleccionados
               isOptionEqualToValue={(option, value) => option._id === value._id}
               onChange={(_, newValue) => {

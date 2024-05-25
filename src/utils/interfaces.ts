@@ -76,7 +76,7 @@ export interface GETRecipeInterface {
   instructions: string[];
   comments: string;
   cookware: string[];
-  ingredients: {amount: number, ingredientID: {name: string, _id: string}}[];
+  ingredients: {amount: number, ingredientID: {name: string, _id: string, unit: string}}[];
   estimatedCost: number;
   allergens: string[];
   nutrients: Nutrient[];
