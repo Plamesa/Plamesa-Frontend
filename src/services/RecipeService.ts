@@ -25,10 +25,10 @@ const recipeService = {
     );
   },
 
-  /*modifyIngredient(_id: string, token: string, ingredient: {}) {
+  modifyRecipe(_id: string, token: string, recipe: {}) {
     return axios.patch(
       ENDPOINT_PATH + '/' + _id,
-      ingredient,
+      recipe,
       {
         headers: {
           'Authorization': `Bearer ${token}`, // Agregar la cabecera de autorización
@@ -36,7 +36,7 @@ const recipeService = {
         },
       }
     );
-  },*/
+  },
 
   deleteRecipe(_id: string, token: string) {
     return axios.delete(ENDPOINT_PATH + '/' + _id, {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MenuItem from '@mui/material/MenuItem';
 import { Delete } from '@mui/icons-material';
 import {
@@ -16,14 +16,15 @@ import ingredientService from '../services/IngredientService.ts';
 import { FoodType, IngredientRecipe } from '../utils/enums.ts';
 import recipeService from '../services/RecipeService.ts';
 import './RecipeModify.css'
+import userService from '../services/UserService.ts';
 
 function capitalizeFirstLetter(string: string) {
   return string.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-//let ingredients: { _id: string; name: string; unit: string; amount: string }[] = []
 
 function RecipeModify() {
+  const { _id } = useParams<{ _id: string }>(); // Obtener id de parametros de la URL
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
@@ -55,6 +56,47 @@ function RecipeModify() {
     }
   }, [token, navigate]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Obtener la receta
+        if (_id) {
+          const recipeResponse = await recipeService.getRecipeById(_id);
+          const recipeData = recipeResponse.data;
+          const cookwareString = recipeData.cookware.join('\n');
+          const instructionsString = recipeData.instructions.join('\n');
+
+          setRecipe({
+            ...recipeData,
+            cookware: [cookwareString],
+            instructions: [instructionsString]
+          });
+
+          const newIngredients = recipeResponse.data.ingredients.map((ingredient: {amount: string; ingredientID: {_id: string; name: string; unit: string}}) => ({
+            _id: ingredient.ingredientID._id,
+            name: ingredient.ingredientID.name,
+            unit: ingredient.ingredientID.unit,
+            amount: ingredient.amount
+          }));
+          setSelectedIngredient(newIngredients);
+
+          // Obtener la información del usuario si hay un token
+          if (token) {
+            const userResponse = await userService.getUserInfo(token);
+
+            if (userResponse.data._id != recipeResponse.data.ownerUser._id && userResponse.data.role != 'Administrador') {
+              alert('NO tiene permiso para modificar este ingrediente');
+              navigate(`/ingredients/${recipeResponse.data._id}`);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error al obtener los datos:', error);
+      }
+    };
+
+    fetchData();
+  }, [token, _id]);
 
   useEffect(() => {
     const fetchIngredients = async () => {
@@ -104,11 +146,16 @@ function RecipeModify() {
     if (recipe.instructions.length === 0) {
       newErrors.instructions = 'Las instrucciones son requeridas.';
       valid = false;
+    }    
+    else if (recipe.instructions[0] === '') {
+      newErrors.instructions = 'Las instrucciones son requeridas.';
+      valid = false;
     }
     if (selectedIngredient.length === 0) {
       newErrors.selectedIngredient = 'Debe seleccionar al menos un ingrediente.';
       valid = false;
     }
+
 
     selectedIngredient.forEach((ingredient, index) => {
       if (ingredient.amount === '') {
@@ -148,28 +195,17 @@ function RecipeModify() {
     // Realizar peticion post
     try {
       if (token) {
-        console.log(recipeToSend)
         recipeService
-          .createRecipe(token, recipeToSend)
+          .modifyRecipe(recipe._id, token, recipeToSend)
           .then((response) => {
-            console.log(response);
             if(response.status == 201) {
-              alert('Receta creada');
+              alert('Receta modificada');
               navigate('/recipes/' + response.data._id)
             }
           })
           .catch((error) => {
             console.log(error)
-            if (error.response && error.response.data && error.response.data.code) {
-              if (error.response.data.code === 11000) {
-                const fieldWithError = Object.keys(error.response.data.keyPattern)[0];
-                const valueWithError = error.response.data.keyValue[fieldWithError];
-            
-                alert(`El ${fieldWithError}: "${valueWithError}" ya existe.`);
-              }
-            } else {
-              alert('Ocurrió un error inesperado. Por favor, inténtelo de nuevo.');
-            }
+            alert('Ocurrió un error inesperado. Por favor, inténtelo de nuevo.');
           })
       }
     } catch (error) {
@@ -189,13 +225,13 @@ function RecipeModify() {
     <div>
       <div className="topContainerIntroCreateRecipe">
         <div className="containerIntroCreateRecipe">
-          <h3>Recuerda pulsar el boton de crear receta</h3>
+          <h3>Recuerda pulsar el boton de modificar receta</h3>
           <Button
             variant="contained"
             className="botonRegisterCreateRecipe"
             onClick={createIngredientFunction}
           >
-            Crear receta
+            Modificar receta
           </Button>
         </div>
       </div>
@@ -428,7 +464,7 @@ function RecipeModify() {
           className="botonRegisterCreateRecipe"
           onClick={createIngredientFunction}
         >
-          Crear receta
+          Modificar receta
         </Button>
       </div>
     </div>

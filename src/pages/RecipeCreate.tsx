@@ -105,6 +105,10 @@ function RecipeCreate() {
       newErrors.instructions = 'Las instrucciones son requeridas.';
       valid = false;
     }
+    else if (recipe.instructions[0] === '') {
+      newErrors.instructions = 'Las instrucciones son requeridas.';
+      valid = false;
+    }
     if (selectedIngredient.length === 0) {
       newErrors.selectedIngredient = 'Debe seleccionar al menos un ingrediente.';
       valid = false;
