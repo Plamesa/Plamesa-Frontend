@@ -15,7 +15,7 @@ import { IngredientInterface, RecipeInterface } from '../utils/interfaces.ts';
 import ingredientService from '../services/IngredientService.ts';
 import { FoodType, IngredientRecipe } from '../utils/enums.ts';
 import recipeService from '../services/RecipeService.ts';
-import './RecipeModify.css'
+import './RecipeCreate.css'
 import userService from '../services/UserService.ts';
 
 function capitalizeFirstLetter(string: string) {

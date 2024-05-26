@@ -16,10 +16,10 @@ import { Card, CardContent, CardMedia, Typography, Button } from '@mui/material'
 import { FoodGroup, Nutrient, NutrientsTypes } from '../utils/enums';
 import './IngredientCard.css'
 import { useNavigate } from 'react-router-dom';
-import { IngredientInterface } from '../utils/interfaces';
+import { GETIngredientInterface, IngredientInterface } from '../utils/interfaces';
 
 interface IngredientCardProps {
-  ingredient: IngredientInterface;
+  ingredient: GETIngredientInterface;
 }
 
 const foodGroupImages: { [key in FoodGroup]: string } = {

@@ -21,7 +21,7 @@ function Recipes() {
   const [filters, setFilters] = useState({
     foodType: '',
     allergen: '',
-    maxPrice: maxPrice, // Precio máximo inicial
+    maxPrice: maxPrice,
     favoriteRecipes: false,
     userRecipes: false
   });
@@ -222,8 +222,17 @@ function Recipes() {
                         checked={filters.favoriteRecipes}
                         onChange={handleSwitchChange}
                         name="favoriteRecipes"
-                        color="primary"
-                        sx={{ color: '#545454' }}
+                        sx={{
+                          '& .MuiSwitch-switchBase': {
+                            color: '#545454',
+                            '&.Mui-checked': {
+                              color: '#333333',
+                              '& + .MuiSwitch-track': {
+                                backgroundColor: '#333333',
+                              },
+                            },
+                          },
+                        }}
                       />
                     }
                     label="Mostrar Favoritos"
@@ -238,14 +247,24 @@ function Recipes() {
                         checked={filters.userRecipes}
                         onChange={handleSwitchChange}
                         name="userRecipes"
-                        color="primary"
-                        sx={{ color: '#545454' }}
+                        sx={{
+                          '& .MuiSwitch-switchBase': {
+                            color: '#545454',
+                            '&.Mui-checked': {
+                              color: '#333333',
+                              '& + .MuiSwitch-track': {
+                                backgroundColor: '#333333',
+                              },
+                            },
+                          },
+                        }}
                       />
                     }
                     label="Mostrar Mis Recetas"
                   />
                 </MenuItem>
               ),
+
               <MenuItem key="clearFilters">
                 <Button variant="contained" className='cleanFiltersButton' onClick={() => setFilters({ foodType: '', allergen: '', maxPrice: maxPrice, favoriteRecipes: false, userRecipes: false })}>
                   Limpiar Filtros

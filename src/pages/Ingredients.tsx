@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import ingredientService from '../services/IngredientService';
 import IngredientCard from '../components/IngredientCard';
-import { IngredientInterface } from '../utils/interfaces';
-import { FormControl, InputLabel, Select, MenuItem, Slider, Button, TextField, Box, IconButton, Menu } from '@mui/material';
+import { GETIngredientInterface, IngredientInterface } from '../utils/interfaces';
+import { FormControl, InputLabel, Select, MenuItem, Slider, Button, TextField, Box, IconButton, Menu, FormControlLabel, Switch } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { Allergen, FoodGroup } from '../utils/enums';
 import { useNavigate } from 'react-router-dom';
 import './Ingredients.css'; 
+import userService from '../services/UserService';
 
 function Ingredients() {
+  const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
-  const [ingredients, setIngredients] = useState<IngredientInterface[]>([]);
-  const [filteredIngredients, setFilteredIngredients] = useState<IngredientInterface[]>([]);
+  const [ingredients, setIngredients] = useState<GETIngredientInterface[]>([]);
+  const [filteredIngredients, setFilteredIngredients] = useState<GETIngredientInterface[]>([]);
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(30);
   const [filters, setFilters] = useState({
     foodGroup: '',
     allergen: '',
-    maxPrice: maxPrice // Precio máximo inicial
+    maxPrice: maxPrice, 
+    userIngredients: false
   });
 
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -72,7 +75,7 @@ function Ingredients() {
   }, [searchTerm, ingredients]);
 
 
-  const applyFilters = () => {
+  const applyFilters = async () => {
     let filteredData = ingredients;
 
     // Filtrar por término de búsqueda
@@ -95,6 +98,12 @@ function Ingredients() {
     // Filtrar por precio máximo
     filteredData = filteredData.filter(ingredient => ingredient.estimatedCost <= filters.maxPrice);
 
+    if (token && filters.userIngredients) {
+      const userResponse = await userService.getUserInfo(token);
+      const userID = userResponse.data._id;
+      filteredData = filteredData.filter(ingredient => ingredient.ownerUser._id === userID);
+    }
+
     setFilteredIngredients(filteredData);
   };
 
@@ -109,6 +118,11 @@ function Ingredients() {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = event.target;
+    setFilters({ ...filters, [name]: checked });
   };
 
 
@@ -138,69 +152,96 @@ function Ingredients() {
             onClose={handleMenuClose}
             className="filtersMenu"
           >
-            <MenuItem>
-              <FormControl fullWidth>
-                <InputLabel id="foodGroup-label">Grupo de Alimentos</InputLabel>
-                <Select
-                  labelId="foodGroup-label"
-                  id="foodGroup-select"
-                  value={filters.foodGroup}
-                  name="foodGroup"
-                  onChange={handleFilterChange}
-                >
-                  <MenuItem value="">Todos</MenuItem>
-                  {Object.values(FoodGroup).map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </MenuItem>
+            {[
+              <MenuItem key="foodGroup">
+                <FormControl fullWidth>
+                  <InputLabel id="foodGroup-label">Grupo de Alimentos</InputLabel>
+                  <Select
+                    labelId="foodGroup-label"
+                    id="foodGroup-select"
+                    value={filters.foodGroup}
+                    name="foodGroup"
+                    onChange={handleFilterChange}
+                  >
+                    <MenuItem value="">Todos</MenuItem>
+                    {Object.values(FoodGroup).map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </MenuItem>,
 
-            <MenuItem>
-              <FormControl fullWidth>
-                <InputLabel id="allergen-label">Alérgenos</InputLabel>
-                <Select
-                  labelId="allergen-label"
-                  id="allergen-select"
-                  value={filters.allergen}
-                  name="allergen"
-                  onChange={handleFilterChange}
-                >
-                  <MenuItem value="">Todos</MenuItem>
-                  {Object.values(Allergen).map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </MenuItem>
+              <MenuItem key="allergen">
+                <FormControl fullWidth>
+                  <InputLabel id="allergen-label">Alérgenos</InputLabel>
+                  <Select
+                    labelId="allergen-label"
+                    id="allergen-select"
+                    value={filters.allergen}
+                    name="allergen"
+                    onChange={handleFilterChange}
+                  >
+                    <MenuItem value="">Todos</MenuItem>
+                    {Object.values(Allergen).map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </MenuItem>,
 
-            <MenuItem>
-              <FormControl fullWidth>
-                <InputLabel id="maxPrice-label">Precio Máximo</InputLabel>
-                <Slider
-                  aria-labelledby="maxPrice-label"
-                  value={filters.maxPrice}
-                  onChange={handleMaxPriceChange}
-                  valueLabelDisplay="auto"
-                  step={1}
-                  marks
-                  min={minPrice}
-                  max={maxPrice}
-                  className="filtersSlider"
-                  sx={{ml: 0, color: '#545454', mb: 1}}
-                />
-              </FormControl>
-            </MenuItem>
+              <MenuItem key="maxPrice">
+                <FormControl fullWidth>
+                  <InputLabel id="maxPrice-label">Precio Máximo</InputLabel>
+                  <Slider
+                    aria-labelledby="maxPrice-label"
+                    value={filters.maxPrice}
+                    onChange={handleMaxPriceChange}
+                    valueLabelDisplay="auto"
+                    step={1}
+                    marks
+                    min={minPrice}
+                    max={maxPrice}
+                    className="filtersSlider"
+                    sx={{ml: 0, color: '#545454', mb: 1}}
+                  />
+                </FormControl>
+              </MenuItem>,
+              token && (
+                  <MenuItem key="userIngredients">
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={filters.userIngredients}
+                          onChange={handleSwitchChange}
+                          name="userIngredients"
+                          sx={{
+                            '& .MuiSwitch-switchBase': {
+                              color: '#545454',
+                              '&.Mui-checked': {
+                                color: '#333333',
+                                '& + .MuiSwitch-track': {
+                                  backgroundColor: '#333333',
+                                },
+                              },
+                            },
+                          }}
+                        />
+                      }
+                      label="Mostrar Mis Ingredientes"
+                    />
+                  </MenuItem>
+                ),
             
-            <MenuItem>
-              <Button variant="contained" className='cleanFiltersButton' onClick={() => setFilters({ foodGroup: '', allergen: '', maxPrice: maxPrice })}>
-                Limpiar Filtros
-              </Button>
-            </MenuItem>
+              <MenuItem key="clearFilters">
+                <Button variant="contained" className='cleanFiltersButton' onClick={() => setFilters({ foodGroup: '', allergen: '', maxPrice: maxPrice, userIngredients: false })}>
+                  Limpiar Filtros
+                </Button>
+              </MenuItem>
+            ]}
           </Menu>
         </Box>
 

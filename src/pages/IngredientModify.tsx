@@ -345,9 +345,9 @@ function IngredientModify() {
       </div>
 
     
-      <div className="topContainer">
-        <div className="container2FormAccount">
-          <div className="form2ContentAccount">
+      <div className="topContainerCreateIngredient">
+        <div className="container2FormCreateIngredient">
+          <div className="form2ContentCreateIngredient">
             <Box>
               <Typography variant="h5" component="h2">
                 Información Nutricional
