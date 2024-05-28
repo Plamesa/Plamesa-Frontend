@@ -4,6 +4,7 @@ import ingredientService from '../services/IngredientService';
 import { ActivityLevel, Allergen, FoodGroup, Gender, NutrientsTypes, getUnitFromName } from '../utils/enums';
 import { GETIngredientInterface, UserInfoInterface } from '../utils/interfaces';
 import { Box, Button, Grid, TextField, Tooltip, Typography } from '@mui/material';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import LacteoImg from '../assets/foodGroups/lacteos.svg';
 import HuevosImg from '../assets/foodGroups/huevos.svg';
 import CarnicosImg from '../assets/foodGroups/carnicos.svg';
@@ -32,9 +33,9 @@ import SesamoAllergenImg from '../assets/allergens/sesamo.svg';
 import DioxidoAzufreAllergenImg from '../assets/allergens/dioxidoAzufre.svg';
 import AltramucesAllergenImg from '../assets/allergens/altramuces.svg';
 import MoluscosAllergenImg from '../assets/allergens/moluscos.svg';
-
-import './IngredientDetails.css'
 import userService from '../services/UserService';
+import { generateIngredientsPDF } from '../utils/generatePDF';
+import './IngredientDetails.css'
 
 const foodGroupImages: { [key in FoodGroup]: string } = {
   [FoodGroup.Lacteos]: LacteoImg,
@@ -170,8 +171,6 @@ function IngredientDetails() {
   }
 
 
-
-
   return (
     <Grid container className="ingredientDetailContainer">
       <Grid item xs={4} md={3} className="leftSection">
@@ -184,7 +183,7 @@ function IngredientDetails() {
             <strong>Grupo de alimentos:</strong> <br></br> {ingredient.foodGroup}
           </Typography>
           <Typography variant="body1" color="textSecondary" component="p">
-            <strong>Coste:</strong> <br></br> {ingredient.estimatedCost * amount / ingredient.amount}€
+            <strong>Coste:</strong> <br></br> {(ingredient.estimatedCost * amount / ingredient.amount).toFixed(2)}€
           </Typography>
           <Typography variant="body1" color="textSecondary" component="p">
             <strong>Usuario propietario:</strong> <br></br> {capitalizeFirstLetter(ingredient.ownerUser.username)}
@@ -195,9 +194,15 @@ function IngredientDetails() {
 
 
       <Grid item xs={12} md={9} className="rightSection">
-        <Typography variant="h2" component="h1">
-          {capitalizeFirstLetter(ingredient.name)}
-        </Typography>
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Typography variant="h2" component="h1">
+            {capitalizeFirstLetter(ingredient.name)}
+          </Typography>
+  
+          <Box onClick={() => generateIngredientsPDF(ingredient, amount)} sx={{ cursor: 'pointer', pl: 1}}>
+            <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} />
+          </Box>
+        </Box>
 
         <Box display="flex" alignItems="center" sx={{ mb: 5 }}>
           <Typography variant="body1" component="p">

@@ -4,6 +4,8 @@ import ingredientService from '../services/IngredientService';
 import { ActivityLevel, Allergen, FoodGroup, FoodType, Gender, NutrientsTypes, getUnitFromName } from '../utils/enums';
 import { GETIngredientInterface, GETRecipeInterface, UserInfoInterface } from '../utils/interfaces';
 import { Box, Button, Grid, TextField, Tooltip, Typography } from '@mui/material';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import { jsPDF } from 'jspdf';
 import EntranteImg from '../assets/foodType/entrante.svg';
 import PrincipalImg from '../assets/foodType/principal.svg';
 import PostreImg from '../assets/foodType/postre.svg';
@@ -26,6 +28,7 @@ import userService from '../services/UserService';
 import './RecipeDetails.css'
 import recipeService from '../services/RecipeService';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
+import { generateRecipePDF } from '../utils/generatePDF';
 
 const foodTypeImages: { [key in FoodType]: string } = {
   [FoodType.Entrante]: EntranteImg,
@@ -182,7 +185,7 @@ function RecipeDetails() {
             <strong>Tiempo de preparación:</strong> <br></br> {recipe.preparationTime} min
           </Typography>
           <Typography variant="body1" color="textSecondary" component="p">
-            <strong>Coste:</strong> <br></br> {recipe.estimatedCost * services / recipe.numberService}€
+            <strong>Coste:</strong> <br></br> {(recipe.estimatedCost * services / recipe.numberService).toFixed(2)}€
           </Typography>
           <Typography variant="body1" color="textSecondary" component="p">
             <strong>Usuario propietario:</strong> <br></br> {capitalizeFirstLetter(recipe.ownerUser.username)}
@@ -197,11 +200,16 @@ function RecipeDetails() {
           <Typography variant="h2" component="h1">
             {capitalizeFirstLetter(recipe.name)}
           </Typography>
-          {token && (
-            <Box onClick={handleFavoriteClick} sx={{ cursor: 'pointer', pl: 1}}>
-              {isFavorite ? <Favorite sx={{ color: '#BC4B51', fontSize: 50 }} /> : <FavoriteBorder sx={{ fontSize: 50 }}/>}
+          <Box display="flex" alignItems="center">
+            {token && (
+              <Box onClick={handleFavoriteClick} sx={{ cursor: 'pointer', pl: 1}}>
+                {isFavorite ? <Favorite sx={{ color: '#BC4B51', fontSize: 50 }} /> : <FavoriteBorder sx={{ fontSize: 50 }}/>}
+              </Box>
+            )}
+            <Box onClick={() => generateRecipePDF(recipe, services)} sx={{ cursor: 'pointer', pl: 1}}>
+              <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} />
             </Box>
-          )}
+          </Box>
         </Box>
 
         <Box display="flex" alignItems="center" sx={{ mb: 5 }}>
@@ -274,7 +282,7 @@ function RecipeDetails() {
                   recipe.cookware.map((utensil, index) => (
                     <li key={index}>
                       <Typography variant="body1" component="p">
-                        {utensil}
+                        {capitalizeFirstLetter(utensil)}
                       </Typography>
                     </li>
                   ))

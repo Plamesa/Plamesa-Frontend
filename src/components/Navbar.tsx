@@ -27,10 +27,10 @@ const pages: Page[] = [
   { name: 'Planificador', route: '/planner' },
 ];
 
-const settingsUnauthenticated: Page[] = [{ name: 'Login', route: '/login' }];
+const settingsUnauthenticated: Page[] = [{ name: 'Iniciar Sesión', route: '/login' }];
 const settingsAuthenticated: Page[] = [
-  { name: 'Account', route: '/account' },
-  { name: 'Logout', route: '/logout' },
+  { name: 'Cuenta', route: '/account' },
+  { name: 'Cerrar Sesión', route: '/logout' },
 ];
 
 function Navbar() {
@@ -140,7 +140,7 @@ function Navbar() {
           </Box>
 
           <Box sx={{ flexGrow: 0}}>
-            <Tooltip title="Open settings">
+            <Tooltip title="Opciones perfil">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 {isAuthenticated ? 
                   <img src={IconUserLog} alt="Logo" className="navbar-userIcon"/> : 
@@ -168,9 +168,9 @@ function Navbar() {
               ? settingsAuthenticated.map(({ name, route }) => (
                   <MenuItem
                     key={name}
-                    onClick={name === 'Logout' ? handleLogout : handleCloseUserMenu} // Usar handleLogout para "Logout"
+                    onClick={name === 'Cerrar Sesión' ? handleLogout : handleCloseUserMenu} // Usar handleLogout para "Logout"
                   >
-                    {name === 'Logout' ? <span className="navbar-routes-menu">{name}</span> : <Link to={route} className="navbar-routes-menu">{name}</Link>} {/* Sin Link para Logout */}
+                    {name === 'Cerrar Sesión' ? <span className="navbar-routes-menu">{name}</span> : <Link to={route} className="navbar-routes-menu">{name}</Link>} {/* Sin Link para Logout */}
                   </MenuItem>
                 ))
               : settingsUnauthenticated.map(({ name, route }) => (
