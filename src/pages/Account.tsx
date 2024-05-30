@@ -19,13 +19,10 @@ import ingredientService from '../services/IngredientService.ts';
 import { ActivityLevel, Allergen, Diet, Gender } from '../utils/enums.ts';
 import { IngredientInterface, UserInfoInterface } from '../utils/interfaces.ts';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { capitalizeFirstLetter } from '../utils/utils';
 
 // Lista de ingredientes para excluir
 let ingredients: { _id: string; name: string }[] = []
-
-function capitalizeFirstLetter(string: string) {
-  return string.replace(/\b\w/g, (char) => char.toUpperCase());
-}
 
 function Account() {
   const [userInfo, setUserInfo] = useState<UserInfoInterface>({

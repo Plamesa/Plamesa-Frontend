@@ -15,6 +15,7 @@ import Recipes from './pages/Recipes';
 import RecipeDetails from './pages/RecipeDetails';
 import RecipeCreate from './pages/RecipeCreate';
 import RecipeModify from './pages/RecipeModify';
+import RecipesSearchIngredient from './pages/RecipeSearchIngredient';
 
 const router = createBrowserRouter([
   {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
       {
         path: "recipes/modify/:_id", 
         element: <RecipeModify />
+      },
+      {
+        path: "recipessearch", 
+        element: <RecipesSearchIngredient />
       },
     ],
   },

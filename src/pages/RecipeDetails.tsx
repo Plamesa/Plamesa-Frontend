@@ -29,6 +29,7 @@ import './RecipeDetails.css'
 import recipeService from '../services/RecipeService';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
 import { generateRecipePDF } from '../utils/generatePDF';
+import { capitalizeFirstLetter } from '../utils/utils';
 
 const foodTypeImages: { [key in FoodType]: string } = {
   [FoodType.Entrante]: EntranteImg,
@@ -52,11 +53,6 @@ const allergensImages: { [key in Allergen]: string } = {
   [Allergen.Altramuces]: AltramucesAllergenImg,
   [Allergen.Moluscos]: MoluscosAllergenImg,
 };
-
-
-function capitalizeFirstLetter(string: string) {
-  return string.replace(/\b\w/g, (char) => char.toUpperCase());
-}
 
 function RecipeDetails() {
   const { _id } = useParams<{ _id: string }>(); // Obtener id de parametros de la URL

@@ -35,6 +35,7 @@ import AltramucesAllergenImg from '../assets/allergens/altramuces.svg';
 import MoluscosAllergenImg from '../assets/allergens/moluscos.svg';
 import userService from '../services/UserService';
 import { generateIngredientsPDF } from '../utils/generatePDF';
+import { capitalizeFirstLetter } from '../utils/utils';
 import './IngredientDetails.css'
 
 const foodGroupImages: { [key in FoodGroup]: string } = {
@@ -70,10 +71,6 @@ const allergensImages: { [key in Allergen]: string } = {
   [Allergen.Moluscos]: MoluscosAllergenImg,
 };
 
-
-function capitalizeFirstLetter(string: string) {
-  return string.replace(/\b\w/g, (char) => char.toUpperCase());
-}
 
 function IngredientDetails() {
   const { _id } = useParams<{ _id: string }>(); // OObtener id de parametros de la URL

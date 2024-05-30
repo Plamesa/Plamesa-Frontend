@@ -1,10 +1,7 @@
 import { jsPDF } from 'jspdf';
 import { GETIngredientInterface, GETRecipeInterface } from './interfaces';
 import { NutrientsTypes, getUnitFromName } from './enums';
-
-function capitalizeFirstLetter(string: string) {
-  return string.replace(/\b\w/g, (char) => char.toUpperCase());
-}
+import { capitalizeFirstLetter } from '../utils/utils';
 
 const getNutrientIngredientAmount = (ingredient: GETIngredientInterface, nutrientName: NutrientsTypes): number => {
   const nutrient = ingredient.nutrients.find(n => n.name === nutrientName);
@@ -138,8 +135,11 @@ export function generateRecipePDF(recipe: GETRecipeInterface, services: number) 
   // Añadir título
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(32);
-  doc.text(capitalizeFirstLetter(recipe.name), marginNormalX, posY);
-  posY += 10;
+  const nameLines: string[] = doc.splitTextToSize(`${capitalizeFirstLetter(recipe.name)}`, 165);
+  nameLines.forEach(line => {
+    doc.text(line, marginNormalX, posY);
+    posY += 10;
+  });
 
   // Añadir información básica
   doc.setFontSize(12);
@@ -238,7 +238,7 @@ export function generateRecipePDF(recipe: GETRecipeInterface, services: number) 
   doc.setFont('helvetica', 'normal');
   posY += 10;
   doc.setFontSize(12);
-  if (recipe.comments !== '') {
+  if (recipe.comments) {
     posY = needNewPage(posY, doc, 20);
     const comments: string[] = doc.splitTextToSize(recipe.comments, 165);
     comments.forEach(line => {
@@ -248,6 +248,7 @@ export function generateRecipePDF(recipe: GETRecipeInterface, services: number) 
     });
   } else {
     doc.text('No tiene comentarios', marginExtraLargeX, posY);
+    posY += 10;
   }
   posY += 5;
 

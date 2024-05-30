@@ -7,6 +7,7 @@ import { FoodType, NutrientsTypes } from '../utils/enums';
 import './RecipeCard.css'
 import { useNavigate } from 'react-router-dom';
 import { GETRecipeInterface, RecipeInterface } from '../utils/interfaces';
+import { capitalizeFirstLetter } from '../utils/utils';
 
 interface RecipeCardProps {
   recipe: GETRecipeInterface;
@@ -17,10 +18,6 @@ const foodTypeImages: { [key in FoodType]: string } = {
   [FoodType.PlatoPrincipal]: PrincipalImg,
   [FoodType.Postre]: PostreImg
 };
-
-function capitalizeFirstLetter(string: string) {
-  return string.replace(/\b\w/g, (char) => char.toUpperCase());
-}
 
 function RecipeCard({ recipe }: RecipeCardProps) {
   const foodTypeImage = foodTypeImages[recipe.foodType as FoodType];

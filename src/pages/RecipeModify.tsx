@@ -17,11 +17,7 @@ import { FoodType, IngredientRecipe } from '../utils/enums.ts';
 import recipeService from '../services/RecipeService.ts';
 import './RecipeCreate.css'
 import userService from '../services/UserService.ts';
-
-function capitalizeFirstLetter(string: string) {
-  return string.replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
+import { capitalizeFirstLetter } from '../utils/utils';
 
 function RecipeModify() {
   const { _id } = useParams<{ _id: string }>(); // Obtener id de parametros de la URL

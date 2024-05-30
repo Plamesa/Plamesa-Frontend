@@ -45,6 +45,12 @@ const recipeService = {
       },
     })
   },
+
+  searchRecipesPerIngredients(ingredients: string[]) {
+    return axios.post('http://localhost:3000/recipeSearchPerIngredients', {
+      ingredients: ingredients
+    });
+  }
 }
 
 export default recipeService

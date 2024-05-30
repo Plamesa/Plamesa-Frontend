@@ -16,12 +16,7 @@ import ingredientService from '../services/IngredientService.ts';
 import { FoodType, IngredientRecipe } from '../utils/enums.ts';
 import recipeService from '../services/RecipeService.ts';
 import './RecipeCreate.css'
-
-function capitalizeFirstLetter(string: string) {
-  return string.replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
-//let ingredients: { _id: string; name: string; unit: string; amount: string }[] = []
+import { capitalizeFirstLetter } from '../utils/utils';
 
 function RecipeCreate() {
   const token = localStorage.getItem('token');

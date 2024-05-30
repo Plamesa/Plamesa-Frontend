@@ -16,7 +16,8 @@ import { Card, CardContent, CardMedia, Typography, Button } from '@mui/material'
 import { FoodGroup, Nutrient, NutrientsTypes } from '../utils/enums';
 import './IngredientCard.css'
 import { useNavigate } from 'react-router-dom';
-import { GETIngredientInterface, IngredientInterface } from '../utils/interfaces';
+import { GETIngredientInterface } from '../utils/interfaces';
+import { capitalizeFirstLetter } from '../utils/utils';
 
 interface IngredientCardProps {
   ingredient: GETIngredientInterface;
@@ -37,10 +38,6 @@ const foodGroupImages: { [key in FoodGroup]: string } = {
   [FoodGroup.Miscelanea]: MiscelaneaImg,
   [FoodGroup.Otro]: OtroImg,
 };
-
-function capitalizeFirstLetter(string: string) {
-  return string.replace(/\b\w/g, (char) => char.toUpperCase());
-}
 
 function IngredientCard({ ingredient }: IngredientCardProps) {
   const foodGroupImage = foodGroupImages[ingredient.foodGroup as FoodGroup];
