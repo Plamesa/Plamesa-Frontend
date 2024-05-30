@@ -44,6 +44,8 @@ function Ingredients() {
 
         const fetchedIngredients: IngredientInterface[] = response.data;
         if (fetchedIngredients.length > 0) {
+          fetchedIngredients.sort((a, b) => a.name.localeCompare(b.name));
+          
           const prices = fetchedIngredients.map(ingredient => ingredient.estimatedCost);
           const min = Math.min(...prices);
           const max = Math.max(...prices);
