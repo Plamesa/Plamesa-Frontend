@@ -38,11 +38,11 @@ function RecipeCard({ recipe }: RecipeCardProps) {
         </Typography>
         
         <Typography variant="body2" color="textSecondary" component="p">
-          {Math.round(recipe.estimatedCost)}€ /{recipe.numberService} pers
+          {recipe.estimatedCost.toFixed(2)}€ /{recipe.numberService} pers
         </Typography>
         {kcalNutrient && (
           <Typography variant="body2" color="textSecondary" component="p">
-            {kcalNutrient.amount} kcal /{recipe.numberService} pers
+            {kcalNutrient.amount.toFixed(2)} kcal /{recipe.numberService} pers
           </Typography>
         )}
         <Typography variant="body2" color="textSecondary" component="p">

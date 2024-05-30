@@ -57,11 +57,11 @@ function IngredientCard({ ingredient }: IngredientCardProps) {
           {capitalizeFirstLetter(ingredient.name)}
         </Typography>
         <Typography variant="body2" color="textSecondary" component="p">
-          {ingredient.estimatedCost}€ /{ingredient.amount}{ingredient.unit}
+          {ingredient.estimatedCost.toFixed(2)}€ /{ingredient.amount}{ingredient.unit}
         </Typography>
         {kcalNutrient && (
           <Typography variant="body2" color="textSecondary" component="p">
-            {kcalNutrient.amount} kcal/{ingredient.amount}{ingredient.unit}
+            {kcalNutrient.amount.toFixed(2)} kcal/{ingredient.amount}{ingredient.unit}
           </Typography>
         )}
         <Button onClick={() => navigate(`/ingredients/${ingredient._id}`)} variant="contained" className='buttonCard'>

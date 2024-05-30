@@ -93,7 +93,7 @@ function Recipes() {
 
     // Filtrar por alérgeno
     if (filters.allergen) {
-      filteredData = filteredData.filter(recipe => recipe.allergens.includes(filters.allergen));
+      filteredData = filteredData.filter(recipe => !recipe.allergens.includes(filters.allergen));
     }
 
     // Filtrar por precio máximo

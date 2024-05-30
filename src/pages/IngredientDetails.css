@@ -21,6 +21,7 @@
 
 .foodGroupImageDetails {
   border-radius: 10%;
+  max-width: 300px;
 }
 
 .textLeftContainerDetails {

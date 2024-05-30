@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import ingredientService from '../services/IngredientService';
-import { ActivityLevel, Allergen, FoodGroup, FoodType, Gender, NutrientsTypes, getUnitFromName } from '../utils/enums';
-import { GETIngredientInterface, GETRecipeInterface, UserInfoInterface } from '../utils/interfaces';
+import { Allergen,FoodType,  NutrientsTypes, getUnitFromName } from '../utils/enums';
+import {  GETRecipeInterface} from '../utils/interfaces';
 import { Box, Button, Grid, TextField, Tooltip, Typography } from '@mui/material';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { jsPDF } from 'jspdf';
 import EntranteImg from '../assets/foodType/entrante.svg';
 import PrincipalImg from '../assets/foodType/principal.svg';
 import PostreImg from '../assets/foodType/postre.svg';
@@ -168,7 +166,7 @@ function RecipeDetails() {
 
   return (
     <Grid container className="ingredientDetailContainer">
-      <Grid item xs={4} md={3} className="leftSection">
+      <Grid item xs={12} md={3} className="leftSection">
         <div className='imageLeftContainerDetails'>
           <img src={foodTypeImage} alt={recipe.name} className='foodGroupImageDetails'></img>
         </div>
@@ -297,41 +295,42 @@ function RecipeDetails() {
           <Typography variant="h5" component="h2">
             Instrucciones
           </Typography>
-          <ol>
-            {recipe.instructions.length > 0 ? (
-              recipe.instructions.map((instruction, index) => (
-                <li key={index}>
-                  <Typography variant="body1" component="p">
-                    {instruction}
-                  </Typography>
-                </li>
-              ))
-            ) : (
-              <Typography variant="body1" component="p">
-                No se han especificado instrucciones.
-              </Typography>
-            )}
-          </ol>
+          <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
+            <ol style={{ maxWidth: '100%' }}>
+              {recipe.instructions.length > 0 ? (
+                recipe.instructions.map((instruction, index) => (
+                  <li key={index} style={{ wordWrap: 'break-word' }}>
+                    <Typography variant="body1" component="p">
+                      {instruction}
+                    </Typography>
+                  </li>
+                ))
+              ) : (
+                <Typography variant="body1" component="p">
+                  No se han especificado instrucciones.
+                </Typography>
+              )}
+            </ol>
+          </div>
         </Box>
 
         {/* Sección de comentarios */}
-        <Box sx={{ mt: 4 }}>
+        <Box sx={{ mt: 4, maxWidth: '100%' }}>
           <Typography variant="h5" component="h2">
             Comentarios
           </Typography>
-          {recipe.comments ? (
-            <Typography variant="body1" component="p" sx={{ ml: 2 }}>
-              {recipe.comments}
-            </Typography>
-          ) : (
-            <Typography variant="body1" component="p" sx={{ ml: 2 }}>
-              No se han especificado comentarios.
-            </Typography>
-          )}
+          <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
+            {recipe.comments ? (
+              <Typography variant="body1" component="p" sx={{ ml: 2 }}>
+                {recipe.comments}
+              </Typography>
+            ) : (
+              <Typography variant="body1" component="p" sx={{ ml: 2 }}>
+                No se han especificado comentarios.
+              </Typography>
+            )}
+          </div>
         </Box>
-
-
-
 
 
         {/* Sección de nutrientes */}
@@ -362,7 +361,7 @@ function RecipeDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient)  * services / recipe.numberService} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {(getNutrientAmount(nutrient)  * services / recipe.numberService).toFixed(2)} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -385,7 +384,7 @@ function RecipeDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * services / recipe.numberService} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {(getNutrientAmount(nutrient) * services / recipe.numberService).toFixed(2)} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -405,7 +404,7 @@ function RecipeDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * services / recipe.numberService} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {(getNutrientAmount(nutrient) * services / recipe.numberService).toFixed(2)} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -421,7 +420,7 @@ function RecipeDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * services / recipe.numberService} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {(getNutrientAmount(nutrient) * services / recipe.numberService).toFixed(2)} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}

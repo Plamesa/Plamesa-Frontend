@@ -157,8 +157,11 @@ function IngredientDetails() {
               navigate('/ingredients');
               console.log(response)
             })
-            .catch((error: Error) => {
+            .catch((error) => {
               console.log(error)
+              if (error && error.response && error.response.data && error.response.data.error ) {
+                alert(error.response.data.error);
+              }
             })
           }
       } catch (error) {
@@ -170,7 +173,7 @@ function IngredientDetails() {
 
   return (
     <Grid container className="ingredientDetailContainer">
-      <Grid item xs={4} md={3} className="leftSection">
+      <Grid item xs={12} md={3} className="leftSection">
         <div className='imageLeftContainerDetails'>
           <img src={foodGroupImage} alt={ingredient.name} className='foodGroupImageDetails'></img>
         </div>
@@ -271,7 +274,7 @@ function IngredientDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient)  * amount / ingredient.amount} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {(getNutrientAmount(nutrient)  * amount / ingredient.amount).toFixed(2)} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -294,7 +297,7 @@ function IngredientDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * amount / ingredient.amount} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {(getNutrientAmount(nutrient) * amount / ingredient.amount).toFixed(2)} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -314,7 +317,7 @@ function IngredientDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * amount / ingredient.amount} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {(getNutrientAmount(nutrient) * amount / ingredient.amount).toFixed(2)} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}
@@ -330,7 +333,7 @@ function IngredientDetails() {
               ].map((nutrient) => (
                 <Box key={nutrient} sx={{ mb: 1 }}>
                   <Typography variant="body2">
-                    <strong>{nutrient}:</strong> {getNutrientAmount(nutrient) * amount / ingredient.amount} {getUnitFromName(nutrient)}
+                    <strong>{nutrient}:</strong> {(getNutrientAmount(nutrient) * amount / ingredient.amount).toFixed(2)} {getUnitFromName(nutrient)}
                   </Typography>
                 </Box>
               ))}

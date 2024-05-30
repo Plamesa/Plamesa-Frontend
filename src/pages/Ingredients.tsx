@@ -90,9 +90,9 @@ function Ingredients() {
       filteredData = filteredData.filter(ingredient => ingredient.foodGroup === filters.foodGroup);
     }
 
-    // Filtrar por alérgeno
+    // Filtrar por alérgenos
     if (filters.allergen) {
-      filteredData = filteredData.filter(ingredient => ingredient.allergens.includes(filters.allergen));
+      filteredData = filteredData.filter(ingredient => !ingredient.allergens.includes(filters.allergen));
     }
 
     // Filtrar por precio máximo
