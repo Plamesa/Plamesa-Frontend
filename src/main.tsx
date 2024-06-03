@@ -16,6 +16,8 @@ import RecipeDetails from './pages/RecipeDetails';
 import RecipeCreate from './pages/RecipeCreate';
 import RecipeModify from './pages/RecipeModify';
 import RecipesSearchIngredient from './pages/RecipeSearchIngredient';
+import Planner from './pages/Planner';
+import MenuDetails from './pages/MenuDetails';
 
 const router = createBrowserRouter([
   {
@@ -71,8 +73,13 @@ const router = createBrowserRouter([
         element: <RecipeModify />
       },
       {
-        path: "recipessearch", 
-        element: <RecipesSearchIngredient />
+        //path: "recipessearch", 
+        path: "planner", 
+        element: <Planner />
+      },
+      {
+        path: "menuDetails", 
+        element: <MenuDetails />
       },
     ],
   },

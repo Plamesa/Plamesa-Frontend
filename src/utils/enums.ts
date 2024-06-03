@@ -156,3 +156,10 @@ export interface IngredientRecipe {
   ingredientID: string;
   amount: number;
 }
+
+export interface RecipesPerDay {
+  recipeStarterID: string;
+  recipeMainDishID: string;
+  recipeDessertID: string;
+  bread: boolean
+}

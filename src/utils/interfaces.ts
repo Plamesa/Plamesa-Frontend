@@ -1,4 +1,4 @@
-import { ActivityLevel, Allergen, FoodGroup, FoodType, Gender, IngredientRecipe, Nutrient } from "./enums";
+import { ActivityLevel, Allergen, FoodGroup, FoodType, Gender, IngredientRecipe, Nutrient, RecipesPerDay } from "./enums";
 
 export interface UserInfoInterface {
   username: string;
@@ -81,4 +81,48 @@ export interface GETRecipeInterface {
   allergens: string[];
   nutrients: Nutrient[];
   ownerUser: { _id: string, username: string };
+}
+
+export interface MenuDocumentInterface {
+  numberDays: number;
+  numberServices: number;
+  recipesPerDay: RecipesPerDay[];
+  caloriesTarget: number;
+  allergies: Allergen[];
+  diet: string;
+  excludedIngredients: string[]; 
+  avergageEstimatedCost: number;
+  ownerUser: string;
+}
+
+export interface NutritionResponse {
+  basalMetabolism: number;
+  totalKcal: number;
+  kcalPerMeal: number;
+  macros: {
+    proteinMin: {
+      amount: number;
+      percentage: number;
+    };
+    proteinMax: {
+      amount: number;
+      percentage: number;
+    };
+    carbohydrateMin: {
+      amount: number;
+      percentage: number;
+    };
+    carbohydrateMax: {
+      amount: number;
+      percentage: number;
+    };
+    fatMin: {
+      amount: number;
+      percentage: number;
+    };
+    fatMax: {
+      amount: number;
+      percentage: number;
+    };
+  };
 }

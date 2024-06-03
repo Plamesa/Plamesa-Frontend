@@ -1,0 +1,135 @@
+.topContainerIntroPlanner {
+  justify-content: center; /* Centra horizontalmente */
+  padding: 1rem; /* Relleno para el contenedor */
+  padding-bottom: 0;
+  height: auto; /* Altura del viewport */
+  display: flex;
+}
+
+.containerIntroPlanner {
+  display: flex;
+  flex-direction: row; /* Tres columnas inicialmente */
+  justify-content: space-between; /* Espacio entre columnas */
+  width: 1160px;
+}
+
+.containerFormPlanner {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: flex-start; /* Alinea al inicio para evitar que se centren verticalmente */
+  flex-direction: row; /* Dos columnas inicialmente */
+  gap: 80px; /* Espacio entre columnas */
+  padding: 1rem; /* Relleno para el contenedor */
+  height: auto; /* Altura del viewport */
+  align-items: center;
+}
+
+.formContentPlanner {
+  background-color: #5B8E7D; /* Fondo para el contenido interno */
+  padding: 20px; /* Relleno interno */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Sombra para efecto visual */
+  width: 500px; /* Ancho fijo para cada columna */
+  text-align: center; /* Centra el texto */
+}
+
+
+
+.rowAccount {
+  display: flex; /* Activa Flexbox */
+  flex-direction: row; /* Coloca elementos en fila */
+  justify-content: space-between; /* Espacio entre elementos */
+  align-items: center; /* Alinea elementos al centro verticalmente */
+  gap: 1rem; /* Espacio entre elementos */
+}
+
+.textFieldAccount {
+  background-color: #FDF8EB;
+  color: #545454;
+  border-radius: 4px;
+  text-align: left;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+.topContainer {
+  justify-content: center; /* Centra horizontalmente */
+  padding: 1rem; /* Relleno para el contenedor */
+  height: auto; /* Altura del viewport */
+  display: flex;
+}
+
+.container2FormAccount {
+  display: flex;
+  flex-direction: row; /* Tres columnas inicialmente */
+  justify-content: space-between; /* Espacio entre columnas */
+  background-color: #5B8E7D;
+  border-radius: 10px; /* Bordes redondeados */
+  width: 1160px;
+}
+
+.form2ContentAccount {
+  flex: 1; /* Permite que las columnas se ajusten */
+  padding: 20px; /* Relleno */
+  border-radius: 10px; /* Bordes redondeados */
+  text-align: center; /* Centra el texto */
+}
+
+.labelAccount{
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: #545454;
+  padding-bottom: 0.25rem;
+}
+
+.buttonContainer {
+  justify-content: center; /* Centra horizontalmente */
+  padding-top: 0.5rem !important;
+  padding: 1rem;
+  height: auto; /* Altura del viewport */
+  display: flex;
+}
+
+.errorContainer {
+  background-color: #FDF8EB;
+  text-align: justify;
+  padding-top: 3px;
+  padding-left: 14px;
+  padding-right: 14px;
+  border-radius: 4px;
+}
+
+.botonRegisterAccount {
+  background-color: #545454 !important;
+  color: #FFFFFF;
+  margin: 0.5rem !important;
+}
+.botonDeleteAccount {
+  background-color: #bc4b51 !important;
+  color: #FFFFFF;
+  margin: 0.5rem !important;
+}
+
+
+@media (max-width: 550px) {
+  .containerFormPlanner {
+    display: flex;
+    flex-direction: column; /* Cambia a una sola columna */
+    align-items: center; /* Centra las columnas */
+    gap: 32px;
+  }
+
+  .formContentPlanner {
+    width: auto; /* Ancho fijo para cada columna */
+  }
+
+  .container2FormAccount {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .form2ContentAccount {
+    padding: 0px; /* Relleno */
+  }
+}

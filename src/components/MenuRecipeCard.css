@@ -1,0 +1,21 @@
+.cardContainer {
+  width: 200px;
+  border-radius: 15px !important;
+}
+
+.CardTextContainer {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  color: #545454;
+  text-align: center;
+}
+
+.buttonCard{
+  background-color: #5B8E7D !important;
+  color: #FFFFFF;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+  margin: 0.5rem !important;
+}
