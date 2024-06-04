@@ -8,7 +8,7 @@ import recipeService from '../services/RecipeService';
 import MenuRecipeCard from '../components/MenuRecipeCard';
 import { capitalizeFirstLetter } from '../utils/utils';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { Save } from '@mui/icons-material';
+import { LocalGroceryStoreOutlined, Save } from '@mui/icons-material';
 import ingredientService from '../services/IngredientService';
 import menuService from '../services/MenuService';
 
@@ -139,6 +139,9 @@ function MenuDetails() {
           )}
           <Box /*onClick={() => generateRecipePDF(recipe, services)}*/ sx={{ cursor: 'pointer', pl: 1}}>
             <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} />
+          </Box>
+          <Box onClick={() => navigate('/groceryList', { state: { recipes: recipes, title: menuData.title, numberServices: menuData.numberServices }})} sx={{ cursor: 'pointer', pl: 1}}>
+            <LocalGroceryStoreOutlined sx={{ color: '#545454', fontSize: 50 }} />
           </Box>
         </Box>
       </Box>

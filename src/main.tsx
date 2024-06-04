@@ -20,6 +20,7 @@ import Planner from './pages/Planner';
 import MenuDetails from './pages/MenuDetails';
 import MenuShow from './pages/MenuShow';
 import Menus from './pages/Menus';
+import GroceryList from './pages/GroceryList';
 
 const router = createBrowserRouter([
   {
@@ -91,7 +92,10 @@ const router = createBrowserRouter([
         path: "menus/:_id", 
         element: <MenuShow />
       },
-      
+      {
+        path: "groceryList", 
+        element: <GroceryList />
+      },
     ],
   },
 ]);

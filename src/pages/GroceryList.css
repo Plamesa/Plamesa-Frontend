@@ -1,0 +1,36 @@
+/* GroceryList.css */
+.globalContainer {
+  padding: 20px;
+}
+
+.weekContainer {
+  margin: 20px;
+  margin-top: 0;
+}
+
+.groceryListContainer {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 20px;
+}
+
+.groceryItem {
+  flex: 1 1 calc(33.333% - 20px); /* 3 columnas en pantallas grandes */
+  box-sizing: border-box;
+}
+
+.groceryItem .MuiCheckbox-root.Mui-checked {
+  color: #545454; /* Cambia a cualquier color que prefieras */
+}
+
+@media (max-width: 1200px) {
+  .groceryItem {
+    flex: 1 1 calc(50% - 20px); /* 2 columnas en pantallas medianas */
+  }
+}
+
+@media (max-width: 600px) {
+  .groceryItem {
+    flex: 1 1 100%; /* 1 columna en pantallas pequeñas */
+  }
+}
