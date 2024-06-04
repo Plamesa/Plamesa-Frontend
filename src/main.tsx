@@ -18,6 +18,7 @@ import RecipeModify from './pages/RecipeModify';
 import RecipesSearchIngredient from './pages/RecipeSearchIngredient';
 import Planner from './pages/Planner';
 import MenuDetails from './pages/MenuDetails';
+import MenuShow from './pages/MenuShow';
 
 const router = createBrowserRouter([
   {
@@ -80,6 +81,10 @@ const router = createBrowserRouter([
       {
         path: "menuDetails", 
         element: <MenuDetails />
+      },
+      {
+        path: "menuShow/:_id", 
+        element: <MenuShow />
       },
     ],
   },

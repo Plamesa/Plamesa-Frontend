@@ -8,11 +8,16 @@
   width: 100%;
 }
 
+.TextFieldTitleMenu {
+  font-size: 2rem !important;
+}
+
 .daysContainer {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
+  margin-bottom: 1rem;
 }
 
 .dayColumn {
@@ -35,4 +40,38 @@
 .dayColumn p {
   margin-top: 10px;
   /*font-weight: bold;*/
+}
+
+.buttonContainerMenuDetails{
+  justify-content: center; /* Centra horizontalmente */
+  height: auto; /* Altura del viewport */
+  display: flex;
+}
+
+.botonSaveMenu {
+  background-color: #545454 !important;
+  color: #FFFFFF;
+  margin: 0.5rem !important;
+}
+
+.menuInfo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  vertical-align: middle;
+  background-color: #f9f9f9;
+  margin: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: auto;
+  text-align: center;
+}
+
+@media (max-width: 550px) {
+  .menuInfo {
+    flex-direction: column;
+  }
 }

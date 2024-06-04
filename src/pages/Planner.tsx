@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import './Planner.css'
 import ingredientService from '../services/IngredientService.ts';
 import { ActivityLevel, Allergen, Diet, Gender } from '../utils/enums.ts';
-import { IngredientInterface, MenuDocumentInterface, NutritionResponse, UserInfoInterface } from '../utils/interfaces.ts';
+import { IngredientInterface, MenuInterface, NutritionResponse, UserInfoInterface } from '../utils/interfaces.ts';
 import { capitalizeFirstLetter } from '../utils/utils';
 import plannerService from '../services/PlannerService.ts';
 
@@ -23,7 +23,8 @@ function Planner() {
   const [ingredients, setIngredients] = useState<{ _id: string; name: string; unit: string; amount: string }[]>([])
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [menuInfo, setMenuInfo] = useState<MenuDocumentInterface>({
+  const [menuInfo, setMenuInfo] = useState<MenuInterface>({
+    title: '',
     numberDays: 0,
     numberServices: 0,
     recipesPerDay: [],

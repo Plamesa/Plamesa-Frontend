@@ -1,4 +1,4 @@
-import { ActivityLevel, Allergen, FoodGroup, FoodType, Gender, IngredientRecipe, Nutrient, RecipesPerDay } from "./enums";
+import { ActivityLevel, Allergen, FoodGroup, FoodType, GETRecipesPerDay, Gender, IngredientRecipe, Nutrient, RecipesPerDay } from "./enums";
 
 export interface UserInfoInterface {
   username: string;
@@ -83,10 +83,24 @@ export interface GETRecipeInterface {
   ownerUser: { _id: string, username: string };
 }
 
-export interface MenuDocumentInterface {
+export interface MenuInterface {
+  title: string;
   numberDays: number;
   numberServices: number;
   recipesPerDay: RecipesPerDay[];
+  caloriesTarget: number;
+  allergies: Allergen[];
+  diet: string;
+  excludedIngredients: string[]; 
+  avergageEstimatedCost: number;
+  ownerUser: string;
+}
+
+export interface GETMenuInterface {
+  title: string;
+  numberDays: number;
+  numberServices: number;
+  recipesPerDay: GETRecipesPerDay[];
   caloriesTarget: number;
   allergies: Allergen[];
   diet: string;

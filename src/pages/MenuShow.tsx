@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { GETRecipeInterface, MenuInterface, RecipeInterface } from '../utils/interfaces';
+import { GETMenuInterface, RecipeInterface } from '../utils/interfaces';
 import { Button, TextField, Box } from '@mui/material';
-import { Allergen, FoodType, NutrientsTypes, RecipesPerDay } from '../utils/enums';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { NutrientsTypes } from '../utils/enums';
+import { useNavigate, useParams } from 'react-router-dom';
 import './MenuDetails.css'; 
 import recipeService from '../services/RecipeService';
 import MenuRecipeCard from '../components/MenuRecipeCard';
@@ -12,16 +12,26 @@ import { Save } from '@mui/icons-material';
 import ingredientService from '../services/IngredientService';
 import menuService from '../services/MenuService';
 
-function MenuDetails() {
+function MenuShow() {
   const token = localStorage.getItem('token');
-  const location = useLocation();
   const navigate = useNavigate();
-  const { menu } = location.state as { menu: MenuInterface };
+  const { _id } = useParams<{ _id: string }>();
 
   const [recipes, setRecipes] = useState<Array<{ starter: RecipeInterface, main: RecipeInterface, dessert: RecipeInterface }>>([]);
   const [totals, setTotals] = useState<Array<{ kcal: number, macros: { protein: number, carbs: number, fat: number }, cost: number }>>([]);
-  const [menuData, setMenuData] = useState<MenuInterface>({...menu, avergageEstimatedCost: 0});
   const [ingredients, setIngredients] = useState<{_id: string, name: string}[]>([]);
+  const [menuData, setMenuData] = useState<GETMenuInterface>({
+    title: '',
+    numberDays: 0,
+    numberServices: 0,
+    recipesPerDay: [],
+    caloriesTarget: 0,
+    allergies: [],
+    diet: '',
+    excludedIngredients: [],
+    avergageEstimatedCost: 0,
+    ownerUser: ''
+  });
 
   const getNutrientAmount = (nutrientName: NutrientsTypes, recipe: RecipeInterface): number => {
     const nutrient = recipe.nutrients.find(n => n.name === nutrientName);
@@ -44,33 +54,39 @@ function MenuDetails() {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const newRecipes = await Promise.all(menu.recipesPerDay.map(async (recipe) => {
-          const starter = await recipeService.getRecipeById(recipe.recipeStarterID);
-          const main = await recipeService.getRecipeById(recipe.recipeMainDishID);
-          const dessert = await recipeService.getRecipeById(recipe.recipeDessertID);
-          return { starter: starter.data, main: main.data, dessert: dessert.data };
-        }));
-        setRecipes(newRecipes);
+        if (_id && token) {
+          const menuResponse = await menuService.getMenuById(_id, token);
+          const menuResponseData: GETMenuInterface = menuResponse.data;
+          setMenuData(menuResponseData);
 
-        let avergageCost: number = 0;
-        const newTotals = newRecipes.map(dayRecipes => {
-          const numberServices = menu.numberServices;
-          const starter = calculateRecipeValues(dayRecipes.starter, numberServices);
-          const main = calculateRecipeValues(dayRecipes.main, numberServices);
-          const dessert = calculateRecipeValues(dayRecipes.dessert, numberServices);
-
-          const kcal = starter.kcal + main.kcal + dessert.kcal;
-          const macros = {
-            protein: starter.macros.protein + main.macros.protein + dessert.macros.protein,
-            carbs: starter.macros.carbs + main.macros.carbs + dessert.macros.carbs,
-            fat: starter.macros.fat + main.macros.fat + dessert.macros.fat
-          };
-          const cost = starter.cost + main.cost + dessert.cost;
-          avergageCost += cost;
-          return { kcal, macros, cost };
-        });
-        setTotals(newTotals);
-        menuData.avergageEstimatedCost = avergageCost / menuData.numberDays;
+          const newRecipes = await Promise.all(menuResponseData.recipesPerDay.map(async (recipe) => {
+            const starter = await recipeService.getRecipeById(recipe.recipeStarterID._id);
+            const main = await recipeService.getRecipeById(recipe.recipeMainDishID._id);
+            const dessert = await recipeService.getRecipeById(recipe.recipeDessertID._id);
+            return { starter: starter.data, main: main.data, dessert: dessert.data };
+          }));
+          setRecipes(newRecipes);
+  
+          let avergageCost: number = 0;
+          const newTotals = newRecipes.map(dayRecipes => {
+            const numberServices = menuResponseData.numberServices;
+            const starter = calculateRecipeValues(dayRecipes.starter, numberServices);
+            const main = calculateRecipeValues(dayRecipes.main, numberServices);
+            const dessert = calculateRecipeValues(dayRecipes.dessert, numberServices);
+  
+            const kcal = starter.kcal + main.kcal + dessert.kcal;
+            const macros = {
+              protein: starter.macros.protein + main.macros.protein + dessert.macros.protein,
+              carbs: starter.macros.carbs + main.macros.carbs + dessert.macros.carbs,
+              fat: starter.macros.fat + main.macros.fat + dessert.macros.fat
+            };
+            const cost = starter.cost + main.cost + dessert.cost;
+            avergageCost += cost;
+            return { kcal, macros, cost };
+          });
+          setTotals(newTotals);
+          menuData.avergageEstimatedCost = avergageCost / menuData.numberDays;
+        }
       } catch (error) {
         console.error('Error al obtener la información de las recetas: ', error);
       }
@@ -78,7 +94,7 @@ function MenuDetails() {
 
     const fetchIngredients = async () => {
       try {
-        const newIngredients = await Promise.all(menu.excludedIngredients.map(async (ingredient) => {
+        const newIngredients = await Promise.all(menuData.excludedIngredients.map(async (ingredient) => {
           const ingredientObj = await ingredientService.getIngredientById(ingredient);
           return { _id: ingredientObj.data._id, name: ingredientObj.data.name }
         }));
@@ -91,18 +107,17 @@ function MenuDetails() {
 
     fetchRecipes();
     fetchIngredients();
-  }, [menu]);
+  }, [_id, token]);
 
   async function saveMenu() {
     try {
-      if (token) {
+      if (token && _id) {
         await menuService
-          .saveMenu(token, menuData)
+          .modifyMenu(_id, token, {title: menuData.title})
           .then((response) => {
             console.log(response);
             if(response.status == 201) {
               alert('Menu guardado');
-              navigate('/menuShow/' + response.data._id)
             }
           })
           .catch((error) => {
@@ -116,6 +131,30 @@ function MenuDetails() {
       console.error('Error al actualizar favorito:', error);
     }
   };
+
+
+  async function deleteMenuFunction() {
+    var resultado = window.confirm('¿Estas seguro de elimiar el menu?')
+    if (resultado === true) {
+      try {
+        if (token && _id) {
+          await menuService
+            .deleteMenu(_id, token)
+            .then((response) => {
+              alert('Menu eliminado')
+              navigate('/planner');
+              console.log(response)
+            })
+            .catch((error) => {
+              console.log(error)
+              alert('Ocurrió un error inesperado. Por favor, inténtelo de nuevo.');
+            })
+          }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 
 
   return (
@@ -148,9 +187,9 @@ function MenuDetails() {
         {recipes.map((dayRecipes, index) => (
           <div key={index} className="dayColumn">
             <h2>Día {index + 1}</h2>
-            <MenuRecipeCard recipe={dayRecipes.starter} numberServices={menu.numberServices} />
-            <MenuRecipeCard recipe={dayRecipes.main} numberServices={menu.numberServices} />
-            <MenuRecipeCard recipe={dayRecipes.dessert} numberServices={menu.numberServices} />
+            <MenuRecipeCard recipe={dayRecipes.starter} numberServices={menuData.numberServices} />
+            <MenuRecipeCard recipe={dayRecipes.main} numberServices={menuData.numberServices} />
+            <MenuRecipeCard recipe={dayRecipes.dessert} numberServices={menuData.numberServices} />
             <div className="totals">
               <p><strong>Coste Estimado:</strong> {(totals[index]?.cost).toFixed(2)} €</p>
               <p><strong>Energia:</strong> {(totals[index]?.kcal).toFixed(2)} kcal</p>
@@ -215,9 +254,17 @@ function MenuDetails() {
         >
           Guardar menu
         </Button>
+
+        <Button
+            variant="contained"
+            className="botonDeleteIngredient"
+            onClick={deleteMenuFunction} 
+          >
+            Borrar menu
+          </Button>
       </div>
     </div>
   );
 }
 
-export default MenuDetails;
+export default MenuShow;

@@ -163,3 +163,10 @@ export interface RecipesPerDay {
   recipeDessertID: string;
   bread: boolean
 }
+
+export interface GETRecipesPerDay {
+  recipeStarterID: {_id: string, name: string};
+  recipeMainDishID: {_id: string, name: string};
+  recipeDessertID: {_id: string, name: string};
+  bread: boolean
+}
