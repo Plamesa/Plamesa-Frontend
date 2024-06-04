@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { GETRecipeInterface, IngredientInterface, RecipeInterface } from '../utils/interfaces';
+import { GETRecipeInterface, IngredientAmount, IngredientInterface, RecipeInterface } from '../utils/interfaces';
 import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import './GroceryList.css'; 
 import { capitalizeFirstLetter } from '../utils/utils';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { CheckBox } from '@mui/icons-material';
-
-interface IngredientAmount {
-  _id: string;
-  name: string;
-  unit: string
-  amount: number;
-}
+import { generateGroceryListPDF } from '../utils/generatePDF';
 
 function GroceryList() {
   const location = useLocation();
@@ -74,8 +68,8 @@ function GroceryList() {
           </Typography>
 
         <Box display="flex" alignItems="center">
-          <Box /*onClick={() => generateRecipePDF(recipe, services)}*/ sx={{ cursor: 'pointer', pl: 1}}>
-            <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} />
+          <Box onClick={() => generateGroceryListPDF(groupedIngredients, totalWeeklyEstimatedCosts, title)} sx={{ cursor: 'pointer', pl: 1}}>
+            <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} titleAccess='Generar PDF'/>
           </Box>
         </Box>
       </Box>

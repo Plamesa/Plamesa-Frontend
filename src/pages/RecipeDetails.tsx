@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Allergen,FoodType,  NutrientsTypes, getUnitFromName } from '../utils/enums';
 import {  GETRecipeInterface} from '../utils/interfaces';
 import { Box, Button, Grid, TextField, Tooltip, Typography } from '@mui/material';
@@ -25,7 +25,7 @@ import MoluscosAllergenImg from '../assets/allergens/moluscos.svg';
 import userService from '../services/UserService';
 import './RecipeDetails.css'
 import recipeService from '../services/RecipeService';
-import { Favorite, FavoriteBorder } from '@mui/icons-material';
+import { Favorite, FavoriteBorder, Style } from '@mui/icons-material';
 import { generateRecipePDF } from '../utils/generatePDF';
 import { capitalizeFirstLetter } from '../utils/utils';
 
@@ -56,6 +56,7 @@ function RecipeDetails() {
   const { _id } = useParams<{ _id: string }>(); // Obtener id de parametros de la URL
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [foodTypeImage, setFoodTypeImage] = useState<string>();
   const [services, setServices] = useState<number>(0);
@@ -91,9 +92,15 @@ function RecipeDetails() {
         if (_id) {
           const recipeResponse = await recipeService.getRecipeById(_id);
           setRecipe(recipeResponse.data);
-          setServices(recipeResponse.data.numberService);
           setFoodTypeImage(foodTypeImages[recipeResponse.data.foodType as FoodType]);
-
+          if (location.state) {
+            const { numberServicesState } = location.state as { numberServicesState: number };
+            setServices(numberServicesState);
+          }
+          else {
+            setServices(recipeResponse.data.numberService);
+          }
+          
           // Obtener la información del usuario si hay un token
           if (token) {
             const userResponse = await userService.getUserInfo(token);
@@ -197,11 +204,11 @@ function RecipeDetails() {
           <Box display="flex" alignItems="center">
             {token && (
               <Box onClick={handleFavoriteClick} sx={{ cursor: 'pointer', pl: 1}}>
-                {isFavorite ? <Favorite sx={{ color: '#BC4B51', fontSize: 50 }} /> : <FavoriteBorder sx={{ fontSize: 50 }}/>}
+                {isFavorite ? <Favorite sx={{ color: '#BC4B51', fontSize: 50 }} titleAccess='Favorita'/> : <FavoriteBorder sx={{ fontSize: 50 }} titleAccess='Favorita'/>}
               </Box>
             )}
             <Box onClick={() => generateRecipePDF(recipe, services)} sx={{ cursor: 'pointer', pl: 1}}>
-              <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} />
+              <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} titleAccess='Generar PDF'/>
             </Box>
           </Box>
         </Box>
@@ -259,7 +266,7 @@ function RecipeDetails() {
               <ul>
                 {recipe.ingredients.map((ingredient, index) => (
                   <li key={index}>
-                    <Typography variant="body1" component="p">
+                    <Typography variant="body1" component="p" sx={{ cursor:'pointer', ":hover": {textDecoration: 'underline'}}} onClick={() => navigate(`/ingredients/${ingredient.ingredientID._id}`, { state: { amountState: ingredient.amount }})}>
                       <strong>{capitalizeFirstLetter(ingredient.ingredientID.name)}:</strong> {ingredient.amount * services / recipe.numberService} {ingredient.ingredientID.unit}
                     </Typography>
                   </li>

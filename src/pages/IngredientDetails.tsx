@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ingredientService from '../services/IngredientService';
 import { ActivityLevel, Allergen, FoodGroup, Gender, NutrientsTypes, getUnitFromName } from '../utils/enums';
 import { GETIngredientInterface, UserInfoInterface } from '../utils/interfaces';
@@ -76,6 +76,7 @@ function IngredientDetails() {
   const { _id } = useParams<{ _id: string }>(); // OObtener id de parametros de la URL
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [foodGroupImage, setFoodGroupImage] = useState<string>();
   const [amount, setAmount] = useState<number>(0);
@@ -120,8 +121,14 @@ function IngredientDetails() {
         if (_id) {
           const ingredientResponse = await ingredientService.getIngredientById(_id);
           setIngredient(ingredientResponse.data);
-          setAmount(ingredientResponse.data.amount);
           setFoodGroupImage(foodGroupImages[ingredientResponse.data.foodGroup as FoodGroup]);
+          if (location.state) {
+            const { amountState } = location.state as { amountState: number };
+            setAmount(amountState);
+          }
+          else {
+            setAmount(ingredientResponse.data.amount);
+          }
 
           // Obtener la información del usuario si hay un token
           if (token) {
@@ -200,7 +207,7 @@ function IngredientDetails() {
           </Typography>
   
           <Box onClick={() => generateIngredientsPDF(ingredient, amount)} sx={{ cursor: 'pointer', pl: 1}}>
-            <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} />
+            <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} titleAccess='Generar PDF'/>
           </Box>
         </Box>
 

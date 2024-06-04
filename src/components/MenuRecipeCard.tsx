@@ -33,7 +33,7 @@ function MenuRecipeCard({recipe, numberServices}: {recipe: RecipeInterface, numb
         <Typography variant="body2" color="textSecondary" component="p">
           {recipe.preparationTime} min
         </Typography>
-        <Button onClick={() => navigate(`/recipes/${recipe._id}`)} variant="contained" className='buttonCard'>
+        <Button onClick={() => navigate(`/recipes/${recipe._id}`, { state: { numberServicesState: numberServices }})} variant="contained" className='buttonCard'>
           Más Info
         </Button>
       </CardContent>

@@ -134,14 +134,14 @@ function MenuDetails() {
         <Box display="flex" alignItems="center">
           {token && (
             <Box onClick={saveMenu} sx={{ cursor: 'pointer', pl: 1}}>
-              <Save sx={{ color: '#545454', fontSize: 50 }} />
+              <Save sx={{ color: '#545454', fontSize: 50 }} titleAccess='Guardar Menu'/>
             </Box>
           )}
           <Box /*onClick={() => generateRecipePDF(recipe, services)}*/ sx={{ cursor: 'pointer', pl: 1}}>
-            <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} />
+            <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} titleAccess='Generar PDF'/>
           </Box>
           <Box onClick={() => navigate('/groceryList', { state: { recipes: recipes, title: menuData.title, numberServices: menuData.numberServices }})} sx={{ cursor: 'pointer', pl: 1}}>
-            <LocalGroceryStoreOutlined sx={{ color: '#545454', fontSize: 50 }} />
+            <LocalGroceryStoreOutlined sx={{ color: '#545454', fontSize: 50 }} titleAccess='Lista de la Compra'/>
           </Box>
         </Box>
       </Box>

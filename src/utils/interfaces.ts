@@ -141,3 +141,10 @@ export interface NutritionResponse {
     };
   };
 }
+
+export interface IngredientAmount {
+  _id: string;
+  name: string;
+  unit: string
+  amount: number;
+}

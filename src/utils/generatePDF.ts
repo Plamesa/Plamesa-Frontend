@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import { GETIngredientInterface, GETRecipeInterface } from './interfaces';
+import { GETIngredientInterface, GETRecipeInterface, IngredientAmount } from './interfaces';
 import { NutrientsTypes, getUnitFromName } from './enums';
 import { capitalizeFirstLetter } from '../utils/utils';
 
@@ -318,4 +318,53 @@ export function generateRecipePDF(recipe: GETRecipeInterface, services: number) 
   }
 
   doc.save(`${capitalizeFirstLetter(recipe.name)} PLAMESA.pdf`);
+};
+
+
+export function generateGroceryListPDF(ingredients: Array<{ [key: string]: IngredientAmount }>, weeklyEstimatedCost: number[], title: string) {
+  let posY: number = 20
+  const marginNormalX: number = 20
+  const marginLargeX: number = 25
+  const doc = new jsPDF();
+
+  // Añadir título
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(32);
+  const nameLines: string[] = doc.splitTextToSize(`Lista de la compra: ${capitalizeFirstLetter(title)}`, 165);
+  nameLines.forEach(line => {
+    doc.text(line, marginNormalX, posY);
+    posY += 10;
+  });
+
+  ingredients.forEach((weekIngredients, weekIndex) => {
+    posY = needNewPage(posY, doc);
+    posY += 15;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.text(`Semana ${weekIndex + 1} | Coste estimado: ${weeklyEstimatedCost[weekIndex].toFixed(2)}€`, marginNormalX, posY);
+    posY += 10;
+
+    const keys = Object.keys(weekIngredients);
+
+    keys.forEach((key, index) => {
+      posY = needNewPage(posY, doc);
+      const ingredient = weekIngredients[key];
+      if (index % 2 == 0) {
+        doc.rect(marginLargeX, posY - 3, 3, 3); // Checkbox
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(12);
+        doc.text(`${capitalizeFirstLetter(ingredient.name)}: ${(ingredient.amount).toFixed(2)} ${ingredient.unit}`, marginLargeX + 5, posY);
+      }
+      else {
+        doc.rect(90 + marginLargeX, posY - 3, 3, 3); // Checkbox
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(12);
+        doc.text(`${capitalizeFirstLetter(ingredient.name)}: ${(ingredient.amount).toFixed(2)} ${ingredient.unit}`, 90 + marginLargeX + 5, posY);
+        posY += 10;
+      }
+    });
+  });
+  
+  doc.save(`Lista Compra Menu ${capitalizeFirstLetter(title)} PLAMESA.pdf`);
 };
