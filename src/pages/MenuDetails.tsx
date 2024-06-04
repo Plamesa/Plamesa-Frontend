@@ -102,7 +102,7 @@ function MenuDetails() {
             console.log(response);
             if(response.status == 201) {
               alert('Menu guardado');
-              navigate('/menuShow/' + response.data._id)
+              navigate('/menus/' + response.data._id)
             }
           })
           .catch((error) => {

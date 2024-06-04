@@ -30,6 +30,7 @@ const pages: Page[] = [
 const settingsUnauthenticated: Page[] = [{ name: 'Iniciar Sesión', route: '/login' }];
 const settingsAuthenticated: Page[] = [
   { name: 'Cuenta', route: '/account' },
+  { name: 'Mis Menus', route: '/menus' },
   { name: 'Cerrar Sesión', route: '/logout' },
 ];
 

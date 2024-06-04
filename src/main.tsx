@@ -19,6 +19,7 @@ import RecipesSearchIngredient from './pages/RecipeSearchIngredient';
 import Planner from './pages/Planner';
 import MenuDetails from './pages/MenuDetails';
 import MenuShow from './pages/MenuShow';
+import Menus from './pages/Menus';
 
 const router = createBrowserRouter([
   {
@@ -83,9 +84,14 @@ const router = createBrowserRouter([
         element: <MenuDetails />
       },
       {
-        path: "menuShow/:_id", 
+        path: "menus", 
+        element: <Menus />
+      },
+      {
+        path: "menus/:_id", 
         element: <MenuShow />
       },
+      
     ],
   },
 ]);

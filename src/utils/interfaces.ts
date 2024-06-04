@@ -97,6 +97,7 @@ export interface MenuInterface {
 }
 
 export interface GETMenuInterface {
+  _id: string,
   title: string;
   numberDays: number;
   numberServices: number;

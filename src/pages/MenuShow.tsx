@@ -8,7 +8,7 @@ import recipeService from '../services/RecipeService';
 import MenuRecipeCard from '../components/MenuRecipeCard';
 import { capitalizeFirstLetter } from '../utils/utils';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { Save } from '@mui/icons-material';
+import { LocalGroceryStoreSharp, Save } from '@mui/icons-material';
 import ingredientService from '../services/IngredientService';
 import menuService from '../services/MenuService';
 
@@ -21,6 +21,7 @@ function MenuShow() {
   const [totals, setTotals] = useState<Array<{ kcal: number, macros: { protein: number, carbs: number, fat: number }, cost: number }>>([]);
   const [ingredients, setIngredients] = useState<{_id: string, name: string}[]>([]);
   const [menuData, setMenuData] = useState<GETMenuInterface>({
+    _id: '',
     title: '',
     numberDays: 0,
     numberServices: 0,
@@ -142,7 +143,7 @@ function MenuShow() {
             .deleteMenu(_id, token)
             .then((response) => {
               alert('Menu eliminado')
-              navigate('/planner');
+              navigate('/menus');
               console.log(response)
             })
             .catch((error) => {
@@ -178,6 +179,9 @@ function MenuShow() {
           )}
           <Box /*onClick={() => generateRecipePDF(recipe, services)}*/ sx={{ cursor: 'pointer', pl: 1}}>
             <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} />
+          </Box>
+          <Box /*onClick={() => generateRecipePDF(recipe, services)}*/ sx={{ cursor: 'pointer', pl: 1}}>
+            <LocalGroceryStoreSharp sx={{ color: '#545454', fontSize: 50 }} />
           </Box>
         </Box>
       </Box>
