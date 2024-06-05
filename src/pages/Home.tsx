@@ -1,4 +1,3 @@
-import React from 'react';
 import './Home.css'; // Archivo CSS para animaciones
 import logo from '../assets/HOMELOGO.png';
 

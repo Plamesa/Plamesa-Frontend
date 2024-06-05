@@ -373,8 +373,6 @@ export function generateGroceryListPDF(ingredients: Array<{ [key: string]: Ingre
 export function generateMenuPDF(menu: GETMenuInterface, ingredients: {_id: string, name: string}[]) {
   let posY: number = 20
   const marginNormalX: number = 20
-  const marginLargeX: number = 25
-  const marginExtraLargeX: number = 30
   const lineSpacing = 10;
   const doc = new jsPDF();
 

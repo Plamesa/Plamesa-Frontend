@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardContent, Typography, Button } from '@mui/material';
 import './MenuRecipeCard.css'
 import { useNavigate } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { GETMenuInterface, RecipeInterface } from '../utils/interfaces';
 import { Button, TextField, Box } from '@mui/material';
 import { NutrientsTypes } from '../utils/enums';

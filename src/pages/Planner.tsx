@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import userService from '../services/UserService.ts';
 import MenuItem from '@mui/material/MenuItem';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import './Planner.css'
 import ingredientService from '../services/IngredientService.ts';
 import { ActivityLevel, Allergen, Diet, Gender } from '../utils/enums.ts';
-import { IngredientInterface, MenuInterface, NutritionResponse, UserInfoInterface } from '../utils/interfaces.ts';
+import { IngredientInterface, MenuInterface, UserInfoInterface } from '../utils/interfaces.ts';
 import { capitalizeFirstLetter } from '../utils/utils';
 import plannerService from '../services/PlannerService.ts';
 

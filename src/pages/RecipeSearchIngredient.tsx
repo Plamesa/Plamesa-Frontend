@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { GETRecipeInterface, IngredientInterface } from '../utils/interfaces';
 import { Button, TextField, Autocomplete } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import recipeService from '../services/RecipeService';
 import RecipeCard from '../components/RecipeCard';
 import ingredientService from '../services/IngredientService';

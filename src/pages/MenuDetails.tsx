@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { GETMenuInterface, GETRecipeInterface, MenuInterface, RecipeInterface } from '../utils/interfaces';
+import { useState, useEffect } from 'react';
+import { GETMenuInterface, RecipeInterface } from '../utils/interfaces';
 import { Button, TextField, Box } from '@mui/material';
-import { Allergen, FoodType, NutrientsTypes, RecipesPerDay } from '../utils/enums';
+import {  NutrientsTypes } from '../utils/enums';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './MenuDetails.css'; 
 import recipeService from '../services/RecipeService';

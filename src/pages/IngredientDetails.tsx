@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ingredientService from '../services/IngredientService';
-import { ActivityLevel, Allergen, FoodGroup, Gender, NutrientsTypes, getUnitFromName } from '../utils/enums';
-import { GETIngredientInterface, UserInfoInterface } from '../utils/interfaces';
+import { Allergen, FoodGroup,  NutrientsTypes, getUnitFromName } from '../utils/enums';
+import { GETIngredientInterface } from '../utils/interfaces';
 import { Box, Button, Grid, TextField, Tooltip, Typography } from '@mui/material';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import LacteoImg from '../assets/foodGroups/lacteos.svg';
@@ -94,20 +94,6 @@ function IngredientDetails() {
     nutrients: [],
     ownerUser: { _id: '', username: '' }
   });
-  const [userInfo, setUserInfo] = useState<UserInfoInterface>({
-    username: '',
-    name: '',
-    password: '',
-    email: '',
-    gender: Gender.Vacio,
-    weight: 0,
-    height: 0,
-    age: 0,
-    activityLevel: ActivityLevel.Vacio,
-    allergies: [],
-    diet: '',
-    excludedIngredients: []
-  });
 
   const getNutrientAmount = (nutrientName: NutrientsTypes): number => {
     const nutrient = ingredient.nutrients.find(n => n.name === nutrientName);
@@ -133,7 +119,7 @@ function IngredientDetails() {
           // Obtener la información del usuario si hay un token
           if (token) {
             const userResponse = await userService.getUserInfo(token);
-            setUserInfo(userResponse.data);
+            //setUserInfo(userResponse.data);
 
             if (userResponse.data.role === 'Administrador') {
               setIsAdmin(true);

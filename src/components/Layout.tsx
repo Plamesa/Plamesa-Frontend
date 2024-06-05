@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
 import useAuth from '../utils/useAuth';
 import Navbar from '../components/Navbar';

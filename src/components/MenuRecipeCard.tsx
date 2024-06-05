@@ -1,14 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import EntranteImg from '../assets/foodType/entrante.svg';
-import PrincipalImg from '../assets/foodType/principal.svg';
-import PostreImg from '../assets/foodType/postre.svg';
-import { Card, CardContent, CardMedia, Typography, Button } from '@mui/material';
-import { FoodType, NutrientsTypes } from '../utils/enums';
+import { Card, CardContent, Typography, Button } from '@mui/material';
+import { NutrientsTypes } from '../utils/enums';
 import './MenuRecipeCard.css'
 import { useNavigate } from 'react-router-dom';
-import { GETRecipeInterface, RecipeInterface } from '../utils/interfaces';
+import { RecipeInterface } from '../utils/interfaces';
 import { capitalizeFirstLetter } from '../utils/utils';
-import recipeService from '../services/RecipeService';
 
 
 function MenuRecipeCard({recipe, numberServices}: {recipe: RecipeInterface, numberServices: number}) {

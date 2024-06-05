@@ -114,7 +114,7 @@ function Ingredients() {
     setFilters({ ...filters, [name!]: value });
   };
 
-  const handleMaxPriceChange = (event: Event, newValue: number | number[]) => {
+  const handleMaxPriceChange = (_: Event, newValue: number | number[]) => {
     setFilters({ ...filters, maxPrice: newValue as number });
   };
 

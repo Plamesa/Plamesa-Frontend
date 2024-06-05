@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import LacteoImg from '../assets/foodGroups/lacteos.svg';
 import HuevosImg from '../assets/foodGroups/huevos.svg';
 import CarnicosImg from '../assets/foodGroups/carnicos.svg';
@@ -13,7 +12,7 @@ import BebidasImg from '../assets/foodGroups/bebidas.svg';
 import MiscelaneaImg from '../assets/foodGroups/otros.svg';
 import OtroImg from '../assets/foodGroups/otros.svg';
 import { Card, CardContent, CardMedia, Typography, Button } from '@mui/material';
-import { FoodGroup, Nutrient, NutrientsTypes } from '../utils/enums';
+import { FoodGroup, NutrientsTypes } from '../utils/enums';
 import './IngredientCard.css'
 import { useNavigate } from 'react-router-dom';
 import { GETIngredientInterface } from '../utils/interfaces';

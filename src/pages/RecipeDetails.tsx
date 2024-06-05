@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Allergen,FoodType,  NutrientsTypes, getUnitFromName } from '../utils/enums';
 import {  GETRecipeInterface} from '../utils/interfaces';
@@ -25,10 +25,9 @@ import MoluscosAllergenImg from '../assets/allergens/moluscos.svg';
 import userService from '../services/UserService';
 import './RecipeDetails.css'
 import recipeService from '../services/RecipeService';
-import { Favorite, FavoriteBorder, Style } from '@mui/icons-material';
+import { Favorite, FavoriteBorder } from '@mui/icons-material';
 import { generateRecipePDF } from '../utils/generatePDF';
 import { capitalizeFirstLetter } from '../utils/utils';
-import ingredientService from '../services/IngredientService';
 
 const foodTypeImages: { [key in FoodType]: string } = {
   [FoodType.Entrante]: EntranteImg,

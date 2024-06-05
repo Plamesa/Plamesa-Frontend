@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { GETRecipeInterface, IngredientAmount, IngredientInterface, RecipeInterface } from '../utils/interfaces';
+import { useState, useEffect } from 'react';
+import { GETRecipeInterface, IngredientAmount } from '../utils/interfaces';
 import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import './GroceryList.css'; 
 import { capitalizeFirstLetter } from '../utils/utils';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { CheckBox } from '@mui/icons-material';
 import { generateGroceryListPDF } from '../utils/generatePDF';
 
 function GroceryList() {
