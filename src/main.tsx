@@ -100,7 +100,7 @@ const router = createBrowserRouter([
         element: <GroceryList />
       },
     ],
-  },
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
