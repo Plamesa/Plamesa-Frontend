@@ -1,11 +1,11 @@
 import axios from 'axios'
 
-const ENDPOINT_PATH = process.env.ENDPOINT_PATH + '/menu' || 'http://localhost:3000/menu'
+const ENDPOINT_PATH = process.env.ENDPOINT_PATH || 'http://localhost:3000'
 
 const menuService = {
   getMenuById(_id: string, token: string,) {
     return axios.get(
-      ENDPOINT_PATH + '/' + _id,
+      ENDPOINT_PATH  + '/menu/' + _id,
       {
         headers: {
           'Authorization': `Bearer ${token}`, // Agregar la cabecera de autorización
@@ -16,7 +16,7 @@ const menuService = {
 
   saveMenu(token: string, menu: {}) {
     return axios.post(
-      ENDPOINT_PATH, // URL de la solicitud
+      ENDPOINT_PATH + '/menu', // URL de la solicitud
       menu,   // El cuerpo de la solicitud
       {
         headers: {
@@ -29,7 +29,7 @@ const menuService = {
 
   modifyMenu(_id: string, token: string, menu: {}) {
     return axios.patch(
-      ENDPOINT_PATH + '/' + _id,
+      ENDPOINT_PATH + '/menu/' + _id,
       menu,
       {
         headers: {
@@ -41,7 +41,7 @@ const menuService = {
   },
 
   deleteMenu(_id: string, token: string) {
-    return axios.delete(ENDPOINT_PATH + '/' + _id, {
+    return axios.delete(ENDPOINT_PATH + '/menu/' + _id, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },

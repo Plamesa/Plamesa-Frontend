@@ -1,19 +1,19 @@
 import axios from 'axios'
 
-const ENDPOINT_PATH = process.env.ENDPOINT_PATH + '/ingredient' || 'http://localhost:3000/ingredient'
+const ENDPOINT_PATH = process.env.ENDPOINT_PATH || 'http://localhost:3000'
 
 const ingredientService = {
   getIngredients() {
-    return axios.get(ENDPOINT_PATH)
+    return axios.get(ENDPOINT_PATH  + '/ingredient')
   },
 
   getIngredientById(_id: string) {
-    return axios.get(ENDPOINT_PATH + '/' + _id)
+    return axios.get(ENDPOINT_PATH  + '/ingredient/' + _id)
   },
 
   createIngredient(token: string, ingredient: {}) {
     return axios.post(
-      ENDPOINT_PATH, // URL de la solicitud
+      ENDPOINT_PATH  + '/ingredient', // URL de la solicitud
       ingredient,   // El cuerpo de la solicitud
       {
         headers: {
@@ -26,7 +26,7 @@ const ingredientService = {
 
   modifyIngredient(_id: string, token: string, ingredient: {}) {
     return axios.patch(
-      ENDPOINT_PATH + '/' + _id,
+      ENDPOINT_PATH  + '/ingredient/' + _id,
       ingredient,
       {
         headers: {
@@ -38,7 +38,7 @@ const ingredientService = {
   },
 
   deleteIngredient(_id: string, token: string) {
-    return axios.delete(ENDPOINT_PATH + '/' + _id, {
+    return axios.delete(ENDPOINT_PATH  + '/ingredient/' + _id, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },

@@ -1,19 +1,19 @@
 import axios from 'axios'
 
-const ENDPOINT_PATH = process.env.ENDPOINT_PATH + '/recipe' || 'http://localhost:3000/recipe'
+const ENDPOINT_PATH = process.env.ENDPOINT_PATH || 'http://localhost:3000'
 
 const recipeService = {
   getRecipes() {
-    return axios.get(ENDPOINT_PATH)
+    return axios.get(ENDPOINT_PATH + '/recipe')
   },
 
   getRecipeById(_id: string) {
-    return axios.get(ENDPOINT_PATH + '/' + _id)
+    return axios.get(ENDPOINT_PATH + '/recipe/' + _id)
   },
 
   createRecipe(token: string, recipe: {}) {
     return axios.post(
-      ENDPOINT_PATH, // URL de la solicitud
+      ENDPOINT_PATH + '/recipe', // URL de la solicitud
       recipe,   // El cuerpo de la solicitud
       {
         headers: {
@@ -26,7 +26,7 @@ const recipeService = {
 
   modifyRecipe(_id: string, token: string, recipe: {}) {
     return axios.patch(
-      ENDPOINT_PATH + '/' + _id,
+      ENDPOINT_PATH + '/recipe/' + _id,
       recipe,
       {
         headers: {
@@ -38,7 +38,7 @@ const recipeService = {
   },
 
   deleteRecipe(_id: string, token: string) {
-    return axios.delete(ENDPOINT_PATH + '/' + _id, {
+    return axios.delete(ENDPOINT_PATH + '/recipe/' + _id, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -46,7 +46,7 @@ const recipeService = {
   },
 
   searchRecipesPerIngredients(ingredients: string[]) {
-    return axios.post('http://localhost:3000/recipeSearchPerIngredients', {
+    return axios.post(ENDPOINT_PATH + '/recipeSearchPerIngredients', {
       ingredients: ingredients
     });
   }

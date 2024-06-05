@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-const ENDPOINT_PATH = process.env.ENDPOINT_PATH + '/user' || 'http://localhost:3000/user'
+const ENDPOINT_PATH = process.env.ENDPOINT_PATH || 'http://localhost:3000'
 
 const userService = {
   getUserInfo(token: string) {
-    return axios.get(ENDPOINT_PATH, {
+    return axios.get(ENDPOINT_PATH + '/user', {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -13,7 +13,7 @@ const userService = {
 
   changeUserInfo(token: string, newUserInfo: {}) {
     return axios.patch(
-      ENDPOINT_PATH, // URL de la solicitud
+      ENDPOINT_PATH + '/user', // URL de la solicitud
       newUserInfo,   // El cuerpo de la solicitud
       {
         headers: {
@@ -25,7 +25,7 @@ const userService = {
   },
 
   deleteUser(token: string) {
-    return axios.delete(ENDPOINT_PATH, {
+    return axios.delete(ENDPOINT_PATH + '/user', {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -43,7 +43,7 @@ const userService = {
     }
 
     return await axios.patch(
-      ENDPOINT_PATH, // URL de la solicitud
+      ENDPOINT_PATH + '/user', // URL de la solicitud
       newFavoritesRecipesBody, // El cuerpo de la solicitud
       {
         headers: {
@@ -66,7 +66,7 @@ const userService = {
     }
 
     return await axios.patch(
-      ENDPOINT_PATH, // URL de la solicitud
+      ENDPOINT_PATH + '/user', // URL de la solicitud
       newFavoritesRecipesBody, // El cuerpo de la solicitud
       {
         headers: {
