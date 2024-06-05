@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GETRecipeInterface, MenuInterface, RecipeInterface } from '../utils/interfaces';
+import { GETMenuInterface, GETRecipeInterface, MenuInterface, RecipeInterface } from '../utils/interfaces';
 import { Button, TextField, Box } from '@mui/material';
 import { Allergen, FoodType, NutrientsTypes, RecipesPerDay } from '../utils/enums';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -11,16 +11,17 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { LocalGroceryStoreOutlined, Save } from '@mui/icons-material';
 import ingredientService from '../services/IngredientService';
 import menuService from '../services/MenuService';
+import { generateMenuPDF } from '../utils/generatePDF';
 
 function MenuDetails() {
   const token = localStorage.getItem('token');
   const location = useLocation();
   const navigate = useNavigate();
-  const { menu } = location.state as { menu: MenuInterface };
+  const { menu } = location.state as { menu: GETMenuInterface };
 
   const [recipes, setRecipes] = useState<Array<{ starter: RecipeInterface, main: RecipeInterface, dessert: RecipeInterface }>>([]);
   const [totals, setTotals] = useState<Array<{ kcal: number, macros: { protein: number, carbs: number, fat: number }, cost: number }>>([]);
-  const [menuData, setMenuData] = useState<MenuInterface>({...menu, avergageEstimatedCost: 0});
+  const [menuData, setMenuData] = useState<GETMenuInterface>({...menu, avergageEstimatedCost: 0});
   const [ingredients, setIngredients] = useState<{_id: string, name: string}[]>([]);
 
   const getNutrientAmount = (nutrientName: NutrientsTypes, recipe: RecipeInterface): number => {
@@ -45,16 +46,16 @@ function MenuDetails() {
     const fetchRecipes = async () => {
       try {
         const newRecipes = await Promise.all(menu.recipesPerDay.map(async (recipe) => {
-          const starter = await recipeService.getRecipeById(recipe.recipeStarterID);
-          const main = await recipeService.getRecipeById(recipe.recipeMainDishID);
-          const dessert = await recipeService.getRecipeById(recipe.recipeDessertID);
+          const starter = await recipeService.getRecipeById(recipe.recipeStarterID._id);
+          const main = await recipeService.getRecipeById(recipe.recipeMainDishID._id);
+          const dessert = await recipeService.getRecipeById(recipe.recipeDessertID._id);
           return { starter: starter.data, main: main.data, dessert: dessert.data };
         }));
         setRecipes(newRecipes);
 
         let avergageCost: number = 0;
         const newTotals = newRecipes.map(dayRecipes => {
-          const numberServices = menu.numberServices;
+          const numberServices = 1;
           const starter = calculateRecipeValues(dayRecipes.starter, numberServices);
           const main = calculateRecipeValues(dayRecipes.main, numberServices);
           const dessert = calculateRecipeValues(dayRecipes.dessert, numberServices);
@@ -137,7 +138,7 @@ function MenuDetails() {
               <Save sx={{ color: '#545454', fontSize: 50 }} titleAccess='Guardar Menu'/>
             </Box>
           )}
-          <Box /*onClick={() => generateRecipePDF(recipe, services)}*/ sx={{ cursor: 'pointer', pl: 1}}>
+          <Box onClick={() => generateMenuPDF(menuData, ingredients)} sx={{ cursor: 'pointer', pl: 1}}>
             <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} titleAccess='Generar PDF'/>
           </Box>
           <Box onClick={() => navigate('/groceryList', { state: { recipes: recipes, title: menuData.title, numberServices: menuData.numberServices }})} sx={{ cursor: 'pointer', pl: 1}}>
@@ -160,6 +161,7 @@ function MenuDetails() {
               <p><strong>Proteinas:</strong> {(totals[index]?.macros.protein).toFixed(2)} g</p>
               <p><strong>Carbohidratos:</strong> {(totals[index]?.macros.carbs).toFixed(2)} g</p>
               <p><strong>Grasas:</strong> {(totals[index]?.macros.fat).toFixed(2)} g</p>
+              <div style={{textAlign: 'center'}}><p>Valores por persona</p></div>
             </div>
           </div>
         ))}
@@ -169,7 +171,7 @@ function MenuDetails() {
         <p><strong>Número de Días:</strong><br></br> {menuData.numberDays} días</p>
         <p><strong>Número de Servicios:</strong><br></br> {menuData.numberServices} pers</p>
         <p><strong>Objetivo de Calorias:</strong><br></br> {(menuData.caloriesTarget).toFixed(2)} kcal</p>
-        <p><strong>Coste Medio:</strong><br></br> {(menuData.avergageEstimatedCost).toFixed(2)} €</p>
+        <p><strong>Coste Medio Persona:</strong><br></br> {(menuData.avergageEstimatedCost).toFixed(2)} €</p>
 
         {/* Allergies */}
         <div>

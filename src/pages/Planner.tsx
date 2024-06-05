@@ -162,6 +162,7 @@ function Planner() {
       console.log(planResponse);
 
       const generatedMenu = planResponse.data;
+      console.log(generatedMenu)
       navigate('/menuDetails', { state: { menu: generatedMenu } });
     } catch (error) {
       console.log(error);

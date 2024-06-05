@@ -11,6 +11,7 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { LocalGroceryStoreOutlined, Save } from '@mui/icons-material';
 import ingredientService from '../services/IngredientService';
 import menuService from '../services/MenuService';
+import { generateMenuPDF } from '../utils/generatePDF';
 
 function MenuShow() {
   const token = localStorage.getItem('token');
@@ -70,7 +71,7 @@ function MenuShow() {
   
           let avergageCost: number = 0;
           const newTotals = newRecipes.map(dayRecipes => {
-            const numberServices = menuResponseData.numberServices;
+            const numberServices = 1;
             const starter = calculateRecipeValues(dayRecipes.starter, numberServices);
             const main = calculateRecipeValues(dayRecipes.main, numberServices);
             const dessert = calculateRecipeValues(dayRecipes.dessert, numberServices);
@@ -177,7 +178,7 @@ function MenuShow() {
               <Save sx={{ color: '#545454', fontSize: 50 }} titleAccess='Guardar Menu'/>
             </Box>
           )}
-          <Box /*onClick={() => generateRecipePDF(recipe, services)}*/ sx={{ cursor: 'pointer', pl: 1}}>
+          <Box onClick={() => generateMenuPDF(menuData, ingredients)} sx={{ cursor: 'pointer', pl: 1}}>
             <PictureAsPdfIcon sx={{ color: '#545454', fontSize: 50 }} titleAccess='Generar PDF'/>
           </Box>
           <Box onClick={() => navigate('/groceryList', { state: { recipes: recipes, title: menuData.title, numberServices: menuData.numberServices }})} sx={{ cursor: 'pointer', pl: 1}}>
@@ -200,6 +201,7 @@ function MenuShow() {
               <p><strong>Proteinas:</strong> {(totals[index]?.macros.protein).toFixed(2)} g</p>
               <p><strong>Carbohidratos:</strong> {(totals[index]?.macros.carbs).toFixed(2)} g</p>
               <p><strong>Grasas:</strong> {(totals[index]?.macros.fat).toFixed(2)} g</p>
+              <div style={{textAlign: 'center'}}><p>Valores por persona</p></div>
             </div>
           </div>
         ))}
@@ -209,7 +211,7 @@ function MenuShow() {
         <p><strong>Número de Días:</strong><br></br> {menuData.numberDays} días</p>
         <p><strong>Número de Servicios:</strong><br></br> {menuData.numberServices} pers</p>
         <p><strong>Objetivo de Calorias:</strong><br></br> {(menuData.caloriesTarget).toFixed(2)} kcal</p>
-        <p><strong>Coste Medio:</strong><br></br> {(menuData.avergageEstimatedCost).toFixed(2)} €</p>
+        <p><strong>Coste Medio Persona:</strong><br></br> {(menuData.avergageEstimatedCost).toFixed(2)} €</p>
 
         {/* Allergies */}
         <div>

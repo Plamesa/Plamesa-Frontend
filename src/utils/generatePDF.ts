@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import { GETIngredientInterface, GETRecipeInterface, IngredientAmount } from './interfaces';
+import { GETIngredientInterface, GETMenuInterface, GETRecipeInterface, IngredientAmount } from './interfaces';
 import { NutrientsTypes, getUnitFromName } from './enums';
 import { capitalizeFirstLetter } from '../utils/utils';
 
@@ -367,4 +367,80 @@ export function generateGroceryListPDF(ingredients: Array<{ [key: string]: Ingre
   });
   
   doc.save(`Lista Compra Menu ${capitalizeFirstLetter(title)} PLAMESA.pdf`);
+};
+
+
+export function generateMenuPDF(menu: GETMenuInterface, ingredients: {_id: string, name: string}[]) {
+  let posY: number = 20
+  const marginNormalX: number = 20
+  const marginLargeX: number = 25
+  const marginExtraLargeX: number = 30
+  const lineSpacing = 10;
+  const doc = new jsPDF();
+
+  // Añadir título
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(32);
+  const nameLines: string[] = doc.splitTextToSize(`Menu: ${capitalizeFirstLetter(menu.title)}`, 165);
+  nameLines.forEach(line => {
+    doc.text(line, marginNormalX, posY);
+    posY += 10;
+  });
+
+  // Añadir información básica
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(12);
+  const basicInfo = [
+    { label: 'Número de días:', value: `${menu.numberDays} días` },
+    { label: 'Número de servicios:', value: `${menu.numberServices} personas` },
+    { label: 'Calorías objetivo:', value: `${menu.caloriesTarget.toFixed(2)} kcal` },
+    { label: 'Coste medio estimado:', value: `${menu.avergageEstimatedCost.toFixed(2)} €` },
+    { label: 'Tipo de dieta:', value: capitalizeFirstLetter(menu.diet) || 'Ninguna'},
+    { label: 'Alergias:', value: menu.allergies.map(allergy => allergy).join(', ') || 'Ninguna' },
+    { label: 'Ingredientes excluidos: ', value: ingredients.map(ingredient => {return capitalizeFirstLetter(ingredient.name)}).join(', ') || 'Ninguno' }
+  ];
+
+  basicInfo.forEach(info => {
+    posY = needNewPage(posY, doc);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${info.label}`, marginNormalX, posY);
+    doc.setFont('helvetica', 'normal');
+    const nameLines: string[] = doc.splitTextToSize(` ${info.value}`, 165);
+    nameLines.forEach(line => {
+      doc.text(line, marginNormalX + doc.getTextWidth(info.label) + 3, posY);
+      posY += 10;
+    });
+
+  });
+
+  // Añadir recetas por día
+  menu.recipesPerDay.forEach((day, index) => {
+    posY = needNewPage(posY, doc, 10);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text(`Día ${index + 1}`, marginNormalX, posY);
+    posY += 10;
+
+    const recipes = [
+      { label: 'Entrante:', value: capitalizeFirstLetter(day.recipeStarterID.name) },
+      { label: 'Plato principal:', value: capitalizeFirstLetter(day.recipeMainDishID.name) },
+      { label: 'Postre:', value: capitalizeFirstLetter(day.recipeDessertID.name) },
+      /*{ /*label: 'Pan incluido:', value: day.bread ? 'Sí' : 'No' }*/
+    ];
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    recipes.forEach(recipe => {
+      posY = needNewPage(posY, doc);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`${recipe.label}`, marginNormalX + 10, posY);
+      doc.setFont('helvetica', 'normal');
+      doc.text(` ${recipe.value}`, marginNormalX + 10 + doc.getTextWidth(recipe.label) + 3, posY);
+      posY += lineSpacing;
+    });
+
+    posY += 5;
+  });
+  
+  doc.save(`Menu ${capitalizeFirstLetter(menu.title)} PLAMESA.pdf`);
 };
