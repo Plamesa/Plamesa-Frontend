@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const ENDPOINT_PATH = 'http://localhost:3000'
+const ENDPOINT_PATH = process.env.ENDPOINT_PATH || 'http://localhost:3000'
 
 
 const auth = {

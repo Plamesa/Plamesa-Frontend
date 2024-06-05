@@ -28,6 +28,7 @@ import recipeService from '../services/RecipeService';
 import { Favorite, FavoriteBorder, Style } from '@mui/icons-material';
 import { generateRecipePDF } from '../utils/generatePDF';
 import { capitalizeFirstLetter } from '../utils/utils';
+import ingredientService from '../services/IngredientService';
 
 const foodTypeImages: { [key in FoodType]: string } = {
   [FoodType.Entrante]: EntranteImg,
@@ -266,8 +267,8 @@ function RecipeDetails() {
               <ul>
                 {recipe.ingredients.map((ingredient, index) => (
                   <li key={index}>
-                    <Typography variant="body1" component="p" sx={{ cursor:'pointer', ":hover": {textDecoration: 'underline'}}} onClick={() => navigate(`/ingredients/${ingredient.ingredientID._id}`, { state: { amountState: ingredient.amount }})}>
-                      <strong>{capitalizeFirstLetter(ingredient.ingredientID.name)}:</strong> {ingredient.amount * services / recipe.numberService} {ingredient.ingredientID.unit}
+                    <Typography variant="body1" component="p" sx={{ cursor:'pointer', ":hover": {textDecoration: 'underline'}}} onClick={() => navigate(`/ingredients/${ingredient.ingredientID._id}`, { state: { amountState: (ingredient.amount * services / recipe.numberService).toFixed(2) }})}>
+                      <strong>{capitalizeFirstLetter(ingredient.ingredientID.name)}:</strong> {(ingredient.amount * services / recipe.numberService).toFixed(2)} {ingredient.ingredientID.unit}
                     </Typography>
                   </li>
                 ))}

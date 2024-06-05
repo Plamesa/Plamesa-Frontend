@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-const ENDPOINT_PATH = 'http://localhost:3000/menu'
-
+const ENDPOINT_PATH = process.env.ENDPOINT_PATH + '/menu' || 'http://localhost:3000/menu'
 
 const menuService = {
   getMenuById(_id: string, token: string,) {

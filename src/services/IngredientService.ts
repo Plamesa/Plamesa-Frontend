@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-const ENDPOINT_PATH = 'http://localhost:3000/ingredient'
-
+const ENDPOINT_PATH = process.env.ENDPOINT_PATH + '/ingredient' || 'http://localhost:3000/ingredient'
 
 const ingredientService = {
   getIngredients() {

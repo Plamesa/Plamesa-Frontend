@@ -1,8 +1,6 @@
 import axios from 'axios'
-import { ActivityLevel, Allergen, Gender } from '../utils/enums'
 
-const ENDPOINT_PATH = 'http://localhost:3000/user'
-
+const ENDPOINT_PATH = process.env.ENDPOINT_PATH + '/user' || 'http://localhost:3000/user'
 
 const userService = {
   getUserInfo(token: string) {
