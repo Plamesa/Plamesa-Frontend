@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { GETRecipeInterface, IngredientInterface } from '../utils/interfaces';
-import { Button, TextField, Autocomplete } from '@mui/material';
+import { Button, TextField, Autocomplete, Box } from '@mui/material';
 import recipeService from '../services/RecipeService';
 import RecipeCard from '../components/RecipeCard';
 import ingredientService from '../services/IngredientService';
 import { capitalizeFirstLetter } from '../utils/utils';
 import './RecipeSearchIngredient.css';
+import RecipeCardSearchIngredient from '../components/RecipeCardSearchIngredient';
 
 function RecipesSearchIngredient() {
   const [recipes, setRecipes] = useState<GETRecipeInterface[]>([]);
@@ -51,9 +52,20 @@ function RecipesSearchIngredient() {
     }
   }
 
+  const getMatchingIngredients = (recipe: GETRecipeInterface) => {
+    const ingredientsIDs = selectedIngredient.map((ingredient) => {return ingredient._id});
+
+    return recipe.ingredients.filter(ingredient => 
+      ingredientsIDs.includes(ingredient.ingredientID._id.toString())
+    );
+  };
+
 
   return (
     <div className="homeIngredient">
+      <h2 style={{marginBottom: '0'}}>¿Qué tienes en la nevera?</h2>
+      <p>Introduce los ingredientes que tienes y te recomendaremos 5 recetas deliciosas que puedes preparar.</p>
+
       <div className='searchBox'>
         <Autocomplete
           multiple
@@ -86,7 +98,12 @@ function RecipesSearchIngredient() {
       {/* Cards con las recetas */}
       <div className="cardsContainer">
         {recipes.map((recipe) => (
-          <RecipeCard key={recipe._id} recipe={recipe} />
+          
+          <RecipeCardSearchIngredient 
+            key={recipe._id} 
+            recipe={recipe} 
+            matchingIngredients={getMatchingIngredients(recipe)} 
+          />
         ))}
       </div>
     </div>
