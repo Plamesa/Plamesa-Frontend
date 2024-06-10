@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { GETRecipeInterface, IngredientInterface } from '../utils/interfaces';
-import { Button, TextField, Autocomplete, Box } from '@mui/material';
+import { Button, TextField, Autocomplete } from '@mui/material';
 import recipeService from '../services/RecipeService';
-import RecipeCard from '../components/RecipeCard';
+import RecipeCardSearchIngredient from '../components/RecipeCardSearchIngredient';
 import ingredientService from '../services/IngredientService';
 import { capitalizeFirstLetter } from '../utils/utils';
 import './RecipeSearchIngredient.css';
-import RecipeCardSearchIngredient from '../components/RecipeCardSearchIngredient';
 
 function RecipesSearchIngredient() {
   const [recipes, setRecipes] = useState<GETRecipeInterface[]>([]);

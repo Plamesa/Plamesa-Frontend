@@ -11,6 +11,7 @@ function RecipeCardSearchIngredient ({ recipe, matchingIngredients }: RecipeCard
   return (
     <div className="recipeCardWrapper">
       <RecipeCard recipe={recipe} />
+      
       <div className="matchingIngredients">
         <h4 style={{marginBottom: '0'}}>Ingredientes Coincidentes</h4>
         <ul style={{marginTop: '10px', textAlign: 'left'}}>
