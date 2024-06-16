@@ -274,7 +274,7 @@ function Recipes() {
             ]}
           </Menu>
 
-          <Button onClick={() => navigate('/recipesSearch')} sx={{maxWidth: '120px', color:'#545454', ml: '5px'}}>
+          <Button onClick={() => navigate('/recipesSearch')} sx={{maxWidth: '120px', color:'#545454', ml: '5px', backgroundColor:'#FFFFEC'}}>
             <Typography variant='body2' component='p'>
               Buscar por Ingredientes
             </Typography>
