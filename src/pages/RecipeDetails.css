@@ -1,0 +1,71 @@
+.ingredientDetailContainer {
+  padding: 20px;
+}
+
+.leftSection {
+  padding: 10px;
+}
+
+.rightSection {
+  padding: 10px;
+  padding-left: 30px;
+  width: fit-content; /* Ajustar al contenido */
+  margin-left: auto; /* Centrar */
+  margin-right: auto; /* Centrar */
+}
+
+.imageLeftContainerDetails {
+  text-align: center;
+  padding: 10px;
+}
+
+.foodGroupImageDetails {
+  border-radius: 10%;
+  max-width: 300px;
+}
+
+.textLeftContainerDetailsRecipe {
+  padding: 10px;
+  padding-left: 20px;
+  background-color: #FFFFEC;
+  border-radius: 20px;
+}
+
+.textLeftContainerDetailsRecipe .MuiTypography-root {
+  margin-bottom: 10px;
+  color: #545454;
+}
+
+.allergenContainer {
+  margin-top: 20px;
+}
+
+.allergenIcon {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.nutrientTitle {
+  font-size: large;
+}
+
+.buttonContainerIngredient {
+  justify-content: center; /* Centra horizontalmente */
+  padding-top: 1rem !important;
+  padding: 1rem;
+  height: auto; /* Altura del viewport */
+  display: flex;
+}
+
+.botonChangeIngredient {
+  background-color: #545454 !important;
+  color: #FFFFFF;
+  margin: 0.5rem !important;
+}
+
+.botonDeleteIngredient {
+  background-color: #bc4b51 !important;
+  color: #FFFFFF;
+  margin: 0.5rem !important;
+}

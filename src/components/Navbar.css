@@ -13,7 +13,7 @@
 .navbar-routes {
   text-decoration: none; /* Sin subrayado */
   color: #545454; /* Color del texto */
-  font-family: calibri;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;;
   font-size: 1.1rem;
   margin-right: 0.3rem;
   margin-left: 0.3rem;
@@ -25,7 +25,7 @@
 .navbar-routes-menu {
   text-decoration: none; /* Sin subrayado */
   color: #545454; /* Color del texto */
-  font-family: calibri;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;;
   font-size: 1rem;
 }
 .navbar-routes-menu:hover {

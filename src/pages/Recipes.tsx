@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GETRecipeInterface, RecipeInterface } from '../utils/interfaces';
-import { FormControl, InputLabel, Select, MenuItem, Slider, Button, TextField, Box, IconButton, Menu, FormControlLabel, Switch } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Slider, Button, TextField, Box, IconButton, Menu, FormControlLabel, Switch, Typography } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { Allergen, FoodType } from '../utils/enums';
@@ -161,8 +161,8 @@ function Recipes() {
           >
             {[
               <MenuItem key="foodType">
-                <FormControl fullWidth>
-                  <InputLabel id="foodType-label">Grupo de Comida</InputLabel>
+                <FormControl fullWidth variant="filled">
+                  <InputLabel id="foodType-label">Tipo de Comida</InputLabel>
                   <Select
                     labelId="foodType-label"
                     id="foodType-select"
@@ -180,7 +180,7 @@ function Recipes() {
                 </FormControl>
               </MenuItem>,
               <MenuItem key="allergen">
-                <FormControl fullWidth>
+                <FormControl fullWidth variant="filled">
                   <InputLabel id="allergen-label">Alérgenos</InputLabel>
                   <Select
                     labelId="allergen-label"
@@ -211,7 +211,7 @@ function Recipes() {
                     min={minPrice}
                     max={maxPrice}
                     className="filtersSlider"
-                    sx={{ ml: 0, color: '#545454', mb: 1 }}
+                    sx={{ ml: 0, color: '#545454', mb: 2, pb: 0 }}
                   />
                 </FormControl>
               </MenuItem>,
@@ -273,6 +273,12 @@ function Recipes() {
               </MenuItem>
             ]}
           </Menu>
+
+          <Button onClick={() => navigate('/recipesSearch')} sx={{maxWidth: '120px', color:'#545454', ml: '5px'}}>
+            <Typography variant='body2' component='p'>
+              Buscar por Ingredientes
+            </Typography>
+          </Button>
         </Box>
 
 

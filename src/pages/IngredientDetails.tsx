@@ -188,7 +188,7 @@ function IngredientDetails() {
 
       <Grid item xs={12} md={9} className="rightSection">
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h2" component="h1">
+          <Typography variant="h2" component="h1" sx={{fontWeight: 'bold'}}>
             {capitalizeFirstLetter(ingredient.name)}
           </Typography>
   
@@ -219,7 +219,7 @@ function IngredientDetails() {
 
         {/* Sección de alérgenos */}
         <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" component="h2">
+          <Typography variant="h5" component="h2" sx={{fontWeight: 'bold'}}>
             Alérgenos
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
@@ -241,7 +241,7 @@ function IngredientDetails() {
 
         {/* Sección de nutrientes */}
         <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" component="h2">
+          <Typography variant="h5" component="h2" sx={{fontWeight: 'bold'}}>
             Información Nutricional
           </Typography>
           <Box sx={{

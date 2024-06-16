@@ -156,7 +156,7 @@ function Ingredients() {
           >
             {[
               <MenuItem key="foodGroup">
-                <FormControl fullWidth>
+                <FormControl fullWidth variant="filled">
                   <InputLabel id="foodGroup-label">Grupo de Alimentos</InputLabel>
                   <Select
                     labelId="foodGroup-label"
@@ -176,7 +176,7 @@ function Ingredients() {
               </MenuItem>,
 
               <MenuItem key="allergen">
-                <FormControl fullWidth>
+                <FormControl fullWidth variant="filled">
                   <InputLabel id="allergen-label">Alérgenos</InputLabel>
                   <Select
                     labelId="allergen-label"
@@ -208,7 +208,7 @@ function Ingredients() {
                     min={minPrice}
                     max={maxPrice}
                     className="filtersSlider"
-                    sx={{ml: 0, color: '#545454', mb: 1}}
+                    sx={{ml: 0, color: '#545454', mb: 2, pb:0}}
                   />
                 </FormControl>
               </MenuItem>,

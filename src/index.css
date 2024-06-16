@@ -4,7 +4,7 @@ body {
   height: 100vh; 
   background-color: #FDF8EB; 
   color: #545454;
-  font-family: calibri;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;

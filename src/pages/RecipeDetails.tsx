@@ -4,9 +4,9 @@ import { Allergen,FoodType,  NutrientsTypes, getUnitFromName } from '../utils/en
 import {  GETRecipeInterface} from '../utils/interfaces';
 import { Box, Button, Grid, TextField, Tooltip, Typography } from '@mui/material';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import EntranteImg from '../assets/foodType/entrante.svg';
-import PrincipalImg from '../assets/foodType/principal.svg';
-import PostreImg from '../assets/foodType/postre.svg';
+import EntranteImg from '../assets/foodType/entranteDetails.svg';
+import PrincipalImg from '../assets/foodType/principalDetails.svg';
+import PostreImg from '../assets/foodType/postreDetails.svg';
 
 import CerealesAllergenImg from '../assets/allergens/cereales.svg';
 import CrustaceosAllergenImg from '../assets/allergens/crustaceos.svg';
@@ -178,7 +178,7 @@ function RecipeDetails() {
           <img src={foodTypeImage} alt={recipe.name} className='foodGroupImageDetails'></img>
         </div>
           
-        <div className='textLeftContainerDetails'>
+        <div className='textLeftContainerDetailsRecipe'>
           <Typography variant="body1" color="textSecondary" component="p">
             <strong>Tipo de comida:</strong> <br></br> {recipe.foodType}
           </Typography>
@@ -198,7 +198,7 @@ function RecipeDetails() {
 
       <Grid item xs={12} md={9} className="rightSection">
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h2" component="h1">
+          <Typography variant="h2" component="h1" sx={{fontWeight: 'bold'}}>
             {capitalizeFirstLetter(recipe.name)}
           </Typography>
           <Box display="flex" alignItems="center">
@@ -234,8 +234,8 @@ function RecipeDetails() {
 
 
         {/* Sección de alérgenos */}
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" component="h2">
+        <Box sx={{ mt: 4, pl: '16px'}}>
+          <Typography variant="h5" component="h2" sx={{fontWeight: 'bold'}}>
             Alérgenos
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
@@ -258,24 +258,26 @@ function RecipeDetails() {
 
         {/* Sección de ingredientes y utensilios */}
         <Box sx={{ mt: 4 }}>
-          <Grid container spacing={2}>
+          <Grid container >
             <Grid item xs={12} md={6}>
-              <Typography variant="h5" component="h2">
-                Ingredientes
-              </Typography>
-              <ul>
-                {recipe.ingredients.map((ingredient, index) => (
-                  <li key={index}>
-                    <Typography variant="body1" component="p" sx={{ cursor:'pointer', ":hover": {textDecoration: 'underline'}}} onClick={() => navigate(`/ingredients/${ingredient.ingredientID._id}`, { state: { amountState: (ingredient.amount * services / recipe.numberService).toFixed(2) }})}>
-                      <strong>{capitalizeFirstLetter(ingredient.ingredientID.name)}:</strong> {(ingredient.amount * services / recipe.numberService).toFixed(2)} {ingredient.ingredientID.unit}
-                    </Typography>
-                  </li>
-                ))}
-              </ul>
+              <Box sx={{backgroundColor: '#FFFFEC', borderRadius: '20px', pl: '16px', pt: '16px', pb: '5px', mr: { md: 2 }, mb: 1}}>
+                <Typography variant="h5" component="h2" sx={{fontWeight: 'bold'}}>
+                  Ingredientes
+                </Typography>
+                <ul>
+                  {recipe.ingredients.map((ingredient, index) => (
+                    <li key={index}>
+                      <Typography variant="body1" component="p" sx={{ cursor:'pointer', ":hover": {textDecoration: 'underline'}}} onClick={() => navigate(`/ingredients/${ingredient.ingredientID._id}`, { state: { amountState: (ingredient.amount * services / recipe.numberService).toFixed(2) }})}>
+                        <strong>{capitalizeFirstLetter(ingredient.ingredientID.name)}:</strong> {(ingredient.amount * services / recipe.numberService).toFixed(2)} {ingredient.ingredientID.unit}
+                      </Typography>
+                    </li>
+                  ))}
+                </ul>
+              </Box>
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <Typography variant="h5" component="h2">
+            <Grid item xs={12} md={6} sx={{backgroundColor: '#FFFFEC', borderRadius: '20px', pl: '16px', pt: '16px', mb: 1}}>
+              <Typography variant="h5" component="h2" sx={{fontWeight: 'bold'}}>
                 Utensilios de Cocina
               </Typography>
               <ul>
@@ -298,8 +300,8 @@ function RecipeDetails() {
         </Box>
 
         {/* Sección de instrucciones */}
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" component="h2">
+        <Box sx={{ mt: 4, backgroundColor: '#FFFFEC', borderRadius: '20px', pl: '16px', pt: '16px' }}>
+          <Typography variant="h5" component="h2" sx={{fontWeight: 'bold'}}>
             Instrucciones
           </Typography>
           <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
@@ -322,8 +324,8 @@ function RecipeDetails() {
         </Box>
 
         {/* Sección de comentarios */}
-        <Box sx={{ mt: 4, maxWidth: '100%' }}>
-          <Typography variant="h5" component="h2">
+        <Box sx={{ mt: 4, maxWidth: '100%', backgroundColor: '#FFFFEC', borderRadius: '20px', pl: '16px', pt: '16px', pb: '16px' }}>
+          <Typography variant="h5" component="h2" sx={{fontWeight: 'bold'}}>
             Comentarios
           </Typography>
           <div style={{ maxWidth: '100%', overflowX: 'auto' }}>
@@ -341,8 +343,8 @@ function RecipeDetails() {
 
 
         {/* Sección de nutrientes */}
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" component="h2">
+        <Box sx={{ mt: 4, backgroundColor: '#FFFFEC', borderRadius: '20px', pl: '16px', pt: '16px' }}>
+          <Typography variant="h5" component="h2" sx={{fontWeight: 'bold'}}>
             Información Nutricional
           </Typography>
           <Box sx={{

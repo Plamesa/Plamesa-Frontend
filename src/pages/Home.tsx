@@ -8,7 +8,7 @@ function Home() {
         <img src={logo} alt="Plamesa Logo" className='plamesa-logo' />
       
         <h1 className="animated-text">¡Bienvenido a Plamesa!</h1>
-        <p className="animated-subtext">Planificador de menús saludables, adaptado al usuario para una opción nutritiva variada y adaptada al coste de cada uno </p>
+        <p className="animated-subtext">Planifica menús saludables y variados. Accede a información detallada y personaliza tus comidas con facilidad. </p>
       </div>
     </div>
   );
