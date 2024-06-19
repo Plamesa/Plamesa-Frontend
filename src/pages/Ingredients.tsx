@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ingredientService from '../services/IngredientService';
 import IngredientCard from '../components/IngredientCard';
 import { GETIngredientInterface, IngredientInterface } from '../utils/interfaces';
-import { FormControl, InputLabel, Select, MenuItem, Slider, Button, TextField, Box, IconButton, Menu, FormControlLabel, Switch } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Slider, Button, TextField, Box, IconButton, Menu, FormControlLabel, Switch, Typography } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { Allergen, FoodGroup } from '../utils/enums';
@@ -18,6 +18,7 @@ function Ingredients() {
   const [filteredIngredients, setFilteredIngredients] = useState<GETIngredientInterface[]>([]);
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(30);
+  const [appliedFilters, setAppliedFilters] = useState<{filter: string, value: string}[]>([]);
   const [filters, setFilters] = useState({
     foodGroup: '',
     allergen: '',
@@ -75,6 +76,29 @@ function Ingredients() {
       applyFilters();
     }
   }, [searchTerm, ingredients]);
+
+  // Mostrar filtros aplicados
+  useEffect(() => {
+    const applied: {filter: string, value: string}[] = [];
+  
+    if (filters.foodGroup) {
+      applied.push({filter: `Grupo de Alimentos:`, value: `${filters.foodGroup}`});
+    }
+  
+    if (filters.allergen) {
+      applied.push({filter: `Sin Alérgenos:`, value: `${filters.allergen}`});
+    }
+  
+    if (filters.maxPrice < maxPrice) {
+      applied.push({filter: `Precio Máximo:`, value: `${filters.maxPrice}€`});
+    }
+  
+    if (filters.userIngredients) {
+      applied.push({filter: `Mostrando:`, value: `Mis Ingredientes`});
+    }
+  
+    setAppliedFilters(applied);
+  }, [filters, maxPrice]);
 
 
   const applyFilters = async () => {
@@ -267,6 +291,20 @@ function Ingredients() {
           </Button>
         </Box>
       </div>
+
+      {/* Mostrar filtros aplicados */}
+      {appliedFilters.length > 0 && (
+        <Box display="flex" flexDirection="row" alignItems="left" flexWrap='wrap' mb={1} sx={{width:'85%', mt: '0'}}>
+          <Typography variant="body2" color="textPrimary" noWrap component="div" mx={0.5} sx={{color: '#545454'}}>
+              <b>Filtros aplicados:</b>
+            </Typography>
+          {appliedFilters.map((filter, index) => (
+            <Typography key={index} variant="body2" color="textPrimary" noWrap component="div" mx={0.5} sx={{color: '#545454'}}>
+              <b>{filter.filter}</b> {filter.value}
+            </Typography>
+          ))}
+        </Box>
+      )}
 
 
       {/* Cards con los ingredientes */}

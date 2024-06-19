@@ -16,6 +16,7 @@ function Recipes() {
 
   const [recipes, setRecipes] = useState<GETRecipeInterface[]>([]);
   const [filteredRecipes, setFilteredRecipes] = useState<GETRecipeInterface[]>([]);
+  const [appliedFilters, setAppliedFilters] = useState<{filter: string, value: string}[]>([]);
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(30);
   const [filters, setFilters] = useState({
@@ -75,6 +76,33 @@ function Recipes() {
       applyFilters();
     }
   }, [searchTerm, recipes]);
+
+  // Mostrar filtros aplicados
+  useEffect(() => {
+    const applied: {filter: string, value: string}[] = [];
+  
+    if (filters.foodType) {
+      applied.push({filter: `Tipo de comida:`, value: `${filters.foodType}`});
+    }
+  
+    if (filters.allergen) {
+      applied.push({filter: `Sin Alérgenos:`, value: `${filters.allergen}`});
+    }
+  
+    if (filters.maxPrice < maxPrice) {
+      applied.push({filter: `Precio Máximo:`, value: `${filters.maxPrice}€`});
+    }
+
+    if (filters.favoriteRecipes) {
+      applied.push({filter: `Mostrando:`, value: `Recetas Favoritas`});
+    }
+  
+    if (filters.userRecipes) {
+      applied.push({filter: `Mostrando:`, value: `Mis Recetas`});
+    }
+  
+    setAppliedFilters(applied);
+  }, [filters, maxPrice]);
 
 
   const applyFilters = async () => {
@@ -302,6 +330,20 @@ function Recipes() {
           </Button>
         </Box>
       </div>
+
+      {/* Mostrar filtros aplicados */}
+      {appliedFilters.length > 0 && (
+        <Box display="flex" flexDirection="row" alignItems="left" flexWrap='wrap' mb={1} sx={{width:'85%', mt: '0'}}>
+          <Typography variant="body2" color="textPrimary" noWrap component="div" mx={0.5} sx={{color: '#545454'}}>
+              <b>Filtros aplicados:</b>
+            </Typography>
+          {appliedFilters.map((filter, index) => (
+            <Typography key={index} variant="body2" color="textPrimary" noWrap component="div" mx={0.5} sx={{color: '#545454'}}>
+              <b>{filter.filter}</b> {filter.value}
+            </Typography>
+          ))}
+        </Box>
+      )}
 
 
       {/* Cards con las recetas */}
