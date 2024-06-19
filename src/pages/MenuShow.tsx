@@ -119,7 +119,7 @@ function MenuShow() {
           .then((response) => {
             console.log(response);
             if(response.status == 201) {
-              alert('Menu guardado');
+              alert('Menú guardado');
             }
           })
           .catch((error) => {
@@ -127,7 +127,7 @@ function MenuShow() {
           })
       }
       else {
-        alert("Debe Iniciar Sesión para poder guardar el menu")
+        alert("Debe Iniciar Sesión para poder guardar el menú")
       }
     } catch (error) {
       console.error('Error al actualizar favorito:', error);
@@ -136,14 +136,14 @@ function MenuShow() {
 
 
   async function deleteMenuFunction() {
-    var resultado = window.confirm('¿Estas seguro de elimiar el menu?')
+    var resultado = window.confirm('¿Estas seguro de elimiar el menú?')
     if (resultado === true) {
       try {
         if (token && _id) {
           await menuService
             .deleteMenu(_id, token)
             .then((response) => {
-              alert('Menu eliminado')
+              alert('Menú eliminado')
               navigate('/menus');
               console.log(response)
             })
@@ -258,7 +258,7 @@ function MenuShow() {
           className="botonSaveMenu"
           onClick={saveMenu}
         >
-          Guardar menu
+          Guardar menú
         </Button>
 
         <Button
@@ -266,7 +266,7 @@ function MenuShow() {
             className="botonDeleteIngredient"
             onClick={deleteMenuFunction} 
           >
-            Borrar menu
+            Borrar menú
           </Button>
       </div>
     </div>

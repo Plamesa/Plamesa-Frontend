@@ -82,9 +82,16 @@ function Ingredients() {
 
     // Filtrar por término de búsqueda
     if (searchTerm) {
-      filteredData = filteredData.filter(ingredient =>
-        ingredient.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      // Normaliza y eliminar la tildes del searchTerm
+      const normalizedSearchTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+      filteredData = filteredData.filter(ingredient => {
+        // Normaliza y eliminar la tildes del ingrediente
+        const normalizedIngredientName = ingredient.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        
+        // Buscar
+        return normalizedIngredientName.includes(normalizedSearchTerm);
+      });
     }
 
     // Filtrar por grupo de alimentos
@@ -135,7 +142,7 @@ function Ingredients() {
         <Box display="flex">
           <TextField // Buscador
             type="text"
-            placeholder="Buscar Ingrediente"
+            placeholder="Buscar ingrediente"
             value={searchTerm}
             onChange={handleSearchChange}
             className="searchBar"

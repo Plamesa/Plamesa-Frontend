@@ -82,10 +82,18 @@ function Recipes() {
 
     // Filtrar por término de búsqueda
     if (searchTerm) {
-      filteredData = filteredData.filter(recipe =>
-        recipe.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      // Normaliza y eliminar la tildes del searchTerm
+      const normalizedSearchTerm = searchTerm.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    
+      filteredData = filteredData.filter(recipe => {
+        // Normaliza y eliminar las tildes de la receta
+        const normalizedRecipeName = recipe.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        
+        // Buscar
+        return normalizedRecipeName.includes(normalizedSearchTerm);
+      });
     }
+
 
     // Filtrar por grupo de alimentos
     if (filters.foodType) {
@@ -140,7 +148,7 @@ function Recipes() {
         <Box display="flex">
           <TextField // Buscador
             type="text"
-            placeholder="Buscar Receta"
+            placeholder="Buscar receta"
             value={searchTerm}
             onChange={handleSearchChange}
             className="searchBar"

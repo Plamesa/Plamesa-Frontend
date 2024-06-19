@@ -102,7 +102,7 @@ function MenuDetails() {
           .then((response) => {
             console.log(response);
             if(response.status == 201) {
-              alert('Menu guardado');
+              alert('Menú guardado');
               navigate('/menus/' + response.data._id)
             }
           })
@@ -111,7 +111,7 @@ function MenuDetails() {
           })
       }
       else {
-        alert("Debe Iniciar Sesión para poder guardar el menu")
+        alert("Debe Iniciar Sesión para poder guardar el menú")
       }
     } catch (error) {
       console.error('Error al actualizar favorito:', error);
@@ -218,7 +218,7 @@ function MenuDetails() {
           className="botonSaveMenu"
           onClick={saveMenu}
         >
-          Guardar menu
+          Guardar menú
         </Button>
       </div>
     </div>

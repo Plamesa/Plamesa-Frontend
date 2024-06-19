@@ -174,7 +174,7 @@ function Planner() {
     <div>
       <div className="topContainerIntroPlanner">
         <div className="containerIntroPlanner">
-          <h3>Genera tu menu personalizado</h3>
+          <h3>Genera tu menú personalizado</h3>
           <Button
             variant="contained"
             className="botonRegisterAccount"

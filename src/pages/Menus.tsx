@@ -59,7 +59,7 @@ function Menus() {
         <Box display="flex">
           <TextField // Buscador
             type="text"
-            placeholder="Buscar Menu"
+            placeholder="Buscar menú"
             value={searchTerm}
             onChange={handleSearchChange}
             className="searchBar"
@@ -69,7 +69,7 @@ function Menus() {
 
         {/* Botón añadir menu */}
         <Box>
-          <h3 className='h3Ingredients'>Genera un nuevo MENU</h3>
+          <h3 className='h3Ingredients'>Genera un nuevo MENÚ</h3>
           <Button
             variant="contained"
             className="botonCreateIngredients"
