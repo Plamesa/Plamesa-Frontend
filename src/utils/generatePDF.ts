@@ -366,7 +366,7 @@ export function generateGroceryListPDF(ingredients: Array<{ [key: string]: Ingre
     });
   });
   
-  doc.save(`Lista Compra Menu ${capitalizeFirstLetter(title)} PLAMESA.pdf`);
+  doc.save(`Lista Compra Menú ${capitalizeFirstLetter(title)} PLAMESA.pdf`);
 };
 
 
@@ -379,7 +379,7 @@ export function generateMenuPDF(menu: GETMenuInterface, ingredients: {_id: strin
   // Añadir título
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(32);
-  const nameLines: string[] = doc.splitTextToSize(`Menu: ${capitalizeFirstLetter(menu.title)}`, 165);
+  const nameLines: string[] = doc.splitTextToSize(`Menú: ${capitalizeFirstLetter(menu.title)}`, 165);
   nameLines.forEach(line => {
     doc.text(line, marginNormalX, posY);
     posY += 10;
@@ -440,5 +440,5 @@ export function generateMenuPDF(menu: GETMenuInterface, ingredients: {_id: strin
     posY += 5;
   });
   
-  doc.save(`Menu ${capitalizeFirstLetter(menu.title)} PLAMESA.pdf`);
+  doc.save(`Menú ${capitalizeFirstLetter(menu.title)} PLAMESA.pdf`);
 };
